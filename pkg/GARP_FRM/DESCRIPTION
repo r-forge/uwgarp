@@ -8,7 +8,7 @@ Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: Global Association of Risk Professionals: Financial Risk Manager
 Depends:
     R (>= 2.15.0),
-    xts (>= 0.8,
+    xts (>= 0.8),
     PerformanceAnalytics (>= 1.0.0)
 Suggests:
     quadprog
