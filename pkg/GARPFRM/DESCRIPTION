@@ -1,0 +1,16 @@
+Package: GARP_FRM
+Type: Package
+Title: Global Association of Risk Professionals: Financial Risk Manager
+Version: 0.1.0
+Date: 2013-11-17
+Author: Ross Bennett, Thomas Fillebeen, Guy Yollin
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: Global Association of Risk Professionals: Financial Risk Manager
+Depends:
+    R (>= 2.15.0),
+    xts (>= 0.8),
+    PerformanceAnalytics (>= 1.0.0)
+Suggests:
+    quadprog
+License: GPL
+

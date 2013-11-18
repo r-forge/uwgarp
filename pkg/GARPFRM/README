@@ -1,0 +1,3 @@
+This is the package for the Global Association of Risk Professionals: Financial Risk Manager. Collaborative project between the University of Washington Computational Finance & Risk Management Program and the Global Association of Risk Professionals to develop R packages that facilitate the learning of risk management concepts.
+
+We will be using roxygen2 to generate documentation files.
