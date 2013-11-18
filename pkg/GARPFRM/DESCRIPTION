@@ -1,4 +1,4 @@
-Package: GARP_FRM
+Package: GARPFRM
 Type: Package
 Title: Global Association of Risk Professionals: Financial Risk Manager
 Version: 0.1.0
@@ -13,4 +13,5 @@ Depends:
 Suggests:
     quadprog
 License: GPL
-
+Collate:
+    'capm.R'
