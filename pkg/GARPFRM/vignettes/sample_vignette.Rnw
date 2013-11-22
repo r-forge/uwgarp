@@ -35,30 +35,133 @@
 
 \begin{document}
 
-\title{Title of the vignette}
-\author{author of the vignette}
+\title{CAPM Fitting and Testing}
+\author{UW GARP}
 
 \maketitle
 
 \begin{abstract}
-Explain the purpose of the vignette
+Standard Capital Asset Pricing Model (CAPM) fitting and testing using Quandl data.
+Efficient Frontier w/ constraints options: short-sale and borrowing
+
+Standard Capital Asset Pricing Model
+
+CAPM Assumptions
+1. Identical investors who are price takers;
+2. Investment over the same time horizon; 
+3. No transaction costs or taxes;
+4. Can borrow and lend at risk-free rate;
+5. Investors only care about portfolio expected return and variance;
+6. Market consists of all publicly traded assets.
 \end{abstract}
 
 \tableofcontents
 
-\section{This is a section}
-\subsection{This is a subsection}
+\section{Fitting CAPM}
+\subsection{Extracting and Organizing Data}
 
 <<ex1>>=
-# This is code
-x <- rnorm(10)
-print(x)
+# 'This is code:
+# 'Load Libraries
+library(zoo)
+options(digits=3)
+# Read returns from .csv file
+stock.df <- read.csv("~/Documents/R_ FRM EXAM/Stocks_data.csv")
+colnames(stock.df)
 @
 
 <<ex2>>=
-# Include plots
-plot(x)
+# Estimate a zooreg object: regularly spaced zoo object
+stock.z = zooreg(stock.df[,-1], start=c(1993, 1),
+                 
+                 end=c(2013,11), frequency=12)
+index(stock.z) = as.yearmon(index(stock.z))
+# Summarize Start, End, and Number of Rows
+start(stock.z)
+end(stock.z)
+nrow(stock.z)
+@
+\subsection{Estimate Excess Returns}
+<<ex3>>=
+# Estimate excess returns: subtracting off risk-free rate
+  # To strip off the dates and just return a plain vector/matrix coredata() can be used.
+  # as.data.frame to check if an object is a data frame, or coerce it if possible.
+returns.mat = as.matrix(coredata(stock.z))
+exReturns.mat = returns.mat - returns.mat[,"RFREE"]
+exReturns.df = as.data.frame(exReturns.mat)
 @
 
+\subsection{Fitting CAPM Model}
+<<ex4>>=
+# Run CAPM regression for AAPL (AAPL) using first 4 years
+# 48 months divided by 12 months in a years = 4 years
+capm.fit = lm(AAPL~MARKET,data=exReturns.df,subset=1:48)
+summary(capm.fit)
+
+# Plot data with regression line
+plot(exReturns.df$MARKET,exReturns.df$AAPL, main="CAPM for AAPL",
+     
+     ylab="Excess Return: AAPL",
+     xlab="Excess Return: MARKET")
+# Plot CAPM regression estimate
+abline(capm.fit)    
+# Create Axis 
+abline(h=0,v=0,lty=3)
+@
+
+\section{Testing CAPM}
+\subsection{Created CAPM Function}
+<<ex5>>=
+# Use a capm.tstats function:
+  # Estimating CAPM with alpha=0 for asset using first 4 years of data
+capm.tstats = function(r,mkrt) {
+  # Fiting CAPM
+  capm.fit = lm(r~mkrt)  	
+  # Extract summary info
+  capm.summary = summary(capm.fit)		
+  # Retrieve t-stat
+  t.stat = coef(capm.summary)[1,3]	
+  t.stat
+}
+@
+\subsection{Estimate Significance and Test Beta Results}
+<<ex6>>=
+# Retrieve tstats from function for 2 assets: WFC & AAPL
+  # Filter out rf and market before running
+colnames(exReturns.mat[,-c(1,6)])
+tstats = apply(exReturns.mat[1:48,-c(1,6)],2, capm.tstats,
+               exReturns.mat[1:48,"MARKET"])
+tstats
+
+# Test Hypothesis for 5% CI: H0: alpha=0
+abs(tstats) > 2
+any(abs(tstats) > 2)
+@
+
+\subsection{Estimate Expect Returns and Plot}
+<<ex7>>=
+# Plot expected return versus beta
+# Estimate expected returns over first 4 years
+mu.hat = colMeans(exReturns.mat[1:48,-c(1,6)])
+mu.hat
+
+# Compute beta over first 4 years
+capm.betas = function(r,market) {
+  capm.fit = lm(r~market)  				
+  # Fit capm regression
+  capm.beta = coef(capm.fit)[2]				
+  # Extract coefficients
+  capm.beta
+}
+
+betas = apply(exReturns.mat[1:48,-c(1,6)],2,
+              
+              FUN=capm.betas,
+              market=exReturns.mat[1:48,"MARKET"])
+betas
+
+# Plot expected returns versus betas
+plot(betas,mu.hat,main="Expected Return vs. Beta")
+@
 
 \end{document}
