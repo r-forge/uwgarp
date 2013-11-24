@@ -53,3 +53,64 @@ lines(x=coredata(SPY.ret), y=model.pi[, "upr"], col="red", lty=2)
 lines(x=coredata(SPY.ret), y=model.pi[, "lwr"], col="red", lty=2)
 
 plot(resid(model.fit), type="h")
+
+
+##### EDA #####
+
+# mean returns
+mean(AAPL.ret)
+mean(SPY.ret)
+
+# standard deviation
+sd(AAPL.ret)
+sd(SPY.ret)
+
+# skewness
+skewness(x=AAPL.ret, method="sample")
+skewness(x=SPY.ret, method="sample")
+
+# kurtosis
+kurtosis(x=AAPL.ret, method="sample_excess")
+kurtosis(x=SPY.ret, method="sample_excess")
+
+hist(AAPL.ret)
+hist(SPY.ret)
+
+plot(density(AAPL.ret))
+plot(density(SPY.ret))
+
+mu.est <- mean(AAPL.ret)
+sd.est <- sd(AAPL.ret)
+plot(density(AAPL.ret))
+rug(AAPL.ret)
+# sample estimates
+curve(dnorm(x, mean=mean(AAPL.ret), sd=sd(AAPL.ret)), 
+      add=TRUE, col="red", lty=2, lwd=2)
+# robust estimates
+curve(dnorm(x, mean=median(AAPL.ret), sd=mad(AAPL.ret)), 
+      add=TRUE, col="blue", lty=2, lwd=2)
+
+plot(density(SPY.ret))
+rug(SPY.ret)
+# sample estimates
+curve(dnorm(x, mean=mean(SPY.ret), sd=sd(SPY.ret)), 
+      add=TRUE, col="red", lty=2, lwd=2)
+# robust estimates
+curve(dnorm(x, mean=median(SPY.ret), sd=mad(SPY.ret)), 
+      add=TRUE, col="blue", lty=2, lwd=2)
+
+qqnorm(AAPL.ret)
+qqline(AAPL.ret)
+
+boxplot(coredata(returns))
+
+# Shapiro-Wilk Normality test
+# Null hypothesis that a sample came from a normally distributed population
+shapiro.test(coredata(AAPL.ret))
+shapiro.test(coredata(SPY.ret))
+
+#library(MASS)
+#fitdistr(x=AAPL.ret, densfun="normal")
+#fitdistr(x=AAPL.ret, densfun="t", start=list(m=0.001, s=0.05, df=2), lower=c(-0.01, 0, 0.1))
+
+
