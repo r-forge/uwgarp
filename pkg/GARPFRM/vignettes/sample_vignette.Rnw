@@ -134,6 +134,7 @@ capm.tstats = function(r,mkrt) {
   # Filter out rf and market before running
 colnames(exReturns.mat[,-c(1,6,7)])
 tstats = apply(exReturns.mat[1:60,-c(1,6,7)],2, capm.tstats,
+               
                exReturns.mat[1:60,"MARKET"])
 tstats
 
@@ -142,7 +143,7 @@ abs(tstats) > 2
 any(abs(tstats) > 2)
 @
 
-\subsection{Estimate Expect Returns and Plot}
+\subsection{Estimate Expected Returns and Plot}
 <<ex7>>=
 # Plot expected return versus beta
 # Estimate expected returns over first 5 years
@@ -166,6 +167,16 @@ betas
 
 # Plot expected returns versus betas
 plot(betas,mu.hat,main="Expected Return vs. Beta")
+# Estimate regression of Expected Return vs. Beta
+sml.fit = lm(mu.hat~betas)
+sml.fit
+summary(sml.fit)
+# Ideally intercept is zero and equals the excess market return
+mean(exReturns.mat[1:60,"MARKET"])
+# Plot Fitted SML
+plot(betas,mu.hat,main="Estimated SML")
+abline(sml.fit)
+legend(0.6, -0.0315, "Estimated SML",1)
 @
 
 \section{Consumption-Oriented CAPM}
