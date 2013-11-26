@@ -185,7 +185,7 @@ plot(exReturns.df$MARKET,exReturns.df$CONS, main="CAPM for CONS",
 abline(capm.fit)    
 # Create Axis 
 abline(h=0,v=0,lty=3)
-# Placing beta & tstat values on the plot for APPL
+# Placing beta & tstat values on the plot for CONS
 cbeta = coef(summary(capm.fit))[2,1]
 text(x=-.165, y=1.2, paste("Beta=", round(cbeta,dig=2)))
 tstat = coef(summary(capm.fit))[1,3]
