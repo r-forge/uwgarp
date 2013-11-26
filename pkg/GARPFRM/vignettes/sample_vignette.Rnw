@@ -107,6 +107,10 @@ plot(exReturns.df$MARKET,exReturns.df$AAPL, main="CAPM for AAPL",
 abline(capm.fit)    
 # Create Axis 
 abline(h=0,v=0,lty=3)
+# Setting beta & tstat on the plot for APPL
+beta = coef(summary(capm.fit))[2,1]
+text(x=-.15, y=.3, paste("Beta=", round(beta,dig=2)))
+text(x=-.148, y=.27, paste("tstat=", round(coef(summary(capm.fit))[1,3],dig=2)))
 @
 
 \section{Testing CAPM}
