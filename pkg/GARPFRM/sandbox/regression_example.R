@@ -59,6 +59,10 @@ summary(SPY.ret)
 # Sample quantiles of SPY returns
 quantile(SPY.ret, probs=c(0, 0.25, 0.5, 0.75, 1))
 
+# Scatter plot of each pair of assets in the returns dataset
+pairs(coredata(returns), pch=18, col=rgb(0,0,100,50,maxColorValue=255))
+lattice::splom(coredata(returns), pch=18, col=rgb(0,0,100,50,maxColorValue=255))
+
 # Sample correlation of returns
 cor(returns)
 

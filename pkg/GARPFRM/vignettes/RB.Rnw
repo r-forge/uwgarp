@@ -35,7 +35,7 @@
 
 \begin{document}
 
-\title{Exploratory Data Analysis, basic probability and statistics}
+\title{Quantitative Analysis}
 \author{Ross Bennett}
 
 \maketitle
@@ -50,7 +50,7 @@ The goal of this vignette is to demonstrate key concepts in Financial Risk Manag
 
 Load the GARPFRM package and the \verb"returns" dataset. The \verb"returns" dataset includes weekly returns for SPY, AAPL, XOM, GOOG, MSFT, and GE from 2005-01-14 to 2013-11-22.
 <<>>=
-library(GARPFRM)
+suppressMessages(library(GARPFRM))
 data(returns)
 @
 
@@ -119,12 +119,24 @@ summary(SPY.ret)
 # Sample quantiles of SPY returns
 quantile(SPY.ret, probs=c(0, 0.25, 0.5, 0.75, 1))
 
+@
+
+Scatter plot of each pair of assets in the returns dataset.
+<<>>=
+pairs(coredata(returns), pch=18, 
+      col=rgb(0,0,100,50,maxColorValue=255))
+
+@
+
+Correlation and covariance matrices of assets in the returns dataset.
+<<>>=
 # Sample correlation of returns
 cor(returns)
 
 # Sample covariance of returns
 cov(returns)
 @
+
 
 \subsection{Distributions}
 R has functions to compute the density, distribution function, quantile, and random number generation for several distributions. The continuous distributions covered in chapter 1 are listed here.
@@ -195,17 +207,20 @@ Extract the weekly returns of AAPL and SPY from the returns object. The returns 
 <<>>=
 AAPL.ret <- returns[, "AAPL"]
 SPY.ret <- returns[, "SPY"]
+
+# Fitting linear models works with xts objects, but works better with data.frame objects. This is especially true with the predict method for linear models.
+ret.data <- as.data.frame(cbind(AAPL.ret, SPY.ret))
 @
 
 Scatterplot of AAPL and SPY returns.
 <<>>=
-plot(x=coredata(SPY.ret), y=coredata(AAPL.ret), 
+plot(x=ret.data[, "SPY"], y=ret.data[, "AAPL"], 
      xlab="SPY returns", ylab="AAPL returns")
 @
 
 Fit the linear regression model. \verb"AAPL.ret" is the response variable and \verb"SPY.ret" is the explanatory variable.
 <<>>=
-model.fit <- lm(AAPL.ret ~ SPY.ret)
+model.fit <- lm(AAPL ~ SPY, data=ret.data)
 @
 
 The \verb"print" and \verb"summary" methods for \verb"lm" objects are very useful and provide several of the statistics covered in the book.
@@ -244,8 +259,9 @@ model.summary$adj.r.squared
 
 Use the \verb"predict" method to calculate the confidence and prediction intervals of the fitted model.
 <<>>=
-model.ci <- predict(object=model.fit, interval="confidence")
-model.pi <- predict(object=model.fit, interval="prediction")
+new <- data.frame(SPY=seq(from=-0.2, to=0.2, length.out=nrow(ret.data)))
+model.ci <- predict(object=model.fit, newdata=new, interval="confidence")
+model.pi <- predict(object=model.fit, newdata=new, interval="prediction")
 @
 
 Plot the residuals of the model.
@@ -256,12 +272,16 @@ plot(resid(model.fit), type="h")
 Plot the fitted model with the confidence and prediction intervals.
 <<tidy=FALSE>>=
 plot(x=coredata(SPY.ret), y=coredata(AAPL.ret), 
-     xlab="SPY returns", ylab="AAPL returns")
-abline(model.fit, col="red")
-lines(x=coredata(SPY.ret), y=model.ci[, "upr"], col="blue", lty=1)
-lines(x=coredata(SPY.ret), y=model.ci[, "lwr"], col="blue", lty=1)
-lines(x=coredata(SPY.ret), y=model.pi[, "upr"], col="red", lty=2)
-lines(x=coredata(SPY.ret), y=model.pi[, "lwr"], col="red", lty=2)
+     xlab="SPY returns", ylab="AAPL returns", xlim=c(-0.2, 0.2))
+abline(model.fit, col="black")
+lines(x=model.ci[, "fit"], y=model.ci[, "upr"], col="blue", lty=1)
+lines(x=model.ci[, "fit"], y=model.ci[, "lwr"], col="blue", lty=1)
+lines(x=model.pi[, "fit"], y=model.pi[, "upr"], col="red", lty=2)
+lines(x=model.pi[, "fit"], y=model.pi[, "lwr"], col="red", lty=2)
+legend("topleft", legend=c("Fitted Values",
+                           "95% Confidence Interval", 
+                           "95% Prediction Interval"), 
+       col=c("black", "blue", "red"), lty=c(1, 1, 2), cex=0.8, bty="n")
 @
 
 \subsection{Regression with multiple regressors}
@@ -327,10 +347,11 @@ rsq <- sapply(X=summary(ff.fit), FUN=function(x) x$r.squared)
 names(rsq) <- colnames(ret.e)
 
 par(mfrow=c(2,2))
-barplot(beta1, main="Beta for Market-RF", col=c(2:6))
-barplot(beta2, main="Beta for SMB", col=c(2:6))
-barplot(beta3, main="Beta for HML", col=c(2:6))
-barplot(rsq, main="R Squared Values", col=c(2:6))
+barplot(beta1, main="Beta for Market-RF", col=c(2:6), cex.names=0.8)
+barplot(beta2, main="Beta for SMB", col=c(2:6), cex.names=0.8)
+barplot(beta3, main="Beta for HML", col=c(2:6), cex.names=0.8)
+barplot(rsq, main="R Squared Values", col=c(2:6), cex.names=0.8)
+par(mfrow=c(1,1))
 @
 
 
