@@ -36,7 +36,7 @@
 \begin{document}
 
 \title{CAPM Fitting and Testing}
-\author{UW GARP}
+\author{Thomas Fillebeen}
 
 \maketitle
 
@@ -58,10 +58,8 @@ The Consumption-Oriented CAPM is analogous to the simple form of the CAPM. Excep
 
 \section{Fitting CAPM}
 \subsection{Extracting and Organizing Data}
-
 <<ex1>>=
-# 'This is code:
-# 'Load Libraries
+# Load Libraries
 library(zoo)
 options(digits=3)
 # Read returns from .csv file
@@ -70,7 +68,7 @@ colnames(stock.df)
 @
 
 <<ex2>>=
-# Estimate a zooreg object: regularly spaced zoo object
+# Estimate a zooreg object: regularly spaced zoo object.
 stock.z = zooreg(stock.df[,-1], start=c(1993, 1),
                  
                  end=c(2013,11), frequency=12)
@@ -81,19 +79,18 @@ end(stock.z)
 nrow(stock.z)
 @
 \subsection{Estimate Excess Returns}
+Estimate excess returns: subtracting off risk-free rate.
+To strip off the dates and just return a plain vector/matrix coredata() can be used.
 <<ex3>>=
-# Estimate excess returns: subtracting off risk-free rate
-  # To strip off the dates and just return a plain vector/matrix coredata() can be used.
-  # as.data.frame to check if an object is a data frame, or coerce it if possible.
+# as.data.frame to check if an object is a data frame, or coerce it if possible.
 returns.mat = as.matrix(coredata(stock.z))
 exReturns.mat = returns.mat - returns.mat[,"RFREE"]
 exReturns.df = as.data.frame(exReturns.mat)
 @
 
 \subsection{Fitting CAPM Model}
+Run CAPM regression for AAPL (AAPL) using first 5 years (60 months divided by 12 months in a years = 5 years).
 <<ex4>>=
-# Run CAPM regression for AAPL (AAPL) using first 5 years
-# 60 months divided by 12 months in a years = 5 years
 capm.fit = lm(AAPL~MARKET,data=exReturns.df,subset=1:60)
 summary(capm.fit)
 
@@ -115,9 +112,9 @@ text(x=-.148, y=.27, paste("tstat=", round(tstat,dig=2)))
 
 \section{Testing CAPM}
 \subsection{Created CAPM Function}
+Use a capm.tstats function:
+Estimating CAPM with alpha=0 for asset using first 5 years of data
 <<ex5>>=
-# Use a capm.tstats function:
-  # Estimating CAPM with alpha=0 for asset using first 5 years of data
 capm.tstats = function(r,mkrt) {
   # Fiting CAPM
   capm.fit = lm(r~mkrt)  	
@@ -129,9 +126,9 @@ capm.tstats = function(r,mkrt) {
 }
 @
 \subsection{Estimate Significance and Test Beta Results}
+Retrieve tstats from function for assets.
+Filter out rf and market before running.
 <<ex6>>=
-# # Retrieve tstats from function for assets
-  # Filter out rf and market before running
 colnames(exReturns.mat[,-c(1,6,7)])
 tstats = apply(exReturns.mat[1:60,-c(1,6,7)],2, capm.tstats,
                
@@ -144,9 +141,9 @@ any(abs(tstats) > 2)
 @
 
 \subsection{Estimate Expected Returns and Plot}
+Plot expected return versus beta.
+Estimate expected returns over first 5 years.
 <<ex7>>=
-# Plot expected return versus beta
-# Estimate expected returns over first 5 years
 mu.hat = colMeans(exReturns.mat[1:60,-c(1,6,7)])
 mu.hat
 
@@ -181,9 +178,8 @@ legend(0.6, -0.0315, "Estimated SML",1)
 
 \section{Consumption-Oriented CAPM}
 \subsection{Fitting C-CAPM}
+Run C-CAPM regression for CONS (Consumption) using first 5 years (60 months divided by 12 months in a years = 5 years).
 <<ex8>>=
-# Run C-CAPM regression for CONS (Consumption) using first 5 years
-# 60 months divided by 12 months in a years = 5 years
 capm.fit = lm(CONS~MARKET,data=exReturns.df,subset=190:250)
 summary(capm.fit)
 
@@ -201,10 +197,6 @@ cbeta = coef(summary(capm.fit))[2,1]
 text(x=-.165, y=1.2, paste("Beta=", round(cbeta,dig=2)))
 tstat = coef(summary(capm.fit))[1,3]
 text(x=-.165, y=1.0, paste("tstat=", round(tstat,dig=2)))
-# NOTE: Specific problems with CCAPM is that it suffers from two puzzles: the 
-# equity premium puzzle (EPP) and the risk-free rate puzzle (RFRP). EPP implies 
-# that investors are extremely risk averse to explain the existence of a market 
-# risk premium. While RFRP stipulates that investors save in TBills despite the 
-# low rate of return.
 @
+NOTE: Specific problems with CCAPM is that it suffers from two puzzles: the equity premium puzzle (EPP) and the risk-free rate puzzle (RFRP). EPP implies that investors are extremely risk averse to explain the existence of a market risk premium. While RFRP stipulates that investors save in TBills despite the low rate of return.
 \end{document}
