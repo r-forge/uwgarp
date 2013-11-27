@@ -59,10 +59,10 @@ summary(SPY.ret)
 # Sample quantiles of SPY returns
 quantile(SPY.ret, probs=c(0, 0.25, 0.5, 0.75, 1))
 
-# Sample correlation of SPY returns
+# Sample correlation of returns
 cor(returns)
 
-# Sample covariance of SPY returns
+# Sample covariance of returns
 cov(returns)
 
 # Distributions
@@ -105,6 +105,9 @@ t_stat <- (mean(SPY.ret) - 0) / (sd(SPY.ret) / sqrt(nrow(SPY.ret)))
 p_value <- 2 * pt(q=-abs(t_stat), df=462)
 df <- nrow(SPY.ret) - 1
 ci <- mean(SPY.ret) + c(-1, 1) * 1.96 * sd(SPY.ret) / sqrt(nrow(SPY.ret))
+paste("t = ", round(t_stat, 4), ", df = ", df, ", p-value = ", round(p_value, 4), sep="")
+print("95% Confidence Interval")
+print(ci)
 
 ##### Regression #####
 # Signle Regressor
@@ -168,21 +171,25 @@ ff_factors <- fama_french_factors[, 1:3]
 
 # Align the dates of the Fama-French Factors and the returns
 returns <- returns['/2013-10-25']
+# Omit the first column of returns because it is the SPY weekly returns, which is
+# a proxy for the market.
 returns <- returns[, -1]
 AAPL.ret <- returns[, "AAPL"]
 
+# AAPL excess returns
 AAPL.e <- AAPL.ret - fama_french_factors[, "RF"] / 100
 
+# Fit the model
 ff.fit <- lm(AAPL.e ~ ff_factors)
 print(ff.fit)
 summary(ff.fit)
 
 # Fit the Fama-French 3 Factor Model to all the assets in the returns object
-# Excess returns
+# Calculate the excess returns of all assets in the returns object
 ret.e <- returns - (fama_french_factors[, "RF"] / 100) %*% rep(1, ncol(returns))
 ff.fit <- lm(ret.e ~ ff_factors)
 print(ff.fit)
-summary(ff.fit)
+print(summary(ff.fit))
 
 
 beta0 <- coef(ff.fit)[1,]
