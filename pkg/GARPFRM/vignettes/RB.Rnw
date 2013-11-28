@@ -41,32 +41,61 @@
 \maketitle
 
 \begin{abstract}
-The goal of this vignette is to demonstrate key concepts in Financial Risk Manager (FRM (R)) Part 1: Quantitative Analysis using R and the GARPFRM package. This vignette will cover exploratory data analysis, basic probability and statistics, and linear regression.
+The goal of this vignette is to demonstrate key concepts in Financial Risk Manager (FRM \textsuperscript{\textregistered}) Part 1: Quantitative Analysis using R and the GARPFRM package. This vignette will cover exploratory data analysis, basic probability and statistics, and linear regression.
 \end{abstract}
 
 \tableofcontents
 
 \section{Exploratory Data Analysis}
 
-Load the GARPFRM package and the \verb"returns" dataset. The \verb"returns" dataset includes weekly returns for SPY, AAPL, XOM, GOOG, MSFT, and GE from 2005-01-14 to 2013-11-22.
+Load the GARPFRM package and the \verb"returns" dataset. The lattice package is also loaded for plotting functions. The \verb"returns" dataset includes weekly returns for SPY, AAPL, XOM, GOOG, MSFT, and GE from 2005-01-14 to 2013-11-22.
 <<>>=
 suppressMessages(library(GARPFRM))
+suppressMessages(library(lattice))
+suppressMessages(library(pcaPP))
 data(returns)
+
+# Get the names of the stocks and view the first 5 rows of returns
+colnames(returns)
+head(returns, 5)
+@
+
+Plot of the weekly returns of each asset.
+<<>>=
+xyplot(returns, scale=list(y="same"), main="Weekly Returns")
+@
+
+Another way to compare returns of several assets is with a boxplot.
+<<>>=
+boxplot(coredata(returns), pch=20, main="Weekly Returns")
 @
 
 The exploratory data analysis, basic probability and statistics will use the SPY weekly returns.
 <<>>=
+# Extract the column labeled "SPY" to get the SPY returns
 SPY.ret <- returns[, "SPY"]
 @
+
 
 Plot of the SPY weekly returns. 
 <<>>=
 plot(SPY.ret, main="SPY Weekly Returns")
 @
 
-The density of the SPY weekly returns is plotted to better understand its distribution. A normal density is overlayed on the plot with standard estimates of the sample mean and standard deviation. Another normal density is overlayed using robust estimates. It is clear from the chart that the robust estimates provide a better fit than the standard estimates of the sample mean and sample standard deviation, but it is not clear if the SPY returns are normally distributed.
+A histogram and kernel density estimate of the SPY weekly returns is plotted to better understand its distribution. 
+<<tidy=FALSE>>=
+hist(SPY.ret, probability=TRUE, main="Histogram of SPY Returns", 
+     ylim=c(0, 25), col="lightblue")
+lines(density(SPY.ret), lty=2)
+rug(SPY.ret)
+legend("topleft", legend="kernel density estimate", lty=2,
+       cex=0.8, bty="n")
+@
+
+
+A normal density is overlayed on the plot with standard estimates of the sample mean and standard deviation. Another normal density is overlayed using robust estimates. It is clear from the chart that the robust estimates provide a better fit than the standard estimates of the sample mean and sample standard deviation, but it is not clear if the SPY returns are normally distributed.
 <<>>=
-# Plot the density of SPY Weekly Returns
+# Plot the kernel density estimate of SPY Weekly Returns
 plot(density(SPY.ret), main="Density of SPY Weekly Returns")
 rug(SPY.ret)
 # sample estimates
@@ -75,14 +104,17 @@ curve(dnorm(x, mean=mean(SPY.ret), sd=sd(SPY.ret)),
 # robust estimates
 curve(dnorm(x, mean=median(SPY.ret), sd=mad(SPY.ret)), 
       add=TRUE, col="blue", lty=2, lwd=2)
-legend("topleft", legend=c("estimated density", "normal density", "robust normal density"), 
+legend("topleft", legend=c("ernel density estimate", "normal density estimate", 
+                           "robust normal density estimate"), 
        col=c("black", "red", "blue"), lty=c(1, 2, 2), bty="n", cex=0.8)
 @
 
-Quantile-Quantile plot of SPY weekly returns. It can be seen from the Normal Q-Q plot that the SPY returns have "fat tails".
-<<>>=
-qqnorm(SPY.ret)
-qqline(SPY.ret)
+Quantile-Quantile plot of SPY weekly returns with a 95\% confidence envelope. It can be seen from the Normal Q-Q plot that the tails of the SPY returns are well outside of the 95\% confidence envelope.
+<<tidy=FALSE>>=
+chart.QQPlot(SPY.ret, envelope=0.95, pch=18, main="SPY Weekly Returns QQ Plot",
+             xlab="Theoretical Normal Quantiles")
+legend("topleft", legend=c("Quartile-Pairs Line", "95% Confidence Envelope"), 
+       col=c("blue", "blue"), lty=c(1, 2), cex=0.8, bty="n")
 @
 
 We can test if the SPY weekly returns came from a normal distribution using the Shapiro-Wilk test of normality. The null hypothesis is that the data came from a normal distribution. The p-value is very small and we can reject the null hypothesis.
@@ -122,8 +154,8 @@ quantile(SPY.ret, probs=c(0, 0.25, 0.5, 0.75, 1))
 @
 
 Scatter plot of each pair of assets in the returns dataset.
-<<>>=
-pairs(coredata(returns), pch=18, 
+<<tidy=FALSE>>=
+pairs(coredata(returns), pch=20, 
       col=rgb(0,0,100,50,maxColorValue=255))
 
 @
@@ -132,9 +164,19 @@ Correlation and covariance matrices of assets in the returns dataset.
 <<>>=
 # Sample correlation of returns
 cor(returns)
+@
 
+<<echo=FALSE>>=
+suppressWarnings(plotcov(cor(returns), method1="Sample Correlation Estimate"))
+@
+
+<<>>=
 # Sample covariance of returns
 cov(returns)
+@
+
+<<echo=FALSE>>=
+suppressWarnings(plotcov(cov(returns), method1="Sample Covariance Estimate"))
 @
 
 
@@ -173,7 +215,7 @@ pnorm(q=2, mean=1, sd=2)
 pnorm(q=0.5)
 @
 
-Quantile function of a standard normal at probability 0.975.
+Quantile function of the standard normal distribution at probability 0.975.
 <<>>=
 qnorm(p=0.975)
 @
@@ -214,7 +256,8 @@ ret.data <- as.data.frame(cbind(AAPL.ret, SPY.ret))
 
 Scatterplot of AAPL and SPY returns.
 <<>>=
-plot(x=ret.data[, "SPY"], y=ret.data[, "AAPL"], 
+plot(coredata(SPY.ret), coredata(AAPL.ret), pch=19,
+     col=rgb(0,0,100,50,maxColorValue=255),
      xlab="SPY returns", ylab="AAPL returns")
 @
 
@@ -223,14 +266,14 @@ Fit the linear regression model. \verb"AAPL.ret" is the response variable and \v
 model.fit <- lm(AAPL ~ SPY, data=ret.data)
 @
 
-The \verb"print" and \verb"summary" methods for \verb"lm" objects are very useful and provide several of the statistics covered in the book.
+The \verb"print" and \verb"summary" methods for \verb"lm" objects are very useful and provide several of the statistics covered in the book. Note that \verb"summary(model.fit)" will print the summary statisitcs, but it is often useful to assign the summary object to a variable so that elements from the summary object can be extracted as shown below.
 <<>>=
 # The print method displays the call and the coefficients of the linear model
-print(model.fit)
+model.fit
 
 # The summary method displays additional information for the linear model
 model.summary <- summary(model.fit)
-print(model.summary)
+model.summary
 @
 
 Access elements of the \verb"lm" object
@@ -271,7 +314,8 @@ plot(resid(model.fit), type="h")
 
 Plot the fitted model with the confidence and prediction intervals.
 <<tidy=FALSE>>=
-plot(x=coredata(SPY.ret), y=coredata(AAPL.ret), 
+plot(coredata(SPY.ret), coredata(AAPL.ret),
+     col=rgb(0,0,100,50,maxColorValue=255), pch=20,
      xlab="SPY returns", ylab="AAPL returns", xlim=c(-0.2, 0.2))
 abline(model.fit, col="black")
 lines(x=model.ci[, "fit"], y=model.ci[, "upr"], col="blue", lty=1)
@@ -292,9 +336,13 @@ data(fama_french_factors)
 
 # The first 3 columns are the factors, the 4th column is the risk free rate.
 ff_factors <- fama_french_factors[, 1:3]
+head(ff_factors, 5)
 @
 
-Prepare the data for the model.
+Mkt-RF is the market excess return.
+SMB is \textbf{S}mall \textbf{M}inus \textbf{B}ig in terms of market capitalization.
+HML is \textbf{H}igh \textbf{M}inus \textbf{L}ow in terms of book-to-market.
+
 <<>>=
 # Align the dates of the Fama-French Factors and the returns
 returns <- returns['/2013-10-25']
@@ -304,11 +352,11 @@ AAPL.ret <- returns[, "AAPL"]
 AAPL.e <- AAPL.ret - fama_french_factors[, "RF"] / 100
 @
 
-Fit the model.
 <<>>=
+# Fit the model
 ff.fit <- lm(AAPL.e ~ ff_factors)
-print(ff.fit)
-print(summary(ff.fit))
+ff.fit
+summary(ff.fit)
 @
 
 If we wanted to fit the model to more assets, we could manually fit the model with different assets as the response variable. However, we can automatically fit several models very easily with R.
@@ -332,12 +380,10 @@ Here we fit the Fama French 3 Factor model to each asset in \verb"ret.e". This f
 <<>>=
 ff.fit <- lm(ret.e ~ ff_factors)
 # Display the coefficients of each model
-print(ff.fit)
-# Display the summary object for each model
-print(summary(ff.fit))
+ff.fit
 @
 
-Extract and plot the beta values and the R squared values for each asset.
+Extract and plot the beta values and the R squared values for each asset from the Fama French 3 Factor model.
 <<>>=
 beta0 <- coef(ff.fit)[1,]
 beta1 <- coef(ff.fit)[2,]
@@ -352,6 +398,11 @@ barplot(beta2, main="Beta for SMB", col=c(2:6), cex.names=0.8)
 barplot(beta3, main="Beta for HML", col=c(2:6), cex.names=0.8)
 barplot(rsq, main="R Squared Values", col=c(2:6), cex.names=0.8)
 par(mfrow=c(1,1))
+@
+
+Display the summary object for each model
+<<>>=
+summary(ff.fit)
 @
 
 
