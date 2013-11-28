@@ -59,19 +59,18 @@ The Consumption-Oriented CAPM is analogous to the simple form of the CAPM. Excep
 \section{Fitting CAPM}
 \subsection{Extracting and Organizing Data}
 <<ex1>>=
-# Load Libraries
-library(zoo)
+# 'Load the GARPFRM package and the CAPM dataset.
+suppressMessages(library(GARPFRM))
 options(digits=3)
-# Read returns from .csv file
-stock.df <- read.csv("~/Documents/R_ FRM EXAM/Stocks_data.csv")
+data(capm_data)
+stock.df <- capm_data
 colnames(stock.df)
 @
 
 <<ex2>>=
 # Estimate a zooreg object: regularly spaced zoo object.
 stock.z = zooreg(stock.df[,-1], start=c(1993, 1),
-                 
-                 end=c(2013,11), frequency=12)
+     end=c(2013,11), frequency=12)
 index(stock.z) = as.yearmon(index(stock.z))
 # Summarize Start, End, and Number of Rows
 start(stock.z)
@@ -96,7 +95,7 @@ summary(capm.fit)
 
 # Plot data with regression line
 plot(exReturns.df$MARKET,exReturns.df$AAPL, main="CAPM for AAPL",
-     
+    
      ylab="Excess Return: AAPL",
      xlab="Excess Return: MARKET")
 # Plot CAPM regression estimate
@@ -105,9 +104,11 @@ abline(capm.fit)
 abline(h=0,v=0,lty=3)
 # Placing beta & tstat values on the plot for APPL
 beta = coef(summary(capm.fit))[2,1]
-text(x=-.15, y=.3, paste("Beta=", round(beta,dig=2)))
 tstat = coef(summary(capm.fit))[1,3]
-text(x=-.148, y=.27, paste("tstat=", round(tstat,dig=2)))
+legend("topleft", legend=c(paste("Beta",round(beta,dig=2)),
+       
+      paste("tstat", round(tstat,dig=2))),
+       col=c(NULL, NULL), lty=c(1, 1), cex=1, bty="n")
 @
 
 \section{Testing CAPM}
@@ -131,8 +132,7 @@ Filter out rf and market before running.
 <<ex6>>=
 colnames(exReturns.mat[,-c(1,6,7)])
 tstats = apply(exReturns.mat[1:60,-c(1,6,7)],2, capm.tstats,
-               
-               exReturns.mat[1:60,"MARKET"])
+      exReturns.mat[1:60,"MARKET"])
 tstats
 
 # Test Hypothesis for 5% CI: H0: alpha=0
@@ -157,9 +157,9 @@ capm.betas = function(r,market) {
 }
 
 betas = apply(exReturns.mat[1:60,-c(1,6,7)],2,
-              
-              FUN=capm.betas,
-              market=exReturns.mat[1:60,"MARKET"])
+      
+       FUN=capm.betas,
+       market=exReturns.mat[1:60,"MARKET"])
 betas
 
 # Plot expected returns versus betas
@@ -173,7 +173,7 @@ mean(exReturns.mat[1:60,"MARKET"])
 # Plot Fitted SML
 plot(betas,mu.hat,main="Estimated SML")
 abline(sml.fit)
-legend(0.6, -0.0315, "Estimated SML",1)
+legend("topright",1, "Estimated SML",1)
 @
 
 \section{Consumption-Oriented CAPM}
@@ -185,18 +185,19 @@ summary(capm.fit)
 
 # Plot data with regression line
 plot(exReturns.df$MARKET,exReturns.df$CONS, main="CAPM for CONS",
-     
+    
      ylab="Excess Return: CONS",
-     xlab="Excess Return: MARKET")
+    xlab="Excess Return: MARKET")
 # Plot C-CAPM regression estimate
 abline(capm.fit)    
 # Create Axis 
 abline(h=0,v=0,lty=3)
 # Placing beta & tstat values on the plot for CONS
 cbeta = coef(summary(capm.fit))[2,1]
-text(x=-.165, y=1.2, paste("Beta=", round(cbeta,dig=2)))
 tstat = coef(summary(capm.fit))[1,3]
-text(x=-.165, y=1.0, paste("tstat=", round(tstat,dig=2)))
+legend("topleft", legend=c(paste("Beta",round(cbeta,dig=2)),
+                           paste("tstat", round(tstat,dig=2))),
+       col=c(NULL, NULL), lty=c(1, 1), cex=1, bty="n")
 @
 NOTE: Specific problems with CCAPM is that it suffers from two puzzles: the equity premium puzzle (EPP) and the risk-free rate puzzle (RFRP). EPP implies that investors are extremely risk averse to explain the existence of a market risk premium. While RFRP stipulates that investors save in TBills despite the low rate of return.
 \end{document}
