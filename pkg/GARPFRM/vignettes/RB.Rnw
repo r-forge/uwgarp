@@ -48,11 +48,12 @@ The goal of this vignette is to demonstrate key concepts in Financial Risk Manag
 
 \section{Exploratory Data Analysis}
 
-Load the GARPFRM package and the \verb"returns" dataset. The lattice package is also loaded for plotting functions. The \verb"returns" dataset includes weekly returns for SPY, AAPL, XOM, GOOG, MSFT, and GE from 2005-01-14 to 2013-11-22.
+Load the GARPFRM package and the \verb"returns" dataset. Other packages are also loaded for plotting functions. The \verb"returns" dataset includes weekly returns for SPY, AAPL, XOM, GOOG, MSFT, and GE from 2005-01-14 to 2013-11-22.
 <<>>=
 suppressMessages(library(GARPFRM))
 suppressMessages(library(lattice))
 suppressMessages(library(pcaPP))
+suppressMessages(library(hexbin))
 data(returns)
 
 # Get the names of the stocks and view the first 5 rows of returns
@@ -155,9 +156,7 @@ quantile(SPY.ret, probs=c(0, 0.25, 0.5, 0.75, 1))
 
 Scatter plot of each pair of assets in the returns dataset.
 <<tidy=FALSE>>=
-pairs(coredata(returns), pch=20, 
-      col=rgb(0,0,100,50,maxColorValue=255))
-
+hexplom(coredata(returns), cex.names=0.8)
 @
 
 Correlation and covariance matrices of assets in the returns dataset.
