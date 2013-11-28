@@ -180,7 +180,8 @@ legend("topright",1, "Estimated SML",1)
 \subsection{Fitting C-CAPM}
 Run C-CAPM regression for CONS (Consumption) using first 5 years (60 months divided by 12 months in a years = 5 years).
 <<ex8>>=
-capm.fit = lm(CONS~MARKET,data=exReturns.df,subset=190:250)
+end = nrow(stock.z)
+capm.fit = lm(CONS~MARKET,data=exReturns.df,(end-60):end)
 summary(capm.fit)
 
 # Plot data with regression line
