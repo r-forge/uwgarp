@@ -179,6 +179,53 @@ getSymbols
 .RData
 \family default
  files.
+ 
+\end_layout
+
+\begin_layout Standard
+The following code chuck shows the arguments of the function.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(quantmod)
+\end_layout
+
+\begin_layout Plain Layout
+
+args(getSymbols)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The key arguments are summarized as follows:
+\end_layout
+
+\begin_layout Description
+Symbols character vector of ticker systems to download (this is the only
+ required argument)
+\end_layout
+
+\begin_layout Description
+src data source: yahoo (default), google, MySQL, FRED, csv, RData, and oanda
 \end_layout
 
 \begin_layout Subsection
@@ -196,17 +243,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<fig.width=4, fig.height=3>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-library(quantmod)
-\end_layout
-
-\begin_layout Plain Layout
-
-args(getSymbols)
+<<results='hide',fig.width=4, fig.height=3>>=
 \end_layout
 
 \begin_layout Plain Layout
