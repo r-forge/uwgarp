@@ -3,7 +3,7 @@ library(quantmod)
 tickers <- c("SPY", "AAPL", "XOM", "GOOG", "MSFT", "GE")
 
 # Download daily data
-getSymbols(Symbols=tickers, from="2005-01-01", to=Sys.Date())
+getSymbols(Symbols=tickers, from="2005-01-01", to="2013-11-22")
 
 # Convert to weekly
 for(ticker in tickers) {
@@ -23,10 +23,13 @@ for(i in 1:length(tickers)){
   colnames(x.ret) <- tickers[i]
   if(i == 1){
     returns <- x.ret
+    prices <- x
   } else {
     returns <- cbind(returns, x.ret)
+    prices <- cbind(prices, x)
   }
 }
-
+colnames(prices) <- gsub(".Adjusted", "", colnames(prices))
+#save(prices, file="/Users/rossbennett/devel/R/UWGARP/uwgarp/pkg/GARPFRM/data/prices.rda")
 #save(returns, file="/Users/rossbennett/devel/R/UWGARP/uwgarp/pkg/GARPFRM/data/returns.rda")
 #save(AAPL, GE, GOOG, MSFT, SPY, XOM, file="/Users/rossbennett/devel/R/UWGARP/uwgarp/pkg/GARPFRM/data/equity_data.rda")
