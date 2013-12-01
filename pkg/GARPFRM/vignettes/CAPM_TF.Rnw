@@ -62,17 +62,19 @@ The Consumption-Oriented CAPM is analogous to the simple form of the CAPM. Excep
 # 'Load the GARPFRM package and the CAPM dataset.
 suppressMessages(library(GARPFRM))
 options(digits=3)
-data(capm_data)
-stock.df <- capm_data
+data(crsp.short)
+data(cons)
+stock.df <-cbind(largecap.ts,cons[,"CONS"])
+colnames(stock.df)= c(colnames(largecap.ts),"CONS")
 colnames(stock.df)
 @
 
 <<ex2>>=
-# Estimate a zooreg object: regularly spaced zoo object.
-stock.z = zooreg(stock.df[,-1], start=c(1993, 1), end=c(2013,11), 
-                 frequency=12)
+# Estimate a zooreg object: regularly spaced zoo object
+stock.z = zooreg(stock.df, start=c(1997, 1), 
+                 end=c(2001,12), frequency=12)
 index(stock.z) = as.yearmon(index(stock.z))
-# Summarize Start, End, and Number of Rows
+# Summarize start, end, and number of rows
 start(stock.z)
 end(stock.z)
 nrow(stock.z)
@@ -83,21 +85,22 @@ To strip off the dates and just return a plain vector/matrix coredata() can be u
 <<ex3>>=
 # as.data.frame to check if an object is a data frame, or coerce it if possible.
 returns.mat = as.matrix(coredata(stock.z))
-exReturns.mat = returns.mat - returns.mat[,"RFREE"]
+exReturns.mat = returns.mat - returns.mat[,"t90"]
 exReturns.df = as.data.frame(exReturns.mat)
 @
 
 \subsection{Fitting CAPM Model}
 Run CAPM regression for AAPL (AAPL) using first 5 years (60 months divided by 12 months in a years = 5 years).
 <<ex4>>=
-capm.fit = lm(AAPL~MARKET,data=exReturns.df,subset=1:60)
+capm.fit = lm(MSFT~market,data=exReturns.df,subset=1:60)
 summary(capm.fit)
 
 # Plot data with regression line
-plot(exReturns.df$MARKET,exReturns.df$AAPL, main="CAPM for AAPL",
-    
-     ylab="Excess Return: AAPL",
+plot(exReturns.df$market,exReturns.df$MSFT, main="CAPM for MSFT",
+     
+     ylab="Excess Return: MSFT",
      xlab="Excess Return: MARKET")
+
 # Plot CAPM regression estimate
 abline(capm.fit)    
 # Create Axis 
@@ -121,9 +124,9 @@ Estimating CAPM with alpha=0 for asset using first 5 years of data
 <<ex5>>=
 capm.tstats = function(r,mkrt) {
   # Fiting CAPM
-  capm.fit = lm(r~mkrt)  	
+  capm.fit = lm(r~mkrt)    
   # Extract summary info
-  capm.summary = summary(capm.fit)		
+  capm.summary = summary(capm.fit)    
   # Retrieve t-stat
   t.stat = coef(capm.summary)[1,3]	
   t.stat
@@ -133,9 +136,10 @@ capm.tstats = function(r,mkrt) {
 Retrieve tstats from function for assets.
 Filter out rf and market before running.
 <<ex6>>=
-colnames(exReturns.mat[,-c(1,6,7)])
-tstats = apply(exReturns.mat[1:60,-c(1,6,7)],2, capm.tstats, 
-               exReturns.mat[1:60,"MARKET"])
+colnames(exReturns.mat[,-c(21,22,23)])
+tstats = apply(exReturns.mat[1:60,-c(21,22,23)],2, 
+               
+               capm.tstats,exReturns.mat[1:60,"market"])
 tstats
 
 # Test Hypothesis for 5% CI: H0: alpha=0
@@ -147,22 +151,21 @@ any(abs(tstats) > 2)
 Plot expected return versus beta.
 Estimate expected returns over first 5 years.
 <<ex7>>=
-mu.hat = colMeans(exReturns.mat[1:60,-c(1,6,7)])
+mu.hat = colMeans(exReturns.mat[1:60,-c(21,22,23)])
 mu.hat
 
 # Compute beta over first 5 years
 capm.betas = function(r,market) {
-  capm.fit = lm(r~market)  				
+  capm.fit = lm(r~market)      		
   # Fit capm regression
   capm.beta = coef(capm.fit)[2]				
   # Extract coefficients
   capm.beta
 }
-
-betas = apply(exReturns.mat[1:60,-c(1,6,7)],2,
-      
-       FUN=capm.betas,
-       market=exReturns.mat[1:60,"MARKET"])
+betas = apply(exReturns.mat[1:60,-c(21,22,23)],2,
+              
+              FUN=capm.betas,
+              market=exReturns.mat[1:60,"market"])
 betas
 
 # Plot expected returns versus betas
@@ -172,26 +175,27 @@ sml.fit = lm(mu.hat~betas)
 sml.fit
 summary(sml.fit)
 # Ideally intercept is zero and equals the excess market return
-mean(exReturns.mat[1:60,"MARKET"])
+mean(exReturns.mat[1:60,"market"])
+
 # Plot Fitted SML
 plot(betas,mu.hat,main="Estimated SML")
 abline(sml.fit)
-legend("topright",1, "Estimated SML",1)
+legend("topleft",1, "Estimated SML",1)
 @
 
 \section{Consumption-Oriented CAPM}
 \subsection{Fitting C-CAPM}
 Run C-CAPM regression for CONS (Consumption) using first 5 years (60 months divided by 12 months in a years = 5 years).
 <<ex8>>=
-end = nrow(stock.z)
-capm.fit = lm(CONS~MARKET,data=exReturns.df,(end-60):end)
+end = nrow(stock.df)
+capm.fit = lm(CONS~market,data=exReturns.df,subset=(end-60):end)
 summary(capm.fit)
 
 # Plot data with regression line
-plot(exReturns.df$MARKET,exReturns.df$CONS, main="CAPM for CONS",
-    
+plot(exReturns.df$market,exReturns.df$CONS, main="CAPM for CONS",
+     
      ylab="Excess Return: CONS",
-    xlab="Excess Return: MARKET")
+     xlab="Excess Return: market")
 # Plot C-CAPM regression estimate
 abline(capm.fit)    
 # Create Axis 
@@ -203,7 +207,7 @@ alpha = coef(summary(capm.fit))[1,1]
 a_stat = coef(summary(capm.fit))[1,3]
 legend("topleft", legend=
 c(paste("alpha =",round(alpha,dig=2),"(",round(a_tstat, dig=2),")"), 
-paste("beta =",round(beta,dig=2),"(",round(b_tstat,dig=2),")")), cex=1, bty="n")
+paste("beta =",round(beta,dig=2),"(",round(b_tstat,dig=2),")")), cex=.8, bty="n")
 @
 NOTE: Specific problems with CCAPM is that it suffers from two puzzles: the equity premium puzzle (EPP) and the risk-free rate puzzle (RFRP). EPP implies that investors are extremely risk averse to explain the existence of a market risk premium. While RFRP stipulates that investors save in TBills despite the low rate of return.
 \end{document}
