@@ -48,18 +48,26 @@ The goal of this vignette is to demonstrate key concepts in Financial Risk Manag
 
 \section{Exploratory Data Analysis}
 
-Load the GARPFRM package and the \verb"returns" dataset. Other packages are also loaded for plotting functions. The \verb"returns" dataset includes weekly returns for SPY, AAPL, XOM, GOOG, MSFT, and GE from 2005-01-14 to 2013-11-22.
+Load the GARPFRM package and the \verb"returns" dataset. Other packages are also loaded for plotting functions. The \verb"returns" dataset and \verb"prices" dataset includes weekly returns and weekly prices for SPY, AAPL, XOM, GOOG, MSFT, and GE from 2005-01-07 to 2013-11-22.
 <<>>=
 suppressMessages(library(GARPFRM))
 suppressMessages(library(lattice))
 suppressMessages(library(pcaPP))
 suppressMessages(library(hexbin))
 data(returns)
+data(prices)
 
-# Get the names of the stocks and view the first 5 rows of returns
+# Get the names of the stocks and view the first 5 rows of returns and prices
 colnames(returns)
 head(returns, 5)
+head(prices, 5)
 @
+
+Plot the prices of each asset.
+<<>>=
+plot(zoo(prices), main="Weekly Prices")
+@
+
 
 Plot of the weekly returns of each asset.
 <<>>=
@@ -94,7 +102,7 @@ legend("topleft", legend="kernel density estimate", lty=2,
 @
 
 
-A normal density is overlayed on the plot with standard estimates of the sample mean and standard deviation. Another normal density is overlayed using robust estimates. It is clear from the chart that the robust estimates provide a better fit than the standard estimates of the sample mean and sample standard deviation, but it is not clear if the SPY returns are normally distributed.
+A normal density is overlayed on the plot of the kernel density estimate with standard estimates of the sample mean and standard deviation. Another normal density is overlayed using robust estimates. It is clear from the chart that the robust estimates provide a better fit than the standard estimates of the sample mean and sample standard deviation, but it is not clear if the SPY returns are normally distributed.
 <<>>=
 # Plot the kernel density estimate of SPY Weekly Returns
 plot(density(SPY.ret), main="Density of SPY Weekly Returns")
@@ -105,7 +113,7 @@ curve(dnorm(x, mean=mean(SPY.ret), sd=sd(SPY.ret)),
 # robust estimates
 curve(dnorm(x, mean=median(SPY.ret), sd=mad(SPY.ret)), 
       add=TRUE, col="blue", lty=2, lwd=2)
-legend("topleft", legend=c("ernel density estimate", "normal density estimate", 
+legend("topleft", legend=c("kernel density estimate", "normal density estimate", 
                            "robust normal density estimate"), 
        col=c("black", "red", "blue"), lty=c(1, 2, 2), bty="n", cex=0.8)
 @
@@ -156,7 +164,8 @@ quantile(SPY.ret, probs=c(0, 0.25, 0.5, 0.75, 1))
 
 Scatter plot of each pair of assets in the returns dataset.
 <<tidy=FALSE>>=
-hexplom(coredata(returns), cex.names=0.8)
+pairs(coredata(returns), pch=20, col=rgb(0,0,100,50,maxColorValue=255))
+hexplom(coredata(returns), varname.cex=0.75)
 @
 
 Correlation and covariance matrices of assets in the returns dataset.
@@ -257,7 +266,8 @@ Scatterplot of AAPL and SPY returns.
 <<>>=
 plot(coredata(SPY.ret), coredata(AAPL.ret), pch=19,
      col=rgb(0,0,100,50,maxColorValue=255),
-     xlab="SPY returns", ylab="AAPL returns")
+     xlab="SPY returns", ylab="AAPL returns",
+     main="AAPL vs. SPY Returns")
 @
 
 Fit the linear regression model. \verb"AAPL.ret" is the response variable and \verb"SPY.ret" is the explanatory variable.
@@ -290,7 +300,15 @@ coef(model.fit)
 Access elements of the \verb"lm.summary" object
 <<>>=
 # Coefficients
-coef(model.summary)
+model.coef <- coef(model.summary)
+model.coef
+
+# Get the alpha and beta and the standard errors
+alpha <- round(model.coef[1, 1], 6)
+alpha.se <- round(model.coef[1, 2], 6)
+beta <- round(model.coef[2, 1], 6)
+beta.se <- round(model.coef[2, 2], 6)
+
 # Sigma
 model.summary$sigma
 # R squared
@@ -299,6 +317,12 @@ model.summary$r.squared
 model.summary$adj.r.squared
 @
 
+Plot the residuals of the model.
+<<>>=
+plot(resid(model.fit), type="h")
+@
+
+
 Use the \verb"predict" method to calculate the confidence and prediction intervals of the fitted model.
 <<>>=
 new <- data.frame(SPY=seq(from=-0.2, to=0.2, length.out=nrow(ret.data)))
@@ -306,25 +330,34 @@ model.ci <- predict(object=model.fit, newdata=new, interval="confidence")
 model.pi <- predict(object=model.fit, newdata=new, interval="prediction")
 @
 
-Plot the residuals of the model.
-<<>>=
-plot(resid(model.fit), type="h")
-@
-
-Plot the fitted model with the confidence and prediction intervals.
+Plot the fitted model with the confidence interval.
 <<tidy=FALSE>>=
 plot(coredata(SPY.ret), coredata(AAPL.ret),
      col=rgb(0,0,100,50,maxColorValue=255), pch=20,
-     xlab="SPY returns", ylab="AAPL returns", xlim=c(-0.2, 0.2))
+     xlab="SPY returns", ylab="AAPL returns", xlim=c(-0.2, 0.2),
+     main="lm(AAPL ~ SPY)")
 abline(model.fit, col="black")
 lines(x=model.ci[, "fit"], y=model.ci[, "upr"], col="blue", lty=1)
 lines(x=model.ci[, "fit"], y=model.ci[, "lwr"], col="blue", lty=1)
+legend("topleft", legend=c(paste("alpha = ", alpha, " (", alpha.se, ")", sep=""),
+                           paste("beta = ", beta, " (", beta.se, ")", sep=""),
+                           "Fitted Values", "95% Confidence Interval"), 
+       col=c("black", "blue"), lty=c(0, 0, 1, 1), cex=0.8, bty="n")
+@
+
+Plot the fitted model with the and prediction interval.
+<<tidy=FALSE>>=
+plot(coredata(SPY.ret), coredata(AAPL.ret),
+     col=rgb(0,0,100,50,maxColorValue=255), pch=20,
+     xlab="SPY returns", ylab="AAPL returns", xlim=c(-0.2, 0.2),
+     main="lm(AAPL ~ SPY)")
+abline(model.fit, col="black")
 lines(x=model.pi[, "fit"], y=model.pi[, "upr"], col="red", lty=2)
 lines(x=model.pi[, "fit"], y=model.pi[, "lwr"], col="red", lty=2)
-legend("topleft", legend=c("Fitted Values",
-                           "95% Confidence Interval", 
-                           "95% Prediction Interval"), 
-       col=c("black", "blue", "red"), lty=c(1, 1, 2), cex=0.8, bty="n")
+legend("topleft", legend=c(paste("alpha = ", alpha, " (", alpha.se, ")", sep=""),
+                           paste("beta = ", beta, " (", beta.se, ")", sep=""),
+                           "Fitted Values", "95% Prediction Interval"), 
+       col=c("black", "red"), lty=c(0, 0, 1, 2), cex=0.8, bty="n")
 @
 
 \subsection{Regression with multiple regressors}
@@ -392,10 +425,10 @@ rsq <- sapply(X=summary(ff.fit), FUN=function(x) x$r.squared)
 names(rsq) <- colnames(ret.e)
 
 par(mfrow=c(2,2))
-barplot(beta1, main="Beta for Market-RF", col=c(2:6), cex.names=0.8)
-barplot(beta2, main="Beta for SMB", col=c(2:6), cex.names=0.8)
-barplot(beta3, main="Beta for HML", col=c(2:6), cex.names=0.8)
-barplot(rsq, main="R Squared Values", col=c(2:6), cex.names=0.8)
+barplot(beta1, main="Beta for Market-RF", col=bluemono, cex.names=0.8)
+barplot(beta2, main="Beta for SMB", col=bluemono, cex.names=0.8)
+barplot(beta3, main="Beta for HML", col=bluemono, cex.names=0.8)
+barplot(rsq, main="R Squared Values", col=bluemono, cex.names=0.8)
 par(mfrow=c(1,1))
 @
 
