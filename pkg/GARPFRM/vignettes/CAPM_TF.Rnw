@@ -57,7 +57,7 @@ The Consumption-Oriented CAPM is analogous to the simple form of the CAPM. Excep
 \tableofcontents
 
 \section{Fitting CAPM}
-\subsection{Extracting and Organizing Data}
+\subsection{Selected Returns Time Series}
 <<ex1>>=
 # 'Load the GARPFRM package and the CAPM dataset.
 suppressMessages(library(GARPFRM))
@@ -69,22 +69,20 @@ colnames(stock.df)= c(colnames(largecap.ts),"CONS")
 colnames(stock.df)
 @
 
+
+Summarize the first and last  data values corresponding to the first 5 dates for the first 5 returns.
 <<ex2>>=
-# Estimate a zooreg object: regularly spaced zoo object
-stock.z = zooreg(stock.df, start=c(1997, 1), 
-                 end=c(2001,12), frequency=12)
-index(stock.z) = as.yearmon(index(stock.z))
-# Summarize start, end, and number of rows
-start(stock.z)
-end(stock.z)
-nrow(stock.z)
+head(stock.df[,1:5])
+tail(stock.df[,1:5])
+# Count the number of rows
+nrow(stock.df)
 @
 \subsection{Estimate Excess Returns}
 Estimate excess returns: subtracting off risk-free rate.
 To strip off the dates and just return a plain vector/matrix coredata() can be used.
 <<ex3>>=
 # as.data.frame to check if an object is a data frame, or coerce it if possible.
-returns.mat = as.matrix(coredata(stock.z))
+returns.mat = coredata(stock.df)
 exReturns.mat = returns.mat - returns.mat[,"t90"]
 exReturns.df = as.data.frame(exReturns.mat)
 @
