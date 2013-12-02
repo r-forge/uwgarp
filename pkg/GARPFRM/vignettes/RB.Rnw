@@ -280,7 +280,7 @@ ret.data <- as.data.frame(cbind(CAT.ret, MKT.ret))
 @
 
 Scatterplot of CAT and market excess returns.
-<<>>=
+<<tidy=FALSE>>=
 plot(coredata(MKT.ret), coredata(CAT.ret), pch=19,
      col=rgb(0,0,100,50,maxColorValue=255),
      xlab="Market returns", ylab="CAT returns",
@@ -296,14 +296,7 @@ The \verb"print" and \verb"summary" methods for \verb"lm" objects are very usefu
 <<>>=
 # The print method displays the call and the coefficients of the linear model
 model.fit
-@
 
-The results of the fitted model show that the equation for the linear model can be written as
-\begin{equation}
-\hat{CAT.ret_i} = 0.004892 + 0.602402 * MKT.ret_i
-\end{equation}
-
-<<>>=
 # The summary method displays additional information for the linear model
 model.summary <- summary(model.fit)
 model.summary
@@ -344,7 +337,7 @@ model.summary$adj.r.squared
 
 Accessing elements of the models can be ued to compute measures of fit. Some measures of fit, such as the $R^2$, adjusted $R^2$, and standard error of regression are computed by the \verb"summary" function and just need to be extracted.
 
-\subsection{Measures of Fit}
+\subsubsection{Measures of Fit}
 Explained sum of squares (ESS)
 \begin{equation}
 ESS = \sum_{i=1}^n (\hat{Y}_i - \bar{Y})^2
@@ -369,13 +362,13 @@ SSR = \sum_{i=1}^n (\hat{u}_i)^2
 SSR <- sum(resid(model.fit)^2)
 @
 
-$R^2$
-The $R^2$ can be extracted from the \verb"model.summary" object.
+The regression $R^2$ is the fraction of the sample variance of $Y_i$ explained by $X_i$. The $R^2$ can be extracted from the \verb"model.summary" object.
 <<>>=
 r_squared <- model.summary$r.squared
+r_squared
 @
 
-$R^2$ can also be computed using the ESS, TSS, and SSR.
+The $R^2$ can also be computed using the ESS, TSS, and SSR.
 <<>>=
 ESS / TSS
 1 - SSR / TSS
