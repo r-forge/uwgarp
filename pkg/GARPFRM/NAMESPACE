@@ -1,1 +1,7 @@
-export(capm.tstats)
+export(CAPM)
+export(getAlphas)
+export(getBetas)
+export(getStatistics)
+S3method(getAlphas,capm_uv)
+S3method(getBetas,capm_uv)
+S3method(getStatistics,capm_uv)
