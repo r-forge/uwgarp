@@ -13,6 +13,18 @@ tmp <- CAPM(R=R, Rmkt=MKT)
 
 class(tmp)
 
+plot(tmp)
+
+
+tmp$raw_data
+
+coef(tmp)
+summary(tmp)
+
+
+
+plot(tmp)
+
 # Internally, R is calling print.lm and summary.lm because tmp is of class lm
 # You can define your own print.capm_uv and summary.capm_uv for control over
 # what values are calculated and the output that is displayed.
