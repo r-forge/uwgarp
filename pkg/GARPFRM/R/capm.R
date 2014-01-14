@@ -23,7 +23,7 @@
 #' Capital Asset Pricing Model
 #' 
 #' Description of CAPM
-#' bla bla bla
+#' Retrieves alphas, betas, as well as pvalue and tstats
 #' 
 #' @param R asset returns
 #' @param Rmkt market returns
@@ -39,20 +39,16 @@
 #'
 #' # Fit the CAPM model
 #' tmp <- CAPM(R=R, Rmkt=MKT)
-CAPM <- function(R, Rmkt){
-  # We should have a capm_uv class for a univariate capm (i.e. R is the returns
-  # of a single asset) and capm_mv for a multivariate capm (i.e. R is the returns
-  # for multiple assets)
-  
+CAPM <- function(R, Rmkt){  
   capm_fit <- lm(R ~ Rmkt)
   capm_fit$x_data <- Rmkt
   capm_fit$y_data <- R
   
   if(ncol(R) > 1){
-    #  multivariate capm
+    #  Multi-Beta CAPM
     class(capm_fit) <- c("capm_mv", "lm")
   } else if(ncol(R) == 1){
-    #  univariate capm
+    #  Univariate CAPM
     class(capm_fit) <- c("capm_uv", "lm")
   }
   return(capm_fit)
@@ -78,7 +74,7 @@ getAlphas.capm_uv <- function(object){
 #' @method getAlphas capm_mv
 #' @S3method getAlphas capm_mv
 getAlphas.capm_mv <- function(object){
-  if(!inherits(object, "capm_mv")) stop("object must be of class capm_uv")
+  if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
 }
 
 #' CAPM betas
@@ -101,7 +97,7 @@ getBetas.capm_uv <- function(object){
 #' @method getBetas capm_mv
 #' @S3method getBetas capm_mv
 getBetas.capm_mv <- function(object){
-  if(!inherits(object, "capm_mv")) stop("object must be of class capm_uv")
+  if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
 }
 
 #' CAPM statistics
@@ -118,16 +114,27 @@ getStatistics <- function(object){
 getStatistics.capm_uv <- function(object){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
   tmp_sm <- summary.lm(object)
-  # gets the standard error, t-value, and p-value of model
-  return(coef(tmp_sm)[,2:4])
+  # gets t-value, and p-value of model
+  return(coef(tmp_sm)[,c(3,4)])
 }
 
 #' @method getStatistics capm_mv
 #' @S3method getStatistics capm_mv
-getStatistics.capm_uv <- function(object){
-  if(!inherits(object, "capm_mv")) stop("object must be of class capm_uv")
-  tmp_sm <- summary.lm(object)
-  # gets the standard error, t-value, and p-value of model
+getStatistics.capm_mv <- function(object){
+  if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
+  # Gets t-value, and p-value of model
+  # Multi-Beta CAPM
+  x <- coef(summary(object))
+  tmp_sm <- do.call(rbind, x)
+  holder = holder<-matrix(0,nrow=1,ncol=ncol(ncol(coef(tmp)))*2)
+  n = 1
+  for (i in 1:ncol(ncol(coef(tmp)))){
+    tmpHolder = cbind(c(paste("alpha.",colnames(ncol(coef(tmp)))[i])) ,c(paste("beta.",colnames(managers[,3:4])[i])))
+    holder[,n:(i*2)] = tmpHolder
+    n = n*2 +1
+  }
+  rownames(tmp_sm) <- c(holder)
+  return(tmp_sm)
 }
 
 #' @export
