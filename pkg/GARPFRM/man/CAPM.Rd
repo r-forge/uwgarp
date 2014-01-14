@@ -10,7 +10,8 @@
   \item{Rmkt}{market returns}
 }
 \description{
-  Description of CAPM bla bla bla
+  Description of CAPM Retrieves alphas, betas, as well as
+  pvalue and tstats
 }
 \examples{
 data(crsp.short)

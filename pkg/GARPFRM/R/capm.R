@@ -46,7 +46,7 @@ CAPM <- function(R, Rmkt){
   
   if(ncol(R) > 1){
     #  Multi-Beta CAPM
-    class(capm_fit) <- c("capm_mv", "lm")
+    class(capm_fit) <- c("capm_mv", "mlm", "lm")
   } else if(ncol(R) == 1){
     #  Univariate CAPM
     class(capm_fit) <- c("capm_uv", "lm")
