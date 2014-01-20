@@ -129,7 +129,7 @@ getStatistics.capm_mv <- function(object){
   holder = holder<-matrix(0,nrow=1,ncol=ncol(coef(object))*2)
   n = 1
   for (i in 1:ncol(coef(object))){
-    tmpHolder = cbind(c(paste("alpha.",colnames(coef(mv))[i])) ,c(paste("beta.",colnames(coef(mv))[i])))
+    tmpHolder = cbind(c(paste("alpha.",colnames(coef(object))[i])) ,c(paste("beta.",colnames(coef(object))[i])))
     holder[,n:(i*2)] = tmpHolder
     n = n*2 +1
   }
@@ -137,7 +137,7 @@ getStatistics.capm_mv <- function(object){
   return(tmp_sm)
 }
 
-#' @export
+#' @export for univariate plot
 plot.capm_uv <- function(object){
   xlab <- colnames(object$x_data)
   ylab <- colnames(object$y_data)
@@ -150,5 +150,10 @@ plot.capm_uv <- function(object){
   b_tstat = coef(summary(object))[2,3]
   legend("topleft", legend=c(paste("alpha =", round(alpha,dig=2),"(", round(a_tstat,dig=2),")"),
                              paste("beta =", round(beta,dig=2),"(", round(b_tstat,dig=2),")")), cex=.8, bty="n")
+  
+}
+
+#' @export for SML line
+plot.capm_mv <- function(object){
   
 }
