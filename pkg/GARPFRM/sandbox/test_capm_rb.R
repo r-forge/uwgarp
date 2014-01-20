@@ -1,4 +1,3 @@
-
 library(GARPFRM)
 data(crsp.short)
 

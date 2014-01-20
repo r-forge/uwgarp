@@ -126,7 +126,7 @@ getStatistics.capm_mv <- function(object){
   # Multi-Beta CAPM
   x <- coef(summary(object))
   tmp_sm <- do.call(rbind, x)
-  holder = holder<-matrix(0,nrow=1,ncol=ncol(ncol(coef(tmp)))*2)
+  holder = holder<-matrix(0,nrow=1,ncol=ncol(ncol(coef(object)))*2)
   n = 1
   for (i in 1:ncol(ncol(coef(tmp)))){
     tmpHolder = cbind(c(paste("alpha.",colnames(ncol(coef(tmp)))[i])) ,c(paste("beta.",colnames(managers[,3:4])[i])))
@@ -143,4 +143,12 @@ plot.capm_uv <- function(object){
   ylab <- colnames(object$y_data)
   plot(x=coredata(object$x_data), y=(object$y_data), xlab=xlab, ylab=ylab, main="CAPM Plot")
   abline(object)
+  abline(h=0,v=0,lty=3)
+  alpha = coef(summary(object))[1,1]
+  a_tstat = coef(summary(object))[1,3]
+  beta = coef(summary(object))[2,1]
+  b_tstat = coef(summary(object))[2,3]
+  legend("topleft", legend=c(paste("alpha =", round(alpha,dig=2),"(", round(a_tstat,dig=2),")"),
+                             paste("beta =", round(beta,dig=2),"(", round(b_tstat,dig=2),")")), cex=.8, bty="n")
+  
 }
