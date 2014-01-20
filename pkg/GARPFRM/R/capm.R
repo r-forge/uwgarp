@@ -126,10 +126,10 @@ getStatistics.capm_mv <- function(object){
   # Multi-Beta CAPM
   x <- coef(summary(object))
   tmp_sm <- do.call(rbind, x)
-  holder = holder<-matrix(0,nrow=1,ncol=ncol(ncol(coef(object)))*2)
+  holder = holder<-matrix(0,nrow=1,ncol=ncol(coef(object))*2)
   n = 1
   for (i in 1:ncol(coef(object))){
-    tmpHolder = cbind(c(paste("alpha.",colnames(ncol(coef(object)))[i])) ,c(paste("beta.",colnames(managers[,3:4])[i])))
+    tmpHolder = cbind(c(paste("alpha.",colnames(coef(mv))[i])) ,c(paste("beta.",colnames(coef(mv))[i])))
     holder[,n:(i*2)] = tmpHolder
     n = n*2 +1
   }
