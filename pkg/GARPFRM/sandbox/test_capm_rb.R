@@ -34,3 +34,17 @@ summary(tmp)
 getAlphas(tmp)
 getBetas(tmp)
 getStatistics(tmp)
+
+# multivariate CAPM
+R <- largecap.ts[, c("CAT", "DD")] - cbind(Rf, Rf)
+# Use the MKT object that was created earlier
+
+
+mv <- CAPM(R, MKT)
+mv
+coef(mv)
+mv.s <- summary(mv)
+mv.s
+
+coef(mv.s)
+

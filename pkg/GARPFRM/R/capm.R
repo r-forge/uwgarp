@@ -137,7 +137,8 @@ getStatistics.capm_mv <- function(object){
   return(tmp_sm)
 }
 
-#' @export for univariate plot
+# you can't have anything after the @export tag
+#' @export
 plot.capm_uv <- function(object){
   xlab <- colnames(object$x_data)
   ylab <- colnames(object$y_data)
@@ -153,7 +154,7 @@ plot.capm_uv <- function(object){
   
 }
 
-#' @export for SML line
+#' @export
 plot.capm_mv <- function(object){
   
 }
