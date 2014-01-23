@@ -75,6 +75,9 @@ getAlphas.capm_uv <- function(object){
 #' @S3method getAlphas capm_mv
 getAlphas.capm_mv <- function(object){
   if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
+  tmp_sm = getStatistics(object)
+  tmp_sm = tmp_sm[seq(1,nrow(tmp_sm),2),1]
+  return(tmp_sm)
 }
 
 #' CAPM betas
@@ -98,6 +101,9 @@ getBetas.capm_uv <- function(object){
 #' @S3method getBetas capm_mv
 getBetas.capm_mv <- function(object){
   if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
+  tmp_sm = getStatistics(object)
+  tmp_sm = tmp_sm[seq(2,nrow(tmp_sm),2),1]
+  return(tmp_sm)
 }
 
 #' CAPM statistics
@@ -127,11 +133,10 @@ getStatistics.capm_mv <- function(object){
   x <- coef(summary(object))
   tmp_sm <- do.call(rbind, x)
   holder = holder<-matrix(0,nrow=1,ncol=ncol(coef(object))*2)
-  n = 1
+  n=1
   for (i in 1:ncol(coef(object))){
-    tmpHolder = cbind(c(paste("alpha.",colnames(coef(object))[i])) ,c(paste("beta.",colnames(coef(object))[i])))
-    holder[,n:(i*2)] = tmpHolder
-    n = n*2 +1
+    holder[,n:(i*2)] = cbind(c(paste("alpha.",colnames(coef(object))[i])) ,c(paste("beta. ",colnames(coef(object))[i])))
+    n = i*2 +1
   }
   rownames(tmp_sm) <- c(holder)
   return(tmp_sm)
@@ -156,5 +161,13 @@ plot.capm_uv <- function(object){
 
 #' @export
 plot.capm_mv <- function(object){
+  #' Plot expected return versus beta
+  mu.hat = colMeans(object$y_data,na.rm=TRUE)
+  betas = getBetas(object)
+  sml.fit = lm(mu.hat~betas)
+  # Plot Fitted SML
+  plot(betas,mu.hat,main="Estimated SML")
+  abline(sml.fit)
+  legend("topleft",1, "Estimated SML",1)                  
   
 }
