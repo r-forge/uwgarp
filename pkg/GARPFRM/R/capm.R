@@ -121,7 +121,9 @@ getStatistics.capm_uv <- function(object){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
   tmp_sm <- summary.lm(object)
   # gets t-value, and p-value of model
-  return(coef(tmp_sm)[,c(3,4)])
+  result = coef(tmp_sm)[,c(2:4)]
+  rownames(result) = cbind(c(paste("alpha.", colnames(object$y_data))),c(paste("beta. ", colnames(object$y_data))))
+  return(result)
 }
 
 #' @method getStatistics capm_mv
@@ -169,5 +171,42 @@ plot.capm_mv <- function(object){
   plot(betas,mu.hat,main="Estimated SML")
   abline(sml.fit)
   legend("topleft",1, "Estimated SML",1)                  
-  
+}
+
+#' CAPM hypthTest
+#' 
+#' Description of CAPM beta/alpha test
+#' 
+#' @param object a capm object created by \code{\link{CAPM}}
+#' @export
+hypTest <- function(object,CI){
+  UseMethod("hypTest")
+}
+
+#' @method hypTest capm_uv
+#' @S3method hypTest capm_uv
+hypTest.capm_uv <- function(object,CI = 0.05){
+  if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
+  tmp_sm = getStatistics(object)
+  tmp_A = tmp_sm[1,3] < CI
+  tstat = (tmp_sm[2,2] - 1 )/tmp_sm[2,3]
+  #' Two sided t-test
+  tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
+  result = c(tmp_A, tmp_B)
+  result = as.matrix(result)
+  rownames(result) = cbind(c(paste("alpha.", colnames(object$y_data))),c(paste("beta. ", colnames(object$y_data))))
+  return(result)
+}
+
+#' @method hypTest capm_mv
+#' @S3method hypTest capm_mv
+hypTest.capm_mv <- function(object,CI = 0.05){
+  if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
+  tmp_sm = getStatistics(object)
+  tmp_A = tmp_sm[seq(1,nrow(tmp_sm),2),4] < CI
+  tstat = (tmp_sm[seq(2,nrow(tmp_sm),2),1] - 1 )/tmp_sm[seq(2,nrow(tmp_sm),2),2]
+  #' Two sided t-test
+  tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
+  result = c(tmp_A, tmp_B)  
+  return(result)
 }
