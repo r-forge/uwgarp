@@ -45,8 +45,8 @@ CAPM <- function(R, Rmkt){
   capm_fit$y_data <- R
   
   if(ncol(R) > 1){
-    #  Multi-Beta CAPM
-    class(capm_fit) <- c("capm_mv", "mlm", "lm")
+    #  Multiple Linear Model CAPM
+    class(capm_fit) <- c("capm_mlm", "mlm", "lm")
   } else if(ncol(R) == 1){
     #  Univariate CAPM
     class(capm_fit) <- c("capm_uv", "lm")
@@ -71,10 +71,10 @@ getAlphas.capm_uv <- function(object){
   return(coef(object)[1])
 }
 
-#' @method getAlphas capm_mv
-#' @S3method getAlphas capm_mv
-getAlphas.capm_mv <- function(object){
-  if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
+#' @method getAlphas capm_mlm
+#' @S3method getAlphas capm_mlm
+getAlphas.capm_mlm <- function(object){
+  if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   tmp_sm = getStatistics(object)
   tmp_sm = tmp_sm[seq(1,nrow(tmp_sm),2),1]
   return(tmp_sm)
@@ -97,10 +97,10 @@ getBetas.capm_uv <- function(object){
   return(coef(object)[2])
 }
 
-#' @method getBetas capm_mv
-#' @S3method getBetas capm_mv
-getBetas.capm_mv <- function(object){
-  if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
+#' @method getBetas capm_mlm
+#' @S3method getBetas capm_mlm
+getBetas.capm_mlm <- function(object){
+  if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   tmp_sm = getStatistics(object)
   tmp_sm = tmp_sm[seq(2,nrow(tmp_sm),2),1]
   return(tmp_sm)
@@ -126,10 +126,10 @@ getStatistics.capm_uv <- function(object){
   return(result)
 }
 
-#' @method getStatistics capm_mv
-#' @S3method getStatistics capm_mv
-getStatistics.capm_mv <- function(object){
-  if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
+#' @method getStatistics capm_mlm
+#' @S3method getStatistics capm_mlm
+getStatistics.capm_mlm <- function(object){
+  if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   # Gets t-value, and p-value of model
   # Multi-Beta CAPM
   x <- coef(summary(object))
@@ -144,7 +144,7 @@ getStatistics.capm_mv <- function(object){
   return(tmp_sm)
 }
 
-# you can't have anything after the @export tag
+# CAPM plotting for UV
 #' @export
 plot.capm_uv <- function(object){
   xlab <- colnames(object$x_data)
@@ -161,8 +161,26 @@ plot.capm_uv <- function(object){
   
 }
 
+# CAPM plotting for mlm
 #' @export
-plot.capm_mv <- function(object){
+plot.capm_mlm <- function(object){
+  if(ncol(object$y_data) > 4) warning("Only first 4 assets will be graphically displayed")
+  par(mfrow=c(2,round(ncol(coef(object))/2)))
+  Rmkt = object$x_data
+  nbPlot = min(ncol(coef(object)),4)
+  for (i in 1:nbPlot){
+    tmp = CAPM(object$y_data[,i],Rmkt)
+    plot(tmp)
+  }
+}
+#' CAPM SML
+#' 
+#' Description of CAPM Security Market Line (SML)
+#' 
+#' @param object a capm object created by \code{\link{CAPM}}
+#' @export
+chartSML <- function(object){
+  if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   #' Plot expected return versus beta
   mu.hat = colMeans(object$y_data,na.rm=TRUE)
   betas = getBetas(object)
@@ -173,7 +191,7 @@ plot.capm_mv <- function(object){
   legend("topleft",1, "Estimated SML",1)                  
 }
 
-#' CAPM hypthTest
+#' CAPM hypTest
 #' 
 #' Description of CAPM beta/alpha test
 #' 
@@ -191,22 +209,22 @@ hypTest.capm_uv <- function(object,CI = 0.05){
   tmp_A = tmp_sm[1,3] < CI
   tstat = (tmp_sm[2,2] - 1 )/tmp_sm[2,3]
   #' Two sided t-test
-  tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-ncol(object$y_data)))) < CI
+  tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-1))) < CI
   result = c(tmp_A, tmp_B)
   result = as.matrix(result)
   rownames(result) = cbind(c(paste("alpha.", colnames(object$y_data))),c(paste("beta. ", colnames(object$y_data))))
   return(result)
 }
 
-#' @method hypTest capm_mv
-#' @S3method hypTest capm_mv
-hypTest.capm_mv <- function(object,CI = 0.05){
-  if(!inherits(object, "capm_mv")) stop("object must be of class capm_mv")
+#' @method hypTest capm_mlm
+#' @S3method hypTest capm_mlm
+hypTest.capm_mlm <- function(object,CI = 0.05){
+  if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   tmp_sm = getStatistics(object)
   tmp_A = tmp_sm[seq(1,nrow(tmp_sm),2),4] < CI
   tstat = (tmp_sm[seq(2,nrow(tmp_sm),2),1] - 1 )/tmp_sm[seq(2,nrow(tmp_sm),2),2]
   #' Two sided t-test
-  tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-ncol(object$y_data)))) < CI
+  tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
   result = c(tmp_A, tmp_B)  
   return(result)
 }

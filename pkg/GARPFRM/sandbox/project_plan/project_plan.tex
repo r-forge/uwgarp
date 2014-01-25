@@ -93,13 +93,14 @@ This section covers basic functionality that is already in base R. We likely not
 A closely related concept is exploratory data analysis. We should have some basic EDA with good support for visualization using trellis or lattice style plots. The lattice package is pretty complex so we will create some wrapper functions to hide the complexity for the user.
 
 \section{Monte Carlo Methods}
-This section is relatively short and gives a basic overview of Monte Carlo methods. We should have a function that generates data using monte carlo methods. The book uses a geometric brownian motion model.
+This section is relatively short and gives a basic overview of Monte Carlo methods. We should have a function that generates data using Monte Carlo methods. The book uses a geometric brownian motion model.
 
 \begin{itemize}
 \item \verb"runMonteCarlo"
 \item \verb"plot" method to show simulated price paths
 \item chart distribution of ending prices
 \end{itemize}
+Best way of implement is 1) create functionality and 2) use Shiny app.
 
 
 \section{Estimating Volatilities and Correlation}
@@ -107,6 +108,8 @@ The book covers estimating volatility using EWMA model. and GARCH(1, 1) model. W
 
 Additional features
 \begin{itemize}
+\item \verb"estVola"
+\item \verb"estCorr"
 \item Shiny app
 \item demo
 \item vignette
