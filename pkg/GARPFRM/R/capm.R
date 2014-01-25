@@ -210,9 +210,7 @@ hypTest.capm_uv <- function(object,CI = 0.05){
   tstat = (tmp_sm[2,2] - 1 )/tmp_sm[2,3]
   #' Two sided t-test
   tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-1))) < CI
-  result = c(tmp_A, tmp_B)
-  result = as.matrix(result)
-  rownames(result) = cbind(c(paste("alpha.", colnames(object$y_data))),c(paste("beta. ", colnames(object$y_data))))
+  result = list(alpha = tmp_A, beta = tmp_B)
   return(result)
 }
 
@@ -225,6 +223,6 @@ hypTest.capm_mlm <- function(object,CI = 0.05){
   tstat = (tmp_sm[seq(2,nrow(tmp_sm),2),1] - 1 )/tmp_sm[seq(2,nrow(tmp_sm),2),2]
   #' Two sided t-test
   tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
-  result = c(tmp_A, tmp_B)  
+  result = list(alpha = tmp_A, beta = tmp_B)  
   return(result)
 }

@@ -20,7 +20,6 @@ CI = 0.1
 hypTest(object,CI)
 
 # Plot data with regression line: with coefficients, and tstat specified on graph
-par(op)
 plot(object)
 
 
@@ -30,8 +29,8 @@ plot(object)
 object = CAPM(managers[,3:7], managers[,8])
 
 # Plot security market line
-par(op)
 chartSML(object)
+par(mfrow=c(1,1))
 
 # Retrieve alpha
 getAlphas(object)
@@ -47,5 +46,5 @@ CI = 0.1
 hypTest(object,CI)
 
 # Plot data with regression line: with coefficients, and tstat specified on graph
-par(op)
 plot(object)
+par(mfrow=c(1,1))
