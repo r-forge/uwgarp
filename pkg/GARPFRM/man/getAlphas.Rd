@@ -2,13 +2,13 @@
 \alias{getAlphas}
 \title{CAPM alphas}
 \usage{
-  getAlphas(object)
+getAlphas(object)
 }
 \arguments{
   \item{object}{a capm object created by
   \code{\link{CAPM}}}
 }
 \description{
-  Description of CAPM alphas
+Description of CAPM alphas
 }
 

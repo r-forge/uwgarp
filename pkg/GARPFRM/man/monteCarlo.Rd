@@ -2,8 +2,8 @@
 \alias{monteCarlo}
 \title{Monte Carlo Price Path Simulation}
 \usage{
-  monteCarlo(mu, sigma, N = 100, Time = 1, steps = 52,
-    starting_value = 100, log = TRUE)
+monteCarlo(mu, sigma, N = 100, Time = 1, steps = 52,
+  starting_value = 100, log = TRUE)
 }
 \arguments{
   \item{mu}{annualized expected return}
@@ -22,10 +22,10 @@
   rather than S; where S is the price of the asset.}
 }
 \value{
-  matrix of Monte Carlo simulated price paths
+matrix of Monte Carlo simulated price paths
 }
 \description{
-  Description for Monte Carlo. Geometric brownian motion.
-  mu and sigma are assumed constant
+Description for Monte Carlo. Geometric brownian motion. mu
+and sigma are assumed constant
 }
 

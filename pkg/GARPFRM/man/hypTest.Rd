@@ -1,14 +1,14 @@
 \name{hypTest}
 \alias{hypTest}
-\title{CAPM hypthTest}
+\title{CAPM hypTest}
 \usage{
-  hypTest(object, CI)
+hypTest(object, CI)
 }
 \arguments{
   \item{object}{a capm object created by
   \code{\link{CAPM}}}
 }
 \description{
-  Description of CAPM beta/alpha test
+Description of CAPM beta/alpha hypothesis test
 }
 

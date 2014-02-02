@@ -121,7 +121,7 @@ getStatistics.capm_uv <- function(object){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
   tmp_sm <- summary.lm(object)
   # gets t-value, and p-value of model
-  result = coef(tmp_sm)[,c(2:4)]
+  result = coef(tmp_sm)[,c(1:4)]
   rownames(result) = cbind(c(paste("alpha.", colnames(object$y_data))),c(paste("beta. ", colnames(object$y_data))))
   return(result)
 }
@@ -193,7 +193,7 @@ chartSML <- function(object){
 
 #' CAPM hypTest
 #' 
-#' Description of CAPM beta/alpha test
+#' Description of CAPM beta/alpha hypothesis test
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @export

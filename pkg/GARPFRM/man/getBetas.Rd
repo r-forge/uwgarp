@@ -2,13 +2,13 @@
 \alias{getBetas}
 \title{CAPM betas}
 \usage{
-  getBetas(object)
+getBetas(object)
 }
 \arguments{
   \item{object}{a capm object created by
   \code{\link{CAPM}}}
 }
 \description{
-  Description of CAPM betas
+Description of CAPM betas
 }
 
