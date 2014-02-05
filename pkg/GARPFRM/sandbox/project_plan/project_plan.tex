@@ -55,7 +55,7 @@ Additional features
 \end{itemize}
 
 \section{Standard Capital Asset Pricing Model}
-We should have a \verb"CAPM" function that implements basic univariate and multivariate models. Objects created by the \verb"CAPM" function will be assigned a class of \verb"capm_uv" and \verb"capm_mv" for univariate and multivariate models, respectively. We also need functionality to do hypothesis testing.
+We should have a \verb"CAPM" function that implements basic univariate and multivariate models. Objects created by the \verb"CAPM" function will be assigned a class of \verb"capm_uv" and \verb"capm_mlm" for univariate and multi-linear models, respectively. We also need functionality to do hypothesis testing.
 
 At a minimum, the following functions will be included as "getter" methods for \verb"capm_uv" and \verb"capm_mv" objects:
 \begin{itemize}
@@ -104,21 +104,20 @@ Best way of implement is 1) create functionality and 2) use Shiny app.
 
 
 \section{Estimating Volatilities and Correlation}
-The book covers estimating volatility using EWMA model. and GARCH(1, 1) model. We should implement our own EWMA function, but should use the rugarch or fGarch package for the GARCH models.
+Estimating volatility using EWMA model and GARCH(1,1) model. Objects created by the \verb"garch11" function and \verb"EWMA" function.
 
 Additional features
 \begin{itemize}
 \item \verb"EWMA"
 \item \verb"garch11"
-\item \verb"fVol"
-\item \verb"fCor"
+\item \verb"fcstGarch11"
 \item Shiny app
 \item demo
 \item vignette
 \end{itemize}
 
 \section{Quantifying Volatility in VaR Models}
-Still need to read this section in more detail.
+VaR applying historical, and monter carlo approach ex-ante estimation of mean and standard deviation.
 
 
 \end{document}

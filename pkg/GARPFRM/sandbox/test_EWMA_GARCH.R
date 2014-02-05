@@ -116,58 +116,44 @@ abline(h=cor(temp)[1,2], lwd=2, col="red")
 par(mfrow=c(1,1))
 
 # Dynamic Conditional Cor
-# UV N~GARCH(1,1) for each series
-garch11.spec = ugarchspec(mean.model = list(armaOrder = c(0,0)), 
-                          variance.model = list(garchOrder = c(1,1), 
-                                                model = "sGARCH"), 
-                          distribution.model = "norm")
+# Joint is the conditonal corr param w/ cov targeting
+garch11 <- garch11(temp)
 
-# DCC specification: GARCH(1,1) for conditional cor
-dcc.garch11.spec = dccspec(uspec = multispec( replicate(2, garch11.spec) ), 
-                           dccOrder = c(1,1), distribution = "mvnorm")
-dcc.garch11.spec
-
-dcc.fit = dccfit(dcc.garch11.spec, data = temp)
-class(dcc.fit)
-slotNames(dcc.fit)
-names(dcc.fit@mfit)
-names(dcc.fit@model)
+class(garch11)
+slotNames(garch11)
+names(garch11@mfit)
+names(garch11@model)
 
 # many extractor functions - see help on DCCfit object
-# coef, likelihood, rshape, rskew, fitted, sigma, 
-# residuals, plot, infocriteria, rcor, rcov
-# show, nisurface
-
+# coef, likelihood, rshape, rskew, fitted, sigma, residuals, plot, infocriteria, rcor, rcov show, nisurface
 # show dcc fit
-dcc.fit
-
-# plot method
-plot(dcc.fit)
-# Make a plot selection (or 0 to exit): 
-# Where 1:   Conditional Mean (vs Realized Returns)
-# Where 2:   Conditional Sigma (vs Realized Absolute Returns)
-# Where 3:   Conditional Covariance
-# Where 4:   Conditional Correlation
-# Where 5:   EW Portfolio Plot with conditional density VaR limits
+garch11
 
 # conditional sd of each series
-plot(dcc.fit, which=2)
+plot(garch11, which=2)
+
+# conditional covar of each series
+plot(garch11, which=3)
 
 # conditional cor
-plot(dcc.fit, which=4)
+plot(garch11, which=4)
 
-# extracting cor series
-ts.plot(rcor(dcc.fit)[1,2,])
+# plot mutiple time series: extracting cor series
+ts.plot(rcor(garch11)[1,2,])
 
-# Forecasting conditional vol and cor
-dcc.fcst = dccforecast(dcc.fit, n.ahead=100)
-class(dcc.fcst)
-slotNames(dcc.fcst)
-class(dcc.fcst@mforecast)
-names(dcc.fcst@mforecast)
+# Forecasting conditional vol and cor, default wd = 100
+fcstGarch11 = fGarch11(garch11)
+
+class(fcstGarch11)
+slotNames(fcstGarch11)
+class(fcstGarch11@mforecast)
+names(fcstGarch11@mforecast)
 
 # many method functions - see help on DCCforecast class
 # rshape, rskew, fitted, sigma, plot, rcor, rcov, show
 
-# show forecasts
-dcc.fcst
+# Show forecasts
+fcstGarch11
+
+# plot(garch11, which=3)
+plot(fcstGarch11, which=3)
