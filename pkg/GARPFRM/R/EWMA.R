@@ -64,20 +64,23 @@ EWMA <- function(R, lambda=0.94, inWnd=10, cor=FALSE){
   out <- covTmp
   # Properly assign list key to date
   names(out) <- index(testR)
+  
   # Check correlation option
-  if(cor) out <- lapply(out, cov2cor)
-    
-  if(ncol(R) > 1) { class(out) <- c("EWMACovar")
-  } else if (ncol(R) == 1){class(out) <- c("EWMAVar")}
+  if(cor & ncol(R)>1) {out <- lapply(out, cov2cor)
+  class(out) <- c("EWMACor")
+  }else if(cor & ncol(R)==1) {stop("EWMA correlation is only to be estimated for two or more assets")}
+  
+  if(cor == FALSE & ncol(R) > 1) { class(out) <- c("EWMACovar")
+  } else if (cor == FALSE & ncol(R) == 1){class(out) <- c("EWMAVar")}
   out$y_data <- R
   return(out)
   
   } else {
-           stop("For exponential decay lambda must belong to ]0:1[ ") 
+           stop("For exponential decay lambda must belong to ]0:1[ and/or window is too large") 
   }
 }
 
-#' EWMA volatility/cross-volatility
+#' EWMA Volatility/Cross-Volatility
 #' 
 #' Description of EWMA Vola
 #' 
@@ -126,6 +129,37 @@ getCov.EWMAVar <- function(object, asset1){
   return(out)
 }
 
+#' EWMA Correlation
+#' 
+#' Description of EWMA Correlation, requires two assets
+#' 
+#' @param object a EWMA object created by \code{\link{EWMA}}
+#' @export
+getCor <- function(object, asset1, asset2){
+  UseMethod("getCor")
+}
+
+#' @method getCor EWMACor
+#' @S3method getCor EWMACor
+getCor.EWMACor <- function(object, asset1, asset2){
+  if(!inherits(object, "EWMACor")) stop("object must be of class EWMACor")
+  # Check if asset is a character 
+  object[[length(object)]] = NULL
+  if(is.character(asset1) & is.character(asset2)){
+    idx1 = grep(asset1, colnames(object[[1]]))
+    if(length(idx1) == 0) stop("name for asset1 not in object")
+    idx2 = grep(asset2, colnames(object[[1]]))
+    if(length(idx2) == 0) stop("name for asset2 not in object")
+  } else {
+    # Then dimensions are enough to find covar
+    idx1 = asset1
+    idx2 = asset2
+  }
+  out = xts(unlist(lapply(object, function(object) object[idx1, idx2])), as.Date(names(object)))
+  colnames(out) = paste(asset1, asset2, sep=".")
+  return(out)
+}
+
 
 # EWMA plotting for covar
 #' @export
@@ -142,8 +176,8 @@ plot.EWMACovar <- function(object, asset1, asset2){
     idx2 = asset2
   }
   tmp = getCov(object,asset1, asset2)
-  plot(x=time(as.zoo(tmp)), y=tmp, type="l", xlab="Time", ylab="Covar", lwd=2, col="blue",
-       main="EWMA Covar");
+  plot(x=time(as.zoo(tmp)), y=tmp, type="l", xlab="Time", ylab="Covariance", lwd=2, col="blue",
+       main="EWMA Covariance");
   grid()
   abline(h=var(object$y_data)[idx1,idx2], lwd=2, col="red")
   }
@@ -152,9 +186,30 @@ plot.EWMACovar <- function(object, asset1, asset2){
 #' @export
 plot.EWMAVar <- function(object,asset1){
   tmp = getCov(object,asset1)
-  plot(x=time(as.zoo(tmp)),y=tmp, type="l", xlab="Time", ylab="Var", lwd=2, col="blue",
-       main="EWMA Var");
+  plot(x=time(as.zoo(tmp)),y=tmp, type="l", xlab="Time", ylab="Variance", lwd=2, col="blue",
+       main="EWMA Variance");
   grid()
   abline(h=var(object$y_data), lwd=2, col="red")
+}
+
+# EWMA plotting for correlation
+#' @export
+plot.EWMACor <- function(object, asset1, asset2){
+  # Check if asset is a character 
+  if(is.character(asset1) & is.character(asset2)){
+    idx1 = grep(asset1, colnames(object[[1]]))
+    if(length(idx1) == 0) stop("name for asset1 not in object")
+    idx2 = grep(asset2, colnames(object[[1]]))
+    if(length(idx2) == 0) stop("name for asset2 not in object")
+  } else {
+    # Then dimensions are enough to find covar
+    idx1 = asset1
+    idx2 = asset2
+  }
+  tmp = getCor(object,asset1, asset2)
+  plot(x=time(as.zoo(tmp)), y=tmp, type="l", xlab="Time", ylab="Correlation", lwd=2, col="blue",
+       main="EWMA Correlation");
+  grid()
+  abline(h=cor(object$y_data)[idx1,idx2], lwd=2, col="red")
 }
 
