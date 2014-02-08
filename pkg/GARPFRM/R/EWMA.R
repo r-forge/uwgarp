@@ -71,7 +71,6 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
   
   # Check correlation option
   if(cor & ncol(R) > 1) {
-    # Why not just make it equal to out why create new list item.
     out$EWMA <- lapply(out$EWMA, cov2cor)
     class(out) <- c("EWMACor")
   } else if(cor & ncol(R)==1) {
@@ -90,9 +89,6 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
   # The EWMA estimate and R should be separate elements in the list returned
   return(out)
 }
-
-# The arguments for getCov.* must match the arguments for your getCov generic
-# method
 
 #' EWMA Volatility/Cross-Volatility
 #' 
@@ -131,8 +127,9 @@ getCov.EWMACovar <- function(object, asset1, asset2){
 
 #' @method getCov EWMAVar
 #' @S3method getCov EWMAVar
-getCov.EWMAVar <- function(object, asset1){
+getCov.EWMAVar <- function(object, asset1, asset2){
   if(!inherits(object, "EWMAVar")) stop("object must be of class EWMAVar")
+  if (is.null(asset2) == FALSE) {stop("Running univariate EWMA leave asset2 unspecified")}
   # Manipulate object for feasible use  
   # object[[length(object)]] = NULL
   
@@ -212,7 +209,6 @@ plot.EWMACovar <- function(object, asset1, asset2){
   abline(h=var(object$R)[idx1,idx2], lwd=2, col="red")
 }
 
-# plot.EWMAVar(x, y, ..., asset1)
 
 # EWMA plotting for var
 #' @export
@@ -224,7 +220,6 @@ plot.EWMAVar <- function(object,asset1){
   abline(h=var(object$R), lwd=2, col="red")
 }
 
-# plot.EWMACor(x, y, ..., asset1, asset2)
 
 # EWMA plotting for correlation
 #' @export
