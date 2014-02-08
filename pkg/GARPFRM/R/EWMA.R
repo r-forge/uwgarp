@@ -67,11 +67,9 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
   names(estEWMA) <- index(testR)
   
   # Add R as a separate element to object to return
-  # Do we want to return the entire R object or just testR?
   out <- list(EWMA=estEWMA, R=R)
   
   # Check correlation option
-  # use proper indentation, makes it easier to read
   if(cor & ncol(R) > 1) {
     out$EWMA <- lapply(out$EWMA, cov2cor)
     class(out) <- c("EWMACor")
@@ -80,7 +78,6 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
   }
   
   # Check for Covar or Var
-  # use proper indentation, makes it easier to read
   if((cor == FALSE) & (ncol(R) > 1)) { 
     class(out) <- c("EWMACovar")
   } else if ((cor == FALSE) & (ncol(R) == 1)){

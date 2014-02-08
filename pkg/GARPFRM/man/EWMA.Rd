@@ -2,7 +2,7 @@
 \alias{EWMA}
 \title{Exponential Weighted Moving Average (EWMA)}
 \usage{
-  EWMA(R, lambda = 0.94, initialWindow = 10, cor = FALSE)
+EWMA(R, lambda = 0.94, initialWindow = 10, cor = FALSE)
 }
 \arguments{
   \item{R}{}
@@ -14,7 +14,7 @@
   \item{correlation}{option (cor by default = FALSE)}
 }
 \description{
-  Description of EWMA. The function handles UV and MLM
-  objects and returns either cov/cor.
+Description of EWMA. The function handles UV and MLM
+objects and returns either cov/cor.
 }
 
