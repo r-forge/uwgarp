@@ -129,7 +129,7 @@ getCov.EWMACovar <- function(object, asset1, asset2){
 #' @S3method getCov EWMAVar
 getCov.EWMAVar <- function(object, asset1, asset2){
   if(!inherits(object, "EWMAVar")) stop("object must be of class EWMAVar")
-  if (is.null(asset2) == FALSE) {stop("Running univariate EWMA leave asset2 unspecified")}
+  #if (is.null(asset2) == FALSE) {stop("Running univariate EWMA leave asset2 unspecified")}
   # Manipulate object for feasible use  
   # object[[length(object)]] = NULL
   
