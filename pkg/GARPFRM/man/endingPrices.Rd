@@ -2,9 +2,9 @@
 \alias{endingPrices}
 \title{Ending Prices of Monte Carlo Simulation}
 \usage{
-  endingPrices(mc)
+endingPrices(mc)
 }
 \description{
-  Ending Prices of Monte Carlo Simulation
+Ending Prices of Monte Carlo Simulation
 }
 

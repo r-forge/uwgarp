@@ -2,7 +2,7 @@
 \alias{fcstGarch11}
 \title{Forecast GARCH(1,1)}
 \usage{
-  fcstGarch11(object, window)
+fcstGarch11(object, window)
 }
 \arguments{
   \item{garch11}{object created by
@@ -12,6 +12,6 @@
   window = 100)}
 }
 \description{
-  Description of forecast GARCH(1,1)
+Description of forecast GARCH(1,1)
 }
 

@@ -71,6 +71,7 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
   
   # Check correlation option
   if(cor & ncol(R) > 1) {
+    # Why not just make it equal to out why create new list item.
     out$EWMA <- lapply(out$EWMA, cov2cor)
     class(out) <- c("EWMACor")
   } else if(cor & ncol(R)==1) {
