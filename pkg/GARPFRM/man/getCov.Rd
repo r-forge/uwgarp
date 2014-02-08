@@ -1,6 +1,6 @@
 \name{getCov}
 \alias{getCov}
-\title{EWMA volatility/cross-volatility}
+\title{EWMA Volatility/Cross-Volatility}
 \usage{
   getCov(object, asset1, asset2)
 }
