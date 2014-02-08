@@ -5,8 +5,11 @@
   fcstGarch11(object, window)
 }
 \arguments{
-  \item{object}{a garch11 object created by
+  \item{garch11}{object created by
   \code{\link{GARCH(1,1)}}}
+
+  \item{window}{is the forecast window (default is set to
+  window = 100)}
 }
 \description{
   Description of forecast GARCH(1,1)
