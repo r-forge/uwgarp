@@ -142,7 +142,7 @@ plot(garch11, which=4)
 ts.plot(rcor(garch11)[1,2,])
 
 # Forecasting conditional vol and cor, default wd = 100
-fcstGarch11 = fGarch11(garch11)
+fcstGarch11 = fcstGarch11(garch11)
 
 class(fcstGarch11)
 slotNames(fcstGarch11)

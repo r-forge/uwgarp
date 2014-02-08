@@ -2,13 +2,15 @@
 #' 
 #' Description of GARCH(1,1)
 #' 
-#' @param object GARCH(1,1)
+#' @param R GARCH(1,1)
+#' @param model “sGARCH”, “fGARCH”, “eGARCH”, “gjrGARCH”, “apARCH” and “iGARCH” and “csGARCH”
+#' @param distribution.model. Valid choices are “norm” for the normal distibution, “snorm” for the skew-normal distribution, “std” for the student-t, “sstd” for the skew-student, “ged” for the generalized error distribution, “sged” for the skew-generalized error distribution, “nig” for the normal inverse gaussian distribution, “ghyp” for the Generalized Hyperbolic, and “jsu” for Johnson's SU distribution. 
 #' @export
-# UV N~GARCH(1,1) for each series
-garch11 <- function(object){
+# By default we use UV N~GARCH(1,1) and Bollerslev for each series
+garch11 <- function(R, model = "sGarch", distribution.model = "norm"){
 garch11.spec = ugarchspec(mean.model = list(armaOrder = c(0,0)), 
-                          variance.model = list(garchOrder = c(1,1), model = "sGARCH"), 
-                          distribution.model = "norm")
+                          variance.model = list(garchOrder = c(1,1), model), 
+                          distribution.model)
 
 # DCC specification: GARCH(1,1) for conditional cor
 dcc.garch11.spec = dccspec(uspec = multispec( replicate(2, garch11.spec) ), 
@@ -23,7 +25,8 @@ return(dcc.fit)
 #' 
 #' Description of forecast GARCH(1,1)
 #' 
-#' @param object a garch11 object created by \code{\link{GARCH(1,1)}}
+#' @param garch11 object created by \code{\link{GARCH(1,1)}}
+#' @param window is the forecast window (default is set to window = 100)
 #' @export
 fcstGarch11 <- function(object, window){
   UseMethod("fcstGarch11")
@@ -31,7 +34,8 @@ fcstGarch11 <- function(object, window){
 
 #' @method fcstGarch11 Dccfit
 #' @S3method fcstGarch11 DCCfit
-fcstGarch11.DCCfit <- function(object,window = 100){
+fcstGarch11.DCCfit <- function(object, window = 100){
+  #if ((window > nrow(object))) {stop("Window is too large to forecast")}
   result = dccforecast(garch11, n.ahead=window)
   return(result)
 }

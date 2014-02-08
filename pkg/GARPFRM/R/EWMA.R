@@ -39,20 +39,22 @@
 #' 
 #' @param R
 #' @param lambda
-#' @param inWnd
-#' @param cor option (default = FALSE) 
+#' @param initialWindow is the initializing window
+#' @param correlation option (cor by default = FALSE) 
 #' @export
 #' 
 #' 
-EWMA <- function(R, lambda=0.94, inWnd=10, cor=FALSE){
-  # Check for lambda between 0 and 1 & inWnd must be greater than ncol(R)
-  if (((lambda<1 || lambda > 0)) & inWnd< nrow(R)) {
+EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
+  # Check for lambda between 0 and 1 & initialWindow must be greater than ncol(R)
+  if (((lambda>1 || lambda < 0))) {stop("For exponential decay lambda must belong to ]0:1[")}
+  if (initialWindow> nrow(R)){stop("Initialization window is too large")}
+  
   # Separate data into a initializing window and a testing window
-  inR = R[1:inWnd,]
-  testR = R[(inWnd+1):nrow(R),]
+  initialR = R[1:initialWindow,]
+  testR = R[(initialWindow+1):nrow(R),]
   
   # Initialization of covariance matrix
-  lagCov = cov(inR)
+  lagCov = cov(initialR)
   covTmp = vector("list", nrow(testR))
   for(i in 1:nrow(testR)){
     # Extract R for the ith time step
@@ -70,13 +72,11 @@ EWMA <- function(R, lambda=0.94, inWnd=10, cor=FALSE){
     class(out) <- c("EWMACor")
     }else if(cor & ncol(R)==1) {stop("EWMA correlation is only to be estimated for two or more assets")}
     
+    # Check for Covar or Var
     if(cor == FALSE & ncol(R) > 1) { class(out) <- c("EWMACovar")
     } else if (cor == FALSE & ncol(R) == 1){class(out) <- c("EWMAVar")}
-    out$y_data <- R
-  
-  } else {
-           stop("For exponential decay lambda must belong to ]0:1[ and/or window is too large") 
-  }
+  # Bind initial data to EWMA object in order to plot a comparison
+  out$y_data <- R
   return(out)
   
 }
@@ -95,8 +95,10 @@ getCov <- function(object, asset1, asset2){
 #' @S3method getCov EWMACovar
 getCov.EWMACovar <- function(object, asset1, asset2){
   if(!inherits(object, "EWMACovar")) stop("object must be of class EWMACovar")
-    # Check if asset is a character 
+  # Manipulate object for feasible use   
   object[[length(object)]] = NULL
+  
+  # Check if asset is a character
     if(is.character(asset1) & is.character(asset2)){
       idx1 = grep(asset1, colnames(object[[1]]))
       if(length(idx1) == 0) stop("name for asset1 not in object")
@@ -107,8 +109,10 @@ getCov.EWMACovar <- function(object, asset1, asset2){
       idx1 = asset1
       idx2 = asset2
     }
+  
     out = xts(unlist(lapply(object, function(object) object[idx1, idx2])), as.Date(names(object)))
     colnames(out) = paste(asset1, asset2, sep=".")
+  
     return(out)
 }
 
@@ -116,8 +120,10 @@ getCov.EWMACovar <- function(object, asset1, asset2){
 #' @S3method getCov EWMAVar
 getCov.EWMAVar <- function(object, asset1){
   if(!inherits(object, "EWMAVar")) stop("object must be of class EWMAVar")
-  # Check if asset is a character
+  # Manipulate object for feasible use  
   object[[length(object)]] = NULL
+  
+  # Check if asset is a character
   if(is.character(asset1)){
     idx1 = grep(asset1, colnames(object[[1]]))
     if(length(idx1) == 0) stop("name for asset1 not in object")
@@ -127,6 +133,7 @@ getCov.EWMAVar <- function(object, asset1){
   }
   out = xts(unlist(lapply(object, function(object) object[idx1])), as.Date(names(object)))
   colnames(out) = paste(asset1, sep=".")
+  
   return(out)
 }
 
@@ -144,20 +151,24 @@ getCor <- function(object, asset1, asset2){
 #' @S3method getCor EWMACor
 getCor.EWMACor <- function(object, asset1, asset2){
   if(!inherits(object, "EWMACor")) stop("object must be of class EWMACor")
-  # Check if asset is a character 
+  # Manipulate object for feasible use  
   object[[length(object)]] = NULL
+  
+  # Check if asset is a character 
   if(is.character(asset1) & is.character(asset2)){
     idx1 = grep(asset1, colnames(object[[1]]))
-    if(length(idx1) == 0) stop("name for asset1 not in object")
-    idx2 = grep(asset2, colnames(object[[1]]))
-    if(length(idx2) == 0) stop("name for asset2 not in object")
+      if(length(idx1) == 0) stop("name for asset1 not in object")
+      idx2 = grep(asset2, colnames(object[[1]]))
+      if(length(idx2) == 0) stop("name for asset2 not in object")
   } else {
     # Then dimensions are enough to find covar
     idx1 = asset1
     idx2 = asset2
   }
+  
   out = xts(unlist(lapply(object, function(object) object[idx1, idx2])), as.Date(names(object)))
   colnames(out) = paste(asset1, asset2, sep=".")
+  
   return(out)
 }
 
@@ -168,9 +179,9 @@ plot.EWMACovar <- function(object, asset1, asset2){
   # Check if asset is a character 
   if(is.character(asset1) & is.character(asset2)){
     idx1 = grep(asset1, colnames(object[[1]]))
-    if(length(idx1) == 0) stop("name for asset1 not in object")
-    idx2 = grep(asset2, colnames(object[[1]]))
-    if(length(idx2) == 0) stop("name for asset2 not in object")
+      if(length(idx1) == 0) stop("name for asset1 not in object")
+      idx2 = grep(asset2, colnames(object[[1]]))
+      if(length(idx2) == 0) stop("name for asset2 not in object")
   } else {
     # Then dimensions are enough to find covar
     idx1 = asset1
@@ -199,9 +210,9 @@ plot.EWMACor <- function(object, asset1, asset2){
   # Check if asset is a character 
   if(is.character(asset1) & is.character(asset2)){
     idx1 = grep(asset1, colnames(object[[1]]))
-    if(length(idx1) == 0) stop("name for asset1 not in object")
-    idx2 = grep(asset2, colnames(object[[1]]))
-    if(length(idx2) == 0) stop("name for asset2 not in object")
+      if(length(idx1) == 0) stop("name for asset1 not in object")
+      idx2 = grep(asset2, colnames(object[[1]]))
+      if(length(idx2) == 0) stop("name for asset2 not in object")
   } else {
     # Then dimensions are enough to find covar
     idx1 = asset1
@@ -213,4 +224,3 @@ plot.EWMACor <- function(object, asset1, asset2){
   grid()
   abline(h=cor(object$y_data)[idx1,idx2], lwd=2, col="red")
 }
-
