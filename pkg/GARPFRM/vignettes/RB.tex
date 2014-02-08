@@ -1,0 +1,1221 @@
+\documentclass[a4paper]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[OT1]{fontenc}
+\usepackage{Sweave}
+\usepackage{Rd}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage[round]{natbib}
+\usepackage{bm}
+\usepackage{verbatim}
+\usepackage[latin1]{inputenc}
+\bibliographystyle{abbrvnat}
+
+\let\proglang=\textsf
+%\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+%\newcommand{\R}[1]{{\fontseries{b}\selectfont #1}}
+%\newcommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
+%\newcommand{\E}{\mathsf{E}}
+%\newcommand{\VAR}{\mathsf{VAR}}
+%\newcommand{\COV}{\mathsf{COV}}
+%\newcommand{\Prob}{\mathsf{P}}
+
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\baselinestretch}{1.5}
+\setlength{\textwidth}{15cm} \setlength{\textheight}{22cm} \topmargin-1cm \evensidemargin0.5cm \oddsidemargin0.5cm
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+\begin{document}
+
+\title{Quantitative Analysis}
+\author{Ross Bennett}
+
+\maketitle
+
+\begin{abstract}
+The goal of this vignette is to demonstrate key concepts in Financial Risk Manager (FRM \textsuperscript{\textregistered}) Part 1: Quantitative Analysis using R and the GARPFRM package. This vignette will cover exploratory data analysis, basic probability and statistics, and linear regression.
+\end{abstract}
+
+\tableofcontents
+
+\section{Exploratory Data Analysis}
+
+Load the GARPFRM package and the \verb"crsp.short" dataset. Other packages are also loaded for plotting functions. The \verb"crsp.short" dataset contains monthly returns from 1997-01-31 to 2001-12-31 of stocks in micro, small, mid, and large market capitalizations as well as market returns and the risk free rate. The market is defined as the value weighted NYSE and NYSE Amex, the latter formerly being the American Stock Exchange and the NASDAQ composite. The risk free rate comes from the 90 day Treasury Bill.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{suppressMessages}(\hlkwd{library}(GARPFRM))
+\hlkwd{suppressMessages}(\hlkwd{library}(lattice))
+\hlkwd{suppressMessages}(\hlkwd{library}(pcaPP))
+\hlkwd{suppressMessages}(\hlkwd{library}(hexbin))
+\hlkwd{data}(crsp.short)
+
+\hlcom{# Use the first 6 stocks in largecap.ts}
+crsp.returns <- largecap.ts[, 1:6]
+
+\hlcom{# Get the names of the stocks and view the first 5 rows of crsp.returns}
+\hlkwd{colnames}(crsp.returns)
+\end{alltt}
+\begin{verbatim}
+## [1] "AMAT" "AMGN" "CAT"  "DD"   "G"    "GENZ"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{head}(crsp.returns, 5)
+\end{alltt}
+\begin{verbatim}
+##                AMAT     AMGN      CAT        DD        G     GENZ
+## 1997-01-31  0.37391  0.03678 0.036877  0.164675  0.06341  0.28736
+## 1997-02-28  0.02532  0.08426 0.008052 -0.016465 -0.04091 -0.08036
+## 1997-03-31 -0.08395 -0.08589 0.025559 -0.011655 -0.08215 -0.12621
+## 1997-04-30  0.18329  0.05369 0.114019  0.001179  0.17336  0.02778
+## 1997-05-30  0.18907  0.13588 0.096910  0.029494  0.04559  0.03243
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+
+Plot of the returns of each asset.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{xyplot}(crsp.returns, scale = \hlkwd{list}(y = \hlstr{"same"}), main = \hlstr{"Monthly Returns"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-2} 
+
+\end{knitrout}
+
+
+Another way to compare returns of several assets is with a boxplot.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{boxplot}(\hlkwd{coredata}(crsp.returns), pch = 20, main = \hlstr{"Monthly Returns"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-3} 
+
+\end{knitrout}
+
+
+The exploratory data analysis, basic probability and statistics will use the market returns.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Extract the column labeled 'market' to get the market returns}
+MKT.ret <- largecap.ts[, \hlstr{"market"}]
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+Plot of the MKT weekly returns. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}(MKT.ret, main = \hlstr{"Market Monthly Returns"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5} 
+
+\end{knitrout}
+
+
+A histogram and kernel density estimate of the market returns is plotted to better understand its distribution. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{hist}(MKT.ret, probability=TRUE, main=\hlstr{"Histogram of Market Returns"}, 
+     col=\hlstr{"lightblue"}, ylim=\hlkwd{c}(0, 10))
+\hlkwd{lines}(\hlkwd{density}(MKT.ret), lty=2)
+\hlkwd{rug}(MKT.ret)
+\hlkwd{legend}(\hlstr{"topleft"}, legend=\hlstr{"kernel density estimate"}, lty=2,
+       cex=0.8, bty=\hlstr{"n"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6} 
+
+\end{knitrout}
+
+
+
+A normal density is overlayed on the plot of the kernel density estimate with standard estimates of the sample mean and standard deviation. Another normal density is overlayed using robust estimates. It is clear from the chart that neither the robust estimates nor the standard estimates of the sample mean and sample standard deviation provide a visually goot fit. It appears that the kernel density estimate of the market returns is bimodal.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Plot the kernel density estimate of market returns}
+\hlkwd{plot}(\hlkwd{density}(MKT.ret), main = \hlstr{"Density of Market Returns"})
+\hlkwd{rug}(MKT.ret)
+\hlcom{# sample estimates}
+\hlkwd{curve}(\hlkwd{dnorm}(x, mean = \hlkwd{mean}(MKT.ret), sd = \hlkwd{sd}(MKT.ret)), add = TRUE, col = \hlstr{"red"}, 
+    lty = 2, lwd = 2)
+\hlcom{# robust estimates}
+\hlkwd{curve}(\hlkwd{dnorm}(x, mean = \hlkwd{median}(MKT.ret), sd = \hlkwd{mad}(MKT.ret)), add = TRUE, col = \hlstr{"blue"}, 
+    lty = 2, lwd = 2)
+\hlkwd{legend}(\hlstr{"topleft"}, legend = \hlkwd{c}(\hlstr{"kernel density estimate"}, \hlstr{"normal density estimate"}, 
+    \hlstr{"robust normal density estimate"}), col = \hlkwd{c}(\hlstr{"black"}, \hlstr{"red"}, \hlstr{"blue"}), lty = \hlkwd{c}(1, 
+    2, 2), bty = \hlstr{"n"}, cex = 0.8)
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7} 
+
+\end{knitrout}
+
+
+Quantile-Quantile plot of market returns with a 95\% confidence envelope. It can be seen from the Normal Q-Q plot that the tails of the market returns are well outside of the 95\% confidence envelope.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{chart.QQPlot}(MKT.ret, envelope=0.95, pch=18, main=\hlstr{"Market Returns QQ Plot"},
+             xlab=\hlstr{"Theoretical Normal Quantiles"})
+\hlkwd{legend}(\hlstr{"topleft"}, legend=\hlkwd{c}(\hlstr{"Quartile-Pairs Line"}, \hlstr{"95% Confidence Envelope"}), 
+       col=\hlkwd{c}(\hlstr{"blue"}, \hlstr{"blue"}), lty=\hlkwd{c}(1, 2), cex=0.8, bty=\hlstr{"n"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8} 
+
+\end{knitrout}
+
+
+We can test if the market returns came from a normal distribution using the Shapiro-Wilk test of normality. The null hypothesis is that the data came from a normal distribution. The p-value is less than 0.05 and the null hypothesis can be rejected at a 95\% confidence level.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{shapiro.test}(\hlkwd{coredata}(MKT.ret))
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  coredata(MKT.ret)
+## W = 0.941, p-value = 0.005999
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\subsection{Basic Statistics}
+Here we calculate some basic statisitics on the market returns.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Sample mean of SPY return}
+\hlkwd{mean}(MKT.ret)
+\end{alltt}
+\begin{verbatim}
+## [1] 0.009145
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# Sample Variance of SPY returns}
+\hlkwd{var}(MKT.ret)
+\end{alltt}
+\begin{verbatim}
+##          market
+## market 0.002928
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# Sample standard deviation of SPY returns}
+\hlkwd{sd}(MKT.ret)
+\end{alltt}
+\begin{verbatim}
+## [1] 0.05411
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# Standard error of SPY returns}
+\hlkwd{sd}(MKT.ret)/\hlkwd{sqrt}(\hlkwd{nrow}(MKT.ret))
+\end{alltt}
+\begin{verbatim}
+## [1] 0.006985
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# Sample skewness of SPY returns.  See ?skewness for additional methods}
+\hlcom{# for calculating skewness}
+\hlkwd{skewness}(MKT.ret, method = \hlstr{"sample"})
+\end{alltt}
+\begin{verbatim}
+## [1] -0.7359
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# Sample kurtosis of SPY returns.  See ?kurtosis for additional methods}
+\hlcom{# for calculating kurtosis}
+\hlkwd{kurtosis}(MKT.ret, method = \hlstr{"sample"})
+\end{alltt}
+\begin{verbatim}
+## [1] 3.309
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# Summary statistics of SPY returns}
+\hlkwd{summary}(MKT.ret)
+\end{alltt}
+\begin{verbatim}
+##      Index                market        
+##  Min.   :1997-01-31   Min.   :-0.15685  
+##  1st Qu.:1998-04-22   1st Qu.:-0.02675  
+##  Median :1999-07-15   Median : 0.01877  
+##  Mean   :1999-07-15   Mean   : 0.00914  
+##  3rd Qu.:2000-10-07   3rd Qu.: 0.05178  
+##  Max.   :2001-12-31   Max.   : 0.08335
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# Sample quantiles of SPY returns}
+\hlkwd{quantile}(MKT.ret, probs = \hlkwd{c}(0, 0.25, 0.5, 0.75, 1))
+\end{alltt}
+\begin{verbatim}
+##       0%      25%      50%      75%     100% 
+## -0.15685 -0.02675  0.01877  0.05178  0.08335
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Scatter plot of each pair of assets. This can be usefule to visually look for relationships among the assets.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{pairs}(\hlkwd{coredata}(crsp.returns), pch=20, col=\hlkwd{rgb}(0,0,100,50,maxColorValue=255))
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-111} 
+\begin{kframe}\begin{alltt}
+\hlkwd{hexplom}(\hlkwd{coredata}(crsp.returns), varname.cex=0.75)
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-112} 
+
+\end{knitrout}
+
+
+Correlation and covariance matrices of the assets.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Sample correlation of returns}
+\hlkwd{cor}(crsp.returns)
+\end{alltt}
+\begin{verbatim}
+##        AMAT     AMGN       CAT       DD        G     GENZ
+## AMAT 1.0000  0.32350  0.045105  0.12941 0.218250  0.41977
+## AMGN 0.3235  1.00000 -0.223329 -0.06707 0.303333  0.44068
+## CAT  0.0451 -0.22333  1.000000  0.59569 0.004176 -0.02505
+## DD   0.1294 -0.06707  0.595690  1.00000 0.231427  0.10274
+## G    0.2182  0.30333  0.004176  0.23143 1.000000  0.15096
+## GENZ 0.4198  0.44068 -0.025055  0.10274 0.150958  1.00000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-13} 
+
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Sample covariance of returns}
+\hlkwd{cov}(crsp.returns)
+\end{alltt}
+\begin{verbatim}
+##           AMAT       AMGN        CAT         DD         G      GENZ
+## AMAT 0.0322460  0.0071537  7.927e-04  0.0019791 3.761e-03  0.009867
+## AMGN 0.0071537  0.0151647 -2.692e-03 -0.0007034 3.584e-03  0.007103
+## CAT  0.0007927 -0.0026916  9.578e-03  0.0049652 3.921e-05 -0.000321
+## DD   0.0019791 -0.0007034  4.965e-03  0.0072534 1.891e-03  0.001145
+## G    0.0037607  0.0035843  3.921e-05  0.0018913 9.207e-03  0.001896
+## GENZ 0.0098667  0.0071035 -3.210e-04  0.0011454 1.896e-03  0.017134
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-15} 
+
+\end{knitrout}
+
+
+
+\subsection{Distributions}
+R has functions to compute the density, distribution function, quantile, and random number generation for several distributions. The continuous distributions covered in chapter 1 are listed here.
+\begin{itemize}
+\item Normal Distribution: \verb"dnorm", \verb"pnorm", \verb"qnorm", \verb"rnorm"
+
+\item Chi-Squared Distribution: \verb"dchisq", \verb"pchisq", \verb"qchisq", \verb"rchisq"
+
+\item Student t Distribution: \verb"dt", \verb"pt", \verb"qt", \verb"rt"
+
+\item F Distribution: \verb"df", \verb"pf", \verb"qf", \verb"rf"
+\end{itemize}
+
+In general, the functions are as follows:
+\begin{itemize}
+\item d*: density
+\item p*: distribution function (probability)
+\item q*: quantile function
+\item r*: random generation
+\end{itemize}
+where * is the appropriate distribution.
+
+Here we demonstrate these functions for the normal distribution.
+
+Use dnorm to plot the pdf of a standard normal distribution
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{curve}(\hlkwd{dnorm}(x), from = -4, to = 4, main = \hlstr{"Standard Normal pdf"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-16} 
+
+\end{knitrout}
+
+
+Calculate the probability that $Y \leq 2$ when $Y$ is distributed $N(1, 4)$ with mean of 1 and variance of 4.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{pnorm}(q = 2, mean = 1, sd = 2)
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6915
+\end{verbatim}
+\begin{alltt}
+\hlcom{# Normalize as is done in the book}
+\hlkwd{pnorm}(q = 0.5)
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6915
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Quantile function of the standard normal distribution at probability 0.975.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{qnorm}(p = 0.975)
+\end{alltt}
+\begin{verbatim}
+## [1] 1.96
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Generate 10 random numbers from a normal distribution with mean 0.0015 and standard deviation 0.025.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Set the seed for reproducible results}
+\hlkwd{set.seed}(123)
+\hlkwd{rnorm}(n = 10, mean = 0.0015, sd = 0.025)
+\end{alltt}
+\begin{verbatim}
+##  [1] -0.012512 -0.004254  0.040468  0.003263  0.004732  0.044377  0.013023
+##  [8] -0.030127 -0.015671 -0.009642
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\subsection{Hypothesis Test}
+The null hypothesis is that the true mean return of the market is equal to 0.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{t.test}(x=MKT.ret, alternative=\hlstr{"two.sided"}, mu=0)
+\end{alltt}
+\begin{verbatim}
+## 
+## 	One Sample t-test
+## 
+## data:  MKT.ret
+## t = 1.309, df = 59, p-value = 0.1956
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  -0.004833  0.023122
+## sample estimates:
+## mean of x 
+##  0.009145
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+The p-value is greater than 0.05 so the null hypothesis cannot be rejected at a 95\% confidence level.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Replicate the results of t.test using the method outlined in the book}
+t_stat <- (\hlkwd{mean}(MKT.ret) - 0)/(\hlkwd{sd}(MKT.ret)/\hlkwd{sqrt}(\hlkwd{nrow}(MKT.ret)))
+p_value <- 2 * \hlkwd{pt}(q = -\hlkwd{abs}(t_stat), df = \hlkwd{nrow}(MKT.ret))
+df <- \hlkwd{nrow}(MKT.ret) - 1
+ci <- \hlkwd{mean}(MKT.ret) + \hlkwd{c}(-1, 1) * 1.96 * \hlkwd{sd}(MKT.ret)/\hlkwd{sqrt}(\hlkwd{nrow}(MKT.ret))
+\hlkwd{paste}(\hlstr{"t = "}, \hlkwd{round}(t_stat, 4), \hlstr{", df = "}, df, \hlstr{", p-value = "}, \hlkwd{round}(p_value, 
+    4), sep = \hlstr{""})
+\end{alltt}
+\begin{verbatim}
+## [1] "t = 1.3091, df = 59, p-value = 0.1955"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{print}(\hlstr{"95% Confidence Interval"})
+\end{alltt}
+\begin{verbatim}
+## [1] "95% Confidence Interval"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{print}(ci)
+\end{alltt}
+\begin{verbatim}
+## [1] -0.004546  0.022836
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Note that the confidence interval is different. This is because the \verb"t.test" function calculates the exact confidence interval. Using a value of 1.96 is an approximation.
+
+\section{Regression}
+\subsection{Regression with a single regressor}
+
+The general form of a linear model is:
+\begin{equation}
+Y_i = \beta_0 + \beta_i X_i + u_i
+\end{equation}
+
+where:
+\begin{itemize}
+\item[$Y_i$]{ is the dependent variable}
+\item[$X_i$]{ is the independent variable}
+\item[$\beta_0$]{ is the intercept of the population regression line}
+\item[$\beta_1$]{ is the slope of the population regression line}
+\item[$u_i$]{ is the error term}
+\end{itemize}
+
+In the following linear model, CAT excess returns is the dependent variable and market excess returns is the independent variable. This model will be used to demonstrate linear regression in R.
+
+Extract the weekly returns of CAT from the returns object.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+CAT.ret <- crsp.returns[, \hlstr{"CAT"}] - largecap.ts[, \hlstr{"t90"}]
+MKT.ret <- largecap.ts[, \hlstr{"market"}] - largecap.ts[, \hlstr{"t90"}]
+
+\hlcom{# Fitting linear models works with xts objects, but works better with}
+\hlcom{# data.frame objects. This is especially true with the predict method for}
+\hlcom{# linear models.}
+ret.data <- \hlkwd{as.data.frame}(\hlkwd{cbind}(CAT.ret, MKT.ret))
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+Scatterplot of CAT and market excess returns.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}(\hlkwd{coredata}(MKT.ret), \hlkwd{coredata}(CAT.ret), pch=19,
+     col=\hlkwd{rgb}(0,0,100,50,maxColorValue=255),
+     xlab=\hlstr{"Market returns"}, ylab=\hlstr{"CAT returns"},
+     main=\hlstr{"CAT vs. Market Excess Returns"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-23} 
+
+\end{knitrout}
+
+
+Fit the linear regression model. \verb"CAT.ret" is the response variable and \verb"MKT.ret" is the explanatory variable. That is, a linear model will be fit using market excesss returns to describe CAT excess returns.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+model.fit <- \hlkwd{lm}(CAT ~ market, data = ret.data)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+The \verb"print" and \verb"summary" methods for \verb"lm" objects are very useful and provide several of the statistics covered in the book. Note that \verb"summary(model.fit)" will print the summary statisitcs, but it is often useful to assign the summary object to a variable so that elements from the summary object can be extracted as shown below.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# The print method displays the call and the coefficients of the linear}
+\hlcom{# model}
+model.fit
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = CAT ~ market, data = ret.data)
+## 
+## Coefficients:
+## (Intercept)       market  
+##     0.00489      0.60240
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# The summary method displays additional information for the linear model}
+model.summary <- \hlkwd{summary}(model.fit)
+model.summary
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = CAT ~ market, data = ret.data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.1977 -0.0564 -0.0064  0.0561  0.3722 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)   
+## (Intercept)  0.00489    0.01207    0.41   0.6867   
+## market       0.60240    0.22379    2.69   0.0093 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.0931 on 58 degrees of freedom
+## Multiple R-squared:  0.111,	Adjusted R-squared:  0.0957 
+## F-statistic: 7.25 on 1 and 58 DF,  p-value: 0.00927
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+The results of the fitted model show that the equation for the linear model can be written as
+\begin{equation}
+\hat{CAT.ret}_i = 0.004892 + 0.602402 * MKT.ret_i + 0.09310604
+\end{equation}
+
+Examples of useful methods to access elements of the \verb"lm" object
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Note that some are commented out}
+
+\hlcom{# Coefficients}
+\hlkwd{coef}(model.fit)
+\end{alltt}
+\begin{verbatim}
+## (Intercept)      market 
+##    0.004892    0.602402
+\end{verbatim}
+\begin{alltt}
+\hlcom{# Extract the fitted values fitted(model.fit) Extract the residuals}
+\hlcom{# resid(model.fit) Exctract the standardized residuals}
+\hlcom{# rstandard(model.fit)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+Access elements of the \verb"lm.summary" object
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Coefficients}
+model.coef <- \hlkwd{coef}(model.summary)
+model.coef
+\end{alltt}
+\begin{verbatim}
+##             Estimate Std. Error t value Pr(>|t|)
+## (Intercept) 0.004892    0.01207  0.4054 0.686706
+## market      0.602402    0.22379  2.6918 0.009272
+\end{verbatim}
+\begin{alltt}
+
+\hlcom{# Sigma}
+model.summary$sigma
+\end{alltt}
+\begin{verbatim}
+## [1] 0.09311
+\end{verbatim}
+\begin{alltt}
+\hlcom{# R squared}
+model.summary$r.squared
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1111
+\end{verbatim}
+\begin{alltt}
+\hlcom{# Adjusted R squared}
+model.summary$adj.r.squared
+\end{alltt}
+\begin{verbatim}
+## [1] 0.09573
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Accessing elements of the models can be ued to compute measures of fit. Some measures of fit, such as the $R^2$, adjusted $R^2$, and standard error of regression are computed by the \verb"summary" function and just need to be extracted.
+
+\subsubsection{Measures of Fit}
+Explained sum of squares (ESS)
+\begin{equation}
+ESS = \sum_{i=1}^n (\hat{Y}_i - \bar{Y})^2
+\end{equation}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+ESS <- \hlkwd{sum}((\hlkwd{fitted}(model.fit) - \hlkwd{mean}(CAT.ret))^2)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+Total sum of squares (TSS)
+\begin{equation}
+TSS = \sum_{i=1}^n (Y_i - \bar{Y})^2
+\end{equation}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+TSS <- \hlkwd{sum}((CAT.ret - \hlkwd{mean}(CAT.ret))^2)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+Sum of squared residuals (SSR)
+\begin{equation}
+SSR = \sum_{i=1}^n (\hat{u}_i)^2
+\end{equation}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+SSR <- \hlkwd{sum}(\hlkwd{resid}(model.fit)^2)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+The regression $R^2$ is the fraction of the sample variance of $Y_i$ explained by $X_i$. The $R^2$ can be extracted from the \verb"model.summary" object.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+r_squared <- model.summary$r.squared
+r_squared
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1111
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+The $R^2$ can also be computed using the ESS, TSS, and SSR.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+ESS/TSS
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1111
+\end{verbatim}
+\begin{alltt}
+1 - SSR/TSS
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1111
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+The standard error of the regression (SER) is computed as
+\begin{eqnarray}
+SER &=& s_{\hat{u}}\\
+s^2_{\hat{u}} &=& \frac{1}{n-2} \sum_{i=1}^n (\hat{u}_i)^2 = \frac{SSR}{n-2}
+\end{eqnarray}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+n <- \hlkwd{nrow}(CAT.ret)
+SER <- \hlkwd{sqrt}(SSR/(n - 2))
+SER
+\end{alltt}
+\begin{verbatim}
+## [1] 0.09311
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+
+Plot the residuals of the model.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}(\hlkwd{resid}(model.fit), type = \hlstr{"h"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-34} 
+
+\end{knitrout}
+
+
+
+Use the \verb"predict" method to calculate the confidence and prediction intervals of the fitted model.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+new <- \hlkwd{data.frame}(market = \hlkwd{seq}(from = -0.2, to = 0.2, length.out = \hlkwd{nrow}(ret.data)))
+model.ci <- \hlkwd{predict}(object = model.fit, newdata = new, interval = \hlstr{"confidence"})
+model.pi <- \hlkwd{predict}(object = model.fit, newdata = new, interval = \hlstr{"prediction"})
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+Access the betas and corresponding standard errors of the model.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Get the betas and the standard errors}
+alpha <- \hlkwd{round}(model.coef[1, 1], 6)
+alpha.se <- \hlkwd{round}(model.coef[1, 2], 6)
+beta <- \hlkwd{round}(model.coef[2, 1], 6)
+beta.se <- \hlkwd{round}(model.coef[2, 2], 6)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+Plot the fitted model with the confidence interval.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}(\hlkwd{coredata}(MKT.ret), \hlkwd{coredata}(CAT.ret),
+     col=\hlkwd{rgb}(0,0,100,50,maxColorValue=255), pch=20,
+     xlab=\hlstr{"Market returns"}, ylab=\hlstr{"CAT returns"}, xlim=\hlkwd{c}(-0.2, 0.2),
+     main=\hlstr{"\hlkwd{lm}(CAT ~ Market)"})
+\hlkwd{abline}(model.fit, col=\hlstr{"black"})
+\hlkwd{lines}(x=model.ci[, \hlstr{"fit"}], y=model.ci[, \hlstr{"upr"}], col=\hlstr{"blue"}, lty=1)
+\hlkwd{lines}(x=model.ci[, \hlstr{"fit"}], y=model.ci[, \hlstr{"lwr"}], col=\hlstr{"blue"}, lty=1)
+\hlkwd{legend}(\hlstr{"topleft"}, legend=\hlkwd{c}(\hlkwd{paste}(\hlstr{"alpha = "}, alpha, \hlstr{" ("}, alpha.se, \hlstr{")"}, sep=\hlstr{""}),
+                           \hlkwd{paste}(\hlstr{"beta = "}, beta, \hlstr{" ("}, beta.se, \hlstr{")"}, sep=\hlstr{""}),
+                           \hlstr{"Fitted Values"}, \hlstr{"95% Confidence Interval"}), 
+       col=\hlkwd{c}(\hlstr{"black"}, \hlstr{"blue"}), lty=\hlkwd{c}(0, 0, 1, 1), cex=0.8, bty=\hlstr{"n"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-37} 
+
+\end{knitrout}
+
+
+Plot the fitted model with the and prediction interval.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}(\hlkwd{coredata}(MKT.ret), \hlkwd{coredata}(CAT.ret),
+     col=\hlkwd{rgb}(0,0,100,50,maxColorValue=255), pch=20,
+     xlab=\hlstr{"Market returns"}, ylab=\hlstr{"CAT returns"}, xlim=\hlkwd{c}(-0.2, 0.2),
+     main=\hlstr{"\hlkwd{lm}(CAT ~ Market)"})
+\hlkwd{abline}(model.fit, col=\hlstr{"black"})
+\hlkwd{lines}(x=model.pi[, \hlstr{"fit"}], y=model.pi[, \hlstr{"upr"}], col=\hlstr{"red"}, lty=2)
+\hlkwd{lines}(x=model.pi[, \hlstr{"fit"}], y=model.pi[, \hlstr{"lwr"}], col=\hlstr{"red"}, lty=2)
+\hlkwd{legend}(\hlstr{"topleft"}, legend=\hlkwd{c}(\hlkwd{paste}(\hlstr{"alpha = "}, alpha, \hlstr{" ("}, alpha.se, \hlstr{")"}, sep=\hlstr{""}),
+                           \hlkwd{paste}(\hlstr{"beta = "}, beta, \hlstr{" ("}, beta.se, \hlstr{")"}, sep=\hlstr{""}),
+                           \hlstr{"Fitted Values"}, \hlstr{"95% Prediction Interval"}), 
+       col=\hlkwd{c}(\hlstr{"black"}, \hlstr{"red"}), lty=\hlkwd{c}(0, 0, 1, 2), cex=0.8, bty=\hlstr{"n"})
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-38} 
+
+\end{knitrout}
+
+
+\subsection{Regression with multiple regressors}
+The Fama French 3 Factor model is used to demonstrate regression with multiple regressors. The first example will use AAPL weekly returns and the Fama French factors from 2005-01-14 to 2013-10-25. The premise of the model is that AAPL returns can be explained by the 3 factors of the Fama French model.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}(fama_french_factors)
+
+\hlcom{# The first 3 columns are the factors, the 4th column is the risk free}
+\hlcom{# rate.}
+ff_factors <- fama_french_factors[, 1:3]
+\hlkwd{head}(ff_factors, 5)
+\end{alltt}
+\begin{verbatim}
+##            Mkt-RF   SMB  HML
+## 2005-01-14   0.00  0.44 1.10
+## 2005-01-21  -1.33  0.17 0.58
+## 2005-01-28   0.26  0.19 0.42
+## 2005-02-04   2.90  0.94 0.39
+## 2005-02-11   0.08 -0.68 0.50
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Mkt-RF is the market excess return.
+SMB is \textbf{S}mall \textbf{M}inus \textbf{B}ig in terms of market capitalization.
+HML is \textbf{H}igh \textbf{M}inus \textbf{L}ow in terms of book-to-market.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}(returns)
+\hlcom{# Align the dates of the Fama-French Factors and the returns}
+returns <- returns[\hlstr{"/2013-10-25"}]
+AAPL.ret <- returns[, \hlstr{"AAPL"}]
+
+\hlcom{# AAPL excess returns}
+AAPL.e <- AAPL.ret - fama_french_factors[, \hlstr{"RF"}]/100
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Fit the model}
+ff.fit <- \hlkwd{lm}(AAPL.e ~ ff_factors)
+ff.fit
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = AAPL.e ~ ff_factors)
+## 
+## Coefficients:
+##      (Intercept)  ff_factorsMkt-RF     ff_factorsSMB     ff_factorsHML  
+##          0.00540           0.01145           0.00333          -0.00640
+\end{verbatim}
+\begin{alltt}
+\hlkwd{summary}(ff.fit)
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = AAPL.e ~ ff_factors)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.19963 -0.02661 -0.00039  0.02387  0.20464 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       0.00540    0.00197    2.74   0.0065 ** 
+## ff_factorsMkt-RF  0.01145    0.00087   13.16   <2e-16 ***
+## ff_factorsSMB     0.00333    0.00186    1.79   0.0735 .  
+## ff_factorsHML    -0.00640    0.00171   -3.75   0.0002 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.0422 on 455 degrees of freedom
+## Multiple R-squared:  0.327,	Adjusted R-squared:  0.322 
+## F-statistic: 73.6 on 3 and 455 DF,  p-value: <2e-16
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+If we wanted to fit the model to more assets, we could manually fit the model with different assets as the response variable. However, we can automatically fit several models very easily with R.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Omit the first column of returns because it is the SPY weekly returns,}
+\hlcom{# which is a proxy for the market.}
+returns <- returns[, -1]
+
+\hlcom{# Calculate the excess returns of all assets in the returns object}
+ret.e <- returns - (fama_french_factors[, \hlstr{"RF"}]/100) %*% \hlkwd{rep}(1, \hlkwd{ncol}(returns))
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+The \verb"ret.e" object contains the excess returns for AAPL, XOM, GOOG, MSFT, and GE.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Show the first 5 rows of ret.e}
+\hlkwd{head}(ret.e, 5)
+\end{alltt}
+\begin{verbatim}
+##                AAPL      XOM     GOOG     MSFT       GE
+## 2005-01-14 0.013340  0.02512  0.03117 -0.02073 -0.01400
+## 2005-01-21 0.003725 -0.01260 -0.05886 -0.01838 -0.01112
+## 2005-01-28 0.049189  0.01607  0.01054  0.02026  0.01702
+## 2005-02-04 0.065298  0.07799  0.07326  0.00466  0.01368
+## 2005-02-11 0.029506  0.01926 -0.08339 -0.01367 -0.00115
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Here we fit the Fama French 3 Factor model to each asset in \verb"ret.e". This fits 5 models, 1 for each asset, and stores results of each model in the \verb"ff.fit" object as a multiple linear model (mlm) object.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+ff.fit <- \hlkwd{lm}(ret.e ~ ff_factors)
+\hlcom{# Display the coefficients of each model}
+ff.fit
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = ret.e ~ ff_factors)
+## 
+## Coefficients:
+##                   AAPL       XOM        GOOG       MSFT       GE       
+## (Intercept)        0.005401   0.000809   0.002845   0.000300  -0.001109
+## ff_factorsMkt-RF   0.011450   0.008784   0.011521   0.009724   0.009792
+## ff_factorsSMB      0.003334  -0.004706  -0.000259  -0.003170   0.001164
+## ff_factorsHML     -0.006396  -0.002046  -0.006467  -0.007470   0.008276
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Extract and plot the beta values and the R squared values for each asset from the Fama French 3 Factor model.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+beta0 <- \hlkwd{coef}(ff.fit)[1, ]
+beta1 <- \hlkwd{coef}(ff.fit)[2, ]
+beta2 <- \hlkwd{coef}(ff.fit)[3, ]
+beta3 <- \hlkwd{coef}(ff.fit)[4, ]
+rsq <- \hlkwd{sapply}(X = \hlkwd{summary}(ff.fit), FUN = \hlkwd{function}(x) x$r.squared)
+\hlkwd{names}(rsq) <- \hlkwd{colnames}(ret.e)
+
+\hlkwd{par}(mfrow = \hlkwd{c}(2, 2))
+\hlkwd{barplot}(beta1, main = \hlstr{"Beta for Market-RF"}, col = bluemono, cex.names = 0.8)
+\hlkwd{barplot}(beta2, main = \hlstr{"Beta for SMB"}, col = bluemono, cex.names = 0.8)
+\hlkwd{barplot}(beta3, main = \hlstr{"Beta for HML"}, col = bluemono, cex.names = 0.8)
+\hlkwd{barplot}(rsq, main = \hlstr{"R Squared Values"}, col = bluemono, cex.names = 0.8)
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-45} 
+\begin{kframe}\begin{alltt}
+\hlkwd{par}(mfrow = \hlkwd{c}(1, 1))
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+Display the summary object for each model
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}(ff.fit)
+\end{alltt}
+\begin{verbatim}
+## Response AAPL :
+## 
+## Call:
+## lm(formula = AAPL ~ ff_factors)
+## 
+## Residuals:
+##             AAPL
+## Min    -0.199630
+## 1Q     -0.026608
+## Median -0.000385
+## 3Q      0.023870
+## Max     0.204637
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       0.00540    0.00197    2.74   0.0065 ** 
+## ff_factorsMkt-RF  0.01145    0.00087   13.16   <2e-16 ***
+## ff_factorsSMB     0.00333    0.00186    1.79   0.0735 .  
+## ff_factorsHML    -0.00640    0.00171   -3.75   0.0002 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.0422 on 455 degrees of freedom
+## Multiple R-squared:  0.327,	Adjusted R-squared:  0.322 
+## F-statistic: 73.6 on 3 and 455 DF,  p-value: <2e-16
+## 
+## 
+## Response XOM :
+## 
+## Call:
+## lm(formula = XOM ~ ff_factors)
+## 
+## Residuals:
+##              XOM
+## Min    -0.071559
+## 1Q     -0.011856
+## Median -0.000349
+## 3Q      0.012376
+## Max     0.092450
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       0.000809   0.001016    0.80     0.43    
+## ff_factorsMkt-RF  0.008784   0.000448   19.61  < 2e-16 ***
+## ff_factorsSMB    -0.004706   0.000957   -4.92  1.2e-06 ***
+## ff_factorsHML    -0.002046   0.000878   -2.33     0.02 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.0217 on 455 degrees of freedom
+## Multiple R-squared:  0.498,	Adjusted R-squared:  0.495 
+## F-statistic:  150 on 3 and 455 DF,  p-value: <2e-16
+## 
+## 
+## Response GOOG :
+## 
+## Call:
+## lm(formula = GOOG ~ ff_factors)
+## 
+## Residuals:
+##            GOOG
+## Min    -0.13693
+## 1Q     -0.01741
+## Median -0.00232
+## 3Q      0.01527
+## Max     0.15804
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       0.002845   0.001668    1.71    0.089 .  
+## ff_factorsMkt-RF  0.011521   0.000735   15.68  < 2e-16 ***
+## ff_factorsSMB    -0.000259   0.001570   -0.17    0.869    
+## ff_factorsHML    -0.006467   0.001441   -4.49  9.1e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.0357 on 455 degrees of freedom
+## Multiple R-squared:  0.383,	Adjusted R-squared:  0.379 
+## F-statistic: 94.3 on 3 and 455 DF,  p-value: <2e-16
+## 
+## 
+## Response MSFT :
+## 
+## Call:
+## lm(formula = MSFT ~ ff_factors)
+## 
+## Residuals:
+##             MSFT
+## Min    -0.125627
+## 1Q     -0.013886
+## Median -0.000495
+## 3Q      0.012635
+## Max     0.137178
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       0.000300   0.001319    0.23    0.820    
+## ff_factorsMkt-RF  0.009724   0.000581   16.73  < 2e-16 ***
+## ff_factorsSMB    -0.003170   0.001241   -2.55    0.011 *  
+## ff_factorsHML    -0.007470   0.001140   -6.56  1.5e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.0282 on 455 degrees of freedom
+## Multiple R-squared:  0.39,	Adjusted R-squared:  0.386 
+## F-statistic: 96.9 on 3 and 455 DF,  p-value: <2e-16
+## 
+## 
+## Response GE :
+## 
+## Call:
+## lm(formula = GE ~ ff_factors)
+## 
+## Residuals:
+##              GE
+## Min    -0.13291
+## 1Q     -0.01460
+## Median -0.00156
+## 3Q      0.01266
+## Max     0.21088
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)      -0.001109   0.001366   -0.81     0.42    
+## ff_factorsMkt-RF  0.009792   0.000602   16.27  < 2e-16 ***
+## ff_factorsSMB     0.001164   0.001285    0.91     0.37    
+## ff_factorsHML     0.008276   0.001180    7.01  8.4e-12 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.0292 on 455 degrees of freedom
+## Multiple R-squared:  0.565,	Adjusted R-squared:  0.562 
+## F-statistic:  197 on 3 and 455 DF,  p-value: <2e-16
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+
+\end{document}

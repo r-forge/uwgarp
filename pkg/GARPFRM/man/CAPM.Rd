@@ -2,7 +2,7 @@
 \alias{CAPM}
 \title{Capital Asset Pricing Model}
 \usage{
-CAPM(R, Rmkt)
+  CAPM(R, Rmkt)
 }
 \arguments{
   \item{R}{asset returns}
@@ -10,8 +10,8 @@ CAPM(R, Rmkt)
   \item{Rmkt}{market returns}
 }
 \description{
-Description of CAPM Retrieves alphas, betas, as well as
-pvalue and tstats
+  Description of CAPM Retrieves alphas, betas, as well as
+  pvalue and tstats
 }
 \examples{
 data(crsp.short)

@@ -13,3 +13,8 @@ Depends:
 Suggests:
     quadprog
 License: GPL
+Collate:
+    'EWMA.R'
+    'capm.R'
+    'garch11.R'
+    'monte_carlo.R'
