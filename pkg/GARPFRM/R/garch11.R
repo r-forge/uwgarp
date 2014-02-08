@@ -25,13 +25,13 @@ return(dcc.fit)
 #' 
 #' @param object a garch11 object created by \code{\link{GARCH(1,1)}}
 #' @export
-fGarch11 <- function(object,window){
-  UseMethod("fGarch11")
+fcstGarch11 <- function(object, window){
+  UseMethod("fcstGarch11")
 }
 
-#' @method fGarch11 Dccfit
-#' @S3method fGarch11 DCCfit
-fGarch11.DCCfit <- function(object,window = 100){
+#' @method fcstGarch11 Dccfit
+#' @S3method fcstGarch11 DCCfit
+fcstGarch11.DCCfit <- function(object,window = 100){
   result = dccforecast(garch11, n.ahead=window)
   return(result)
 }

@@ -47,7 +47,7 @@ abline(h=cor(temp)[1,2], lwd=3, col="red")
 par(mfrow=c(1,1))
 
 # Calculate EWMA cov and cor, applying default lambda - 0.96
-covEwma <- EWMA(as.data.frame(temp))
+covEwma <- EWMA(temp)
 
 # Extract conditional var and cor
 assetCondCov <- covEwma[,2,1];
