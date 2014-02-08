@@ -3,6 +3,20 @@ library(GARPFRM)
 data(crsp.short)
 R <- largecap.ts[, 1:4]
 
+ewma_est <- EWMA(R)
+# This is a list of two elements
+names(ewma_est)
+
+# for the EWMA estimate 
+ewma_est$EWMA
+
+# for the data
+ewma_est$R
+
+getCov(ewma_est, 1, 2)
+
+plot(ewma_est, asset1=1, asset2=2)
+
 # might need a separate function for univariate time series of returns
 
 # estimate covariance or correlation using EWMA for a multivariate data set
