@@ -150,9 +150,9 @@ plot.EWMACovar <- function(object, asset1, asset2){
 
 # EWMA plotting for var
 #' @export
-plot.EWMAVar <- function(object,asset1, asset2){
+plot.EWMAVar <- function(object,asset1){
   tmp = getCov(object,asset1)
-  plot(y=tmp, type="l", xlab="Time", ylab="Var", lwd=2, col="blue",
+  plot(x=time(as.zoo(tmp)),y=tmp, type="l", xlab="Time", ylab="Var", lwd=2, col="blue",
        main="EWMA Var");
   grid()
   abline(h=var(object$y_data), lwd=2, col="red")
