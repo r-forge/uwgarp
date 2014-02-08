@@ -23,7 +23,9 @@
 #' Capital Asset Pricing Model
 #' 
 #' Description of CAPM
-#' Retrieves alphas, betas, as well as pvalue and tstats
+#' Retrieves alphas, betas, as well as pvalue and tstats. 
+#' The Model is used to determine a theoretically appropriate rate of return
+#' of an asset's non-diversifiable risk.
 #' 
 #' @param R asset returns
 #' @param Rmkt market returns
@@ -56,7 +58,7 @@ CAPM <- function(R, Rmkt){
 
 #' CAPM alphas
 #' 
-#' Description of CAPM alphas
+#' Description of CAPM alphas: retrieves alpha (intercept) from CAPM object.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @export
@@ -82,7 +84,7 @@ getAlphas.capm_mlm <- function(object){
 
 #' CAPM betas
 #' 
-#' Description of CAPM betas
+#' Description of CAPM betas: retrieves beta (slope) from CAPM object.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @export
@@ -108,7 +110,8 @@ getBetas.capm_mlm <- function(object){
 
 #' CAPM statistics
 #' 
-#' Description of CAPM statistics (standard error, t-values, and p-values)
+#' Description of CAPM statistics: retrieves standard error, t-values, and p-values
+#' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @export
 getStatistics <- function(object){
@@ -176,6 +179,8 @@ plot.capm_mlm <- function(object){
 #' CAPM SML
 #' 
 #' Description of CAPM Security Market Line (SML)
+#' SML is the represesentation of the CAPM. It illustrates the expected rate of return
+#' of an individual secuirty as a function of systematic, non-diversified risk (known as beta).
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @export
@@ -194,6 +199,8 @@ chartSML <- function(object){
 #' CAPM hypTest
 #' 
 #' Description of CAPM beta/alpha hypothesis test
+#' Generalization is termed a two-sided or two-tailed test. 
+#' Returns a true (reject) or false (fail to reject).
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @export
