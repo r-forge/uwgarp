@@ -17,7 +17,7 @@ dcc.garch11.spec = dccspec(uspec = multispec( replicate(2, garch11.spec) ),
                            dccOrder = c(1,1), distribution = "mvnorm")
 dcc.garch11.spec
 
-dcc.fit = dccfit(dcc.garch11.spec, data = object)
+dcc.fit = dccfit(dcc.garch11.spec, data = R)
 return(dcc.fit)
 }
 
