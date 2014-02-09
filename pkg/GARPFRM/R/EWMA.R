@@ -127,9 +127,9 @@ getCov.EWMACovar <- function(object, asset1, asset2){
 
 #' @method getCov EWMAVar
 #' @S3method getCov EWMAVar
-getCov.EWMAVar <- function(object, asset1, asset2){
-  if(!inherits(object, "EWMAVar")) stop("object must be of class EWMAVar")
-  if (is.null(asset2) == FALSE) {warning("Running univariate EWMA leave asset2 unspecified")}
+getCov.EWMAVar <- function(object, asset1, asset2=NULL){
+  if(!inherits(object, "EWMAVar")) stop("Object must be of class EWMAVar")
+  if (is.null(asset2) == FALSE) {warning("Running univariate no need to specify asset2")}
   # Manipulate object for feasible use  
   # object[[length(object)]] = NULL
   
@@ -190,7 +190,7 @@ getCor.EWMACor <- function(object, asset1, asset2){
 
 # EWMA plotting for covar
 #' @export
-plot.EWMACovar <- function(object, asset1, asset2){
+plot.EWMACovar <- function(object,..., asset1, asset2){
   # Check if asset is a character 
   if(is.character(asset1) & is.character(asset2)){
     idx1 = grep(asset1, colnames(object[[1]]))
@@ -223,7 +223,7 @@ plot.EWMAVar <- function(object,...,asset1){
 
 # EWMA plotting for correlation
 #' @export
-plot.EWMACor <- function(object, ...,asset1, asset2){
+plot.EWMACor <- function(object,...,asset1, asset2){
   # Check if asset is a character 
   if(is.character(asset1) & is.character(asset2)){
     idx1 = grep(asset1, colnames(object[[1]]))
