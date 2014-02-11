@@ -1,10 +1,11 @@
 library(PerformanceAnalytics)
-data(managers)
+data(crsp.short)
+R <- largecap.ts[, 1:4]
 
 # Univariate CAPM
 # Run CAPM regression
 # Fiting CAPM
-object = CAPM(managers[,3], managers[,8])
+object = CAPM(R[,3], R[,4])
 
 # Retrieve alpha
 getAlphas(object)
@@ -26,7 +27,7 @@ plot(object)
 # Multiple Linear Model CAPM
 # Run CAPM regression
 # Fiting CAPM
-object = CAPM(managers[,3:7], managers[,8])
+object = CAPM(R[,1:3], R[,4])
 
 # Plot security market line
 chartSML(object)
