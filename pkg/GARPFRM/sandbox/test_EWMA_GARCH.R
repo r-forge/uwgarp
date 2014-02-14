@@ -6,20 +6,20 @@ data(crsp.short)
 R <- largecap.ts[, 1:4]
 options(digits=4)
 
+
 # Remember: log-returns for GARCH analysis
 temp_1 = R[,1] 
-temp_2 = R[,2]
+temp_2 = R[,3]
    
 # Create combined data series
 temp = merge(temp_1,temp_2)
 
 # scatterplot of returns
-plot(coredata(temp_2), coredata(temp_2), xlab=colnames(temp_1), ylab=colnames(temp_2), 
+plot(coredata(temp_1), coredata(temp_2), xlab=colnames(temp_1), ylab=colnames(temp_2), 
      main ="Scatterplot of Returns")
 abline(h=0,v=0,lty=3)
 
 # Compute rolling cor
-
 cor.fun = function(x){
   cor(x)[1,2]
 }
@@ -61,45 +61,42 @@ halfLife = log(0.5)/log(0.94) + 5
 lambda = exp(log(0.5)/halfLife)
 covEwma <- EWMA(temp, lambda)
 
-# Dynamic Conditional Cor
-# Joint is the conditonal corr param w/ cov targeting
-garch11 <- garch11(temp)
-
-class(garch11)
-slotNames(garch11)
-names(garch11@mfit)
-names(garch11@model)
+# Garch11 testing
+data(returns)
+tempReturns = cbind(returns[, "SPY"],returns[,"AAPL"])
+# Dynamic Conditional Cor/Cov
+garch11 <- garch11(tempReturns)
 
 # many extractor functions - see help on DCCfit object
 # coef, likelihood, rshape, rskew, fitted, sigma, residuals, plot, infocriteria, rcor, rcov show, nisurface
 # show dcc fit
 garch11
 
-# conditional sd of each series
+# Conditional sd of each series
 plot(garch11, which=2)
 
-# conditional covar of each series
+# Conditional covar of each series
 plot(garch11, which=3)
 
-# conditional cor
+# Conditional cor
 plot(garch11, which=4)
 
-# plot mutiple time series: extracting cor series
+# extracting correlation series
 ts.plot(rcor(garch11)[1,2,])
 
-# Forecasting conditional vol and cor, default wd = 100
-fcstGarch11 = fcstGarch11(garch11)
+# # Forecasting conditional vol and cor, default wd = 100
+# fcstGarch11 = fcstGarch11(garch11,100)
 
-class(fcstGarch11)
-slotNames(fcstGarch11)
-class(fcstGarch11@mforecast)
-names(fcstGarch11@mforecast)
-
-# many method functions - see help on DCCforecast class
-# rshape, rskew, fitted, sigma, plot, rcor, rcov, show
-
-# Show forecasts
-fcstGarch11
-
-# plot(garch11, which=3)
-plot(fcstGarch11, which=3)
+# class(fcstGarch11)
+# slotNames(fcstGarch11)
+# class(fcstGarch11@mforecast)
+# names(fcstGarch11@mforecast)
+# 
+# # many method functions - see help on DCCforecast class
+# # rshape, rskew, fitted, sigma, plot, rcor, rcov, show
+# 
+# # Show forecasts
+# fcstGarch11
+# 
+# # plot(garch11, which=3)
+# plot(fcstGarch11, which=3)
