@@ -84,19 +84,19 @@ plot(garch11, which=4)
 # extracting correlation series
 ts.plot(rcor(garch11)[1,2,])
 
-# # Forecasting conditional vol and cor, default wd = 100
-# fcstGarch11 = fcstGarch11(garch11,100)
+# Forecasting conditional vol and cor, default wd = 100
+fcstGarch11 = fcstGarch11(garch11,100)
 
-# class(fcstGarch11)
-# slotNames(fcstGarch11)
-# class(fcstGarch11@mforecast)
-# names(fcstGarch11@mforecast)
-# 
-# # many method functions - see help on DCCforecast class
-# # rshape, rskew, fitted, sigma, plot, rcor, rcov, show
-# 
-# # Show forecasts
-# fcstGarch11
-# 
-# # plot(garch11, which=3)
-# plot(fcstGarch11, which=3)
+class(fcstGarch11)
+slotNames(fcstGarch11)
+class(fcstGarch11@mforecast)
+names(fcstGarch11@mforecast)
+
+# many method functions - see help on DCCforecast class
+# rshape, rskew, fitted, sigma, plot, rcor, rcov, show
+
+# Show forecasts
+fcstGarch11
+
+# Plot Conditional Covar Forecast 
+plot(fcstGarch11, which=3)

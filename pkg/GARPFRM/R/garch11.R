@@ -41,7 +41,7 @@ fcstGarch11 <- function(object, window){
 #' @S3method fcstGarch11 DCCfit
 fcstGarch11.DCCfit <- function(object, window = 100){
   #if ((window > nrow(object))) {stop("Window is too large to forecast")}
-  result = dccforecast(garch11, n.ahead=window)
+  result = dccforecast(object, n.ahead=window)
   class(result)
   slotNames(result)
   class(result@mforecast)
