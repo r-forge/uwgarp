@@ -3,6 +3,7 @@ suppressMessages(library(GARPFRM))
 options(digits=3)
 data(crsp.short)
 stock_rets.df <- largecap.ts
+Measures = rep(NULL,4)
 
 # Definitioned/Constant variables
 relation = c("Less Than","Equal To","Greater Than")
@@ -28,11 +29,14 @@ MrktName ="Market"
 #Market Name in data set
 mrktDataName = "market"
 
-# Risk free rate name used in data set
+# Risk free rate name used in output
 RFName="Risk_Free_Rate"
 
 # Risk Free Name in data set
 rfDataName = "t90"
+
+Measures = rbind(Measures, c("Series Name",PortName,MrktName,RFName))
+colnames(Measures) = c("Measure","Portfolio","Market","RiskFree")
 
 # List column headers predominantly tickers/name of securities
 
@@ -84,6 +88,14 @@ sum(alphas)
 portfolio = returns.mat[,1:(nSec-2)]%*%as.vector(alphas)
 colnames(portfolio) ="PortRets"
 
+salient = matrix(data=c("Mean",mean(portfolio),mean(returns.mat[,ptrMkt]),mean(returns.mat[,ptrRF]),
+                   "Stdev",sd(portfolio),sd(returns.mat[,ptrMkt]),sd(returns.mat[,ptrRF]),
+                   "AnnuallyFrequency",rep(freQ,3),
+                   "Number of Samples",rep(nRow,3)),nrow=4,ncol=4,byrow=TRUE)
+
+Measures = rbind(Measures, salient)
+
+
 # Start to compute performance measures using performance analytic and as a check
 # compute from underlying formula
 
@@ -93,6 +105,8 @@ colnames(portfolio) ="PortRets"
 # Compute beta
 beta = cov(portfolio[,1],returns.mat[,ptrMkt])/var(returns.mat[,ptrMkt])
 cat('\n Beta =',beta,', between the portfolio represented by ',PortName,' and the market represented by ',MrktName,' \n')
+
+Measures = rbind(Measures,c("Beta",beta,"",""))
 
 # Compute Treynor
 
@@ -111,8 +125,11 @@ cat('\n Hand computed for ',PortName,' Treynor Ratio = ',trHand,'\n')
 cat('\n PA computed for ',MrktName,' Treynor Ratio = ',trMarket,'\n')
 cat('\n Hand computed for ',MrktName,' Treynor Ratio = ',trHandM,'\n')
 
+Measures = rbind(Measures,c("Treynor Ratio",tr,trMarket,""))
+
    # Compare Treynor Ratio for market returns against Treynor Ratio for portfolio returns
 cat('\n Treynor Ratio of ',MrktName,' is ',relation[sign(trMarket - tr) + 2],' Treynor Ratio of ',PortName,'\n' )
+TR_Mrkt2Port = relation[sign(trMarket - tr) + 2]
 
 # Compute Sharpe
 
@@ -128,6 +145,8 @@ shrHand = mean(xCess)/sd(xCess)
    # Output results from Sharpe Ratio computation
 cat('\n PA computed ',PortName,' Sharpe Ratio = ',shr,'\n')
 cat('\n Hand computed ',PortName,' Sharpe Ratio = ',shrHand,'\n')
+
+Measures = rbind(Measures,c("Sharpe Ratio",shr,"",""))
 
 # Compute Jensen's Alpha
 
@@ -164,8 +183,11 @@ cat('\n Delta Method Coefficient Value = ', deltaCoef,'\n')
 
    # t stat and pvalue under H0: alpha = 0 against HA: alpha != 0 
 tStat = jaHand/(analT1[1,2]*deltaCoef^0.5)
-pValue = pt(tStat,nRow-2)
-cat('\n H0: alpha = 0, HA: alpha != 0  p-value: ',2*(1-pValue),'\n')
+pValue = 2*(1-pt(tStat,nRow-2))
+cat('\n H0: alpha = 0, HA: alpha != 0  p-value: ',pValue,'\n')
+
+Measures = rbind(Measures,c("Jensen's Alpha",ja,"",""))
+Measures = rbind(Measures,c("Jensen's Alpha P Value",pValue,"",""))
 
 # Compute Tracking Error
 
@@ -183,6 +205,8 @@ teHand = sqrt(sum((RR-ARR)^2)/(nRow-1))*sqrt(freQ)
 cat('\n PA computed ',PortName,' Tracking Error = ',te,'\n')
 cat('\n Hand computed ', PortName,' Tracking Error = ',teHand,'\n')
 
+Measures = rbind(Measures,c("Tracking Error",te,"",""))
+
 # Compute Information Ratio
 
    # PA computation of Information Ratio
@@ -194,6 +218,8 @@ irHand = (ARR/(sqrt(sum((RR-ARR)^2)/(nRow-1))))*sqrt(freQ)
    # Output results from Information Ratio computation  
 cat('\n PA computed ',PortName,' Information Ratio = ',ir,'\n')
 cat('\n Hand computed ',PortName,' Information Ratio = ',irHand,'\n')
+
+Measures = rbind(Measures,c("Information Ratio",ir,"",""))
 
 # Compute Sortino Ratio (including Downside Deviation)
 
@@ -224,3 +250,10 @@ srHand = sqrt(freQ)*ARR/dwn
    # Output computation of Sortino Ratio
 cat('\n PA computed ',PortName,' Sortino Ratio = ',sr,'\n')
 cat('\n Hand computed ',PortName,' Sortino Ratio = ',srHand,'\n')
+
+Measures = rbind(Measures,c("Downside Deviation",dwn,"",""))
+Measures = rbind(Measures,c("Denominator DD",denomVal,"",""))
+Measures = rbind(Measures,c("Sortino Ratio",sr,"",""))
+Measures.df= as.data.frame(Measures,stringsAsFactors=FALSE)
+
+print(Measures.df)
