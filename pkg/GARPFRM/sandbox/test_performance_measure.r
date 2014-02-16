@@ -5,6 +5,18 @@ data(crsp.short)
 stock_rets.df <- largecap.ts
 Measures = rep(NULL,4)
 
+## keep it simple and use this thoughout
+## no need to transform to zoo, matrix, or df objects
+# Equal weight portfolio
+R.portfolio <- Return.portfolio(largecap.ts[, 1:5])
+
+# Market returns
+R.market <- largecap.ts[, "market"]
+
+# risk free rate
+rf <- largecap.ts[, "t90"]
+## 
+
 # Definitioned/Constant variables
 relation = c("Less Than","Equal To","Greater Than")
 

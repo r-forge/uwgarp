@@ -17,7 +17,7 @@ generateLogMC <- function(mu, sigma, Time=1, steps=52, starting_value=100){
   S <- vector("numeric", steps)
   S[1] <- starting_value
   for(i in 2:length(S)){
-    S[i] <- S[i-1] * exp((mu - (sigma^2 / 2)) * dt + sigma * rnorm(1) * sqrt(dt))
+    S[i] <- S[i-1] * exp((mu - 0.5 * sigma^2) * dt + sigma * rnorm(1) * sqrt(dt))
   }
   return(S)
 }
@@ -36,14 +36,14 @@ generateLogMC <- function(mu, sigma, Time=1, steps=52, starting_value=100){
 #' is the price of the asset.
 #' @return matrix of Monte Carlo simulated price paths
 monteCarlo <- function(mu, sigma, N=100, Time=1, steps=52, starting_value=100, log=TRUE){
-  mc_mat <- matrix(0, N, steps)
+  mc_mat <- matrix(0, steps, N)
   if(log){
     for(i in 1:N){
-      mc_mat[i,] <- generateLogMC(mu, sigma, Time, steps, starting_value)
+      mc_mat[,i] <- generateLogMC(mu, sigma, Time, steps, starting_value)
     }
   } else {
     for(i in 1:N){
-      mc_mat[i,] <- generateMC(mu, sigma, Time, steps, starting_value)
+      mc_mat[,i] <- generateMC(mu, sigma, Time, steps, starting_value)
     }
   }
   class(mc_mat) <- "monte_carlo"
@@ -51,16 +51,16 @@ monteCarlo <- function(mu, sigma, N=100, Time=1, steps=52, starting_value=100, l
 }
 
 plot.monte_carlo <-function(x, y, ..., main="Monte Carlo Simulation", xlab="Time Index", ylab="Price"){
-  plot(x[1,], type="n", ylim=range(x), main=main, xlab=xlab, ylab=ylab)
-  for(i in 1:nrow(x)){
-    lines(x[i,])
+  plot(x[,1], type="n", ylim=range(x), main=main, xlab=xlab, ylab=ylab)
+  for(i in 1:ncol(x)){
+    lines(x[,i])
   }
 }
 
 #' Ending Prices of Monte Carlo Simulation
 #' 
 endingPrices <- function(mc){
-  mc[, ncol(mc)]
+  mc[nrow(mc),]
 }
 
 plotEndingPrices <- function(mc){
