@@ -143,6 +143,34 @@ Measures = rbind(Measures,c("Treynor Ratio",tr,trMarket,""))
 cat('\n Treynor Ratio of ',MrktName,' is ',relation[sign(trMarket - tr) + 2],' Treynor Ratio of ',PortName,'\n' )
 TR_Mrkt2Port = relation[sign(trMarket - tr) + 2]
 
+##
+# calculate excess returns of R.portfolio
+R.portfolio.x <- R.portfolio - rf
+
+# calculate excess returns of R.market
+R.market.x <- R.market - rf
+
+# run regression to get beta
+fit <- lm(R.portfolio.x ~ R.market.x)
+beta.lm <- coef(fit)[2]
+
+# calculate beta another way
+beta <- as.numeric(cov(R.portfolio.x, R.market.x) / var(R.market.x))
+
+# Annualized portfolio excess returns / beta
+# This should match the TreynorRatio from PerformanceAnalytics
+TR.rb <- as.numeric(Return.annualized(R.portfolio.x) / beta.lm)
+
+as.numeric(Return.annualized(R.portfolio.x) / beta)
+
+# Calcualte Treynor Ratio with PerformanceAnalytics
+TR.PA <- TreynorRatio(R.portfolio, R.market, rf)
+
+all.equal(TR.rb, TR.PA)
+cat("Treynor Ratio by hand: ", TR.rb, "\n")
+cat("Treynor Ratio with PerformanceAnalytics: ", TR.PA, "\n")
+##
+
 # Compute Sharpe
 
    # PA computation of Sharpe
@@ -172,6 +200,9 @@ ja = CAPM.jensenAlpha(portfolio[,1,drop=FALSE], returns.mat[,ptrMkt,drop=FALSE],
 
 
    # Precompute excess returns
+## The risk-free rate varies through time so just computing the mean
+## is oversimplifying and could be part of the reason for the differences
+## you are seeing between your hand calculation and PerformanceAnalytics
 xCessP1 = portfolio[,1]-meanRF
 xCessM1 = returns.mat[,ptrMkt]-meanRF
 
