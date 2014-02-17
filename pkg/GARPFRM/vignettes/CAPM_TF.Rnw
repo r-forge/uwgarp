@@ -96,7 +96,7 @@ Run CAPM regression for AMAT
 <<ex4>>=
 # Univariate CAPM
 uv <- CAPM(exReturns[,1], R.market)
-summary(uv)
+coef(summary(uv))
 
 # Plot data with regression line
 plot(uv)
@@ -106,7 +106,7 @@ Run CAPM regression for AMAT
 <<ex5>>=
 # MLM CAPM
 mlm <- CAPM(exReturns[,1:3], R.market)
-summary(mlm)
+coef(summary(mlm))
 
 # Plot data with regression line
 plot(mlm)

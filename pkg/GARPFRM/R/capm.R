@@ -70,7 +70,8 @@ getAlphas <- function(object){
 #' @S3method getAlphas capm_uv
 getAlphas.capm_uv <- function(object){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
-  return(coef(object)[1])
+  temp = getStatistics(object)[,1]
+  return(temp[1])
 }
 
 #' @method getAlphas capm_mlm
@@ -96,7 +97,8 @@ getBetas <- function(object){
 #' @S3method getBetas capm_uv
 getBetas.capm_uv <- function(object){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
-  return(coef(object)[2])
+  temp = getStatistics(object)[,1]
+  return(temp[2])
 }
 
 #' @method getBetas capm_mlm
