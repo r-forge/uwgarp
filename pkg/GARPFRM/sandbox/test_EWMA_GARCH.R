@@ -87,11 +87,6 @@ ts.plot(rcor(garch11)[1,2,])
 # Forecasting conditional vol and cor, default wd = 100
 fcstGarch11 = fcstGarch11(garch11,100)
 
-class(fcstGarch11)
-slotNames(fcstGarch11)
-class(fcstGarch11@mforecast)
-names(fcstGarch11@mforecast)
-
 # Many method functions - see help on DCCforecast class
 # rshape, rskew, fitted, sigma, plot, rcor, rcov, show
 

@@ -2,12 +2,12 @@
 \alias{backTestVaR}
 \title{Backtesting VaR (backTestVaR)}
 \usage{
-backTestVaR(R, p = 0.95)
+backTestVaR(R, CI = 0.95)
 }
 \arguments{
   \item{R}{returns}
 
-  \item{p}{confidence level}
+  \item{CI}{confidence level}
 }
 \description{
 Description of backTestVaR. The function should handle UV
