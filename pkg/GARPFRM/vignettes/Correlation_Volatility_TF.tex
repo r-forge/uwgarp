@@ -1,0 +1,265 @@
+\documentclass[a4paper]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[OT1]{fontenc}
+\usepackage{Sweave}
+\usepackage{Rd}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage[round]{natbib}
+\usepackage{bm}
+\usepackage{verbatim}
+\usepackage[latin1]{inputenc}
+\bibliographystyle{abbrvnat}
+
+\let\proglang=\textsf
+%\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+%\newcommand{\R}[1]{{\fontseries{b}\selectfont #1}}
+%\newcommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
+%\newcommand{\E}{\mathsf{E}}
+%\newcommand{\VAR}{\mathsf{VAR}}
+%\newcommand{\COV}{\mathsf{COV}}
+%\newcommand{\Prob}{\mathsf{P}}
+
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\baselinestretch}{1.5}
+\setlength{\textwidth}{15cm} \setlength{\textheight}{22cm} \topmargin-1cm \evensidemargin0.5cm \oddsidemargin0.5cm
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+\begin{document}
+
+\title{Estimating Volatilities and Correlations}
+\author{Thomas Fillebeen}
+
+\maketitle
+
+\begin{abstract}
+Using historical CRSP data to produce estimates of current and future levels of volatilies and correlations. The vignette explores exponentially weighted moving average (EWMA), and generealized autoregressive conditional heteroscedasticity (GARCH(1,1)). These models recognize that volatilities and correlations are not constant. The models attempt to track variations in volatilities or correlation and forecast them into the future.
+\end{abstract}
+
+\tableofcontents
+
+\section{EWMA Covariance and Correlation}
+\subsection{Selected Returns Time Series}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# 'Load the GARPFRM package and CRSP dataset for analysis.}
+\hlkwd{suppressMessages}\hlstd{(}\hlkwd{library}\hlstd{(GARPFRM))}
+\hlkwd{suppressMessages}\hlstd{(}\hlkwd{library}\hlstd{(rugarch))}
+\hlkwd{suppressMessages}\hlstd{(}\hlkwd{library}\hlstd{(rmgarch))}
+\hlkwd{options}\hlstd{(}\hlkwc{digits} \hlstd{=} \hlnum{4}\hlstd{)}
+
+\hlkwd{data}\hlstd{(crsp.short)}
+\hlstd{R} \hlkwb{<-} \hlstd{largecap.ts[,} \hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Estimating Correlation and Volatility}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Remember: log-returns for GARCH analysis}
+\hlstd{asset1} \hlkwb{=} \hlstd{R[,} \hlnum{1}\hlstd{]}
+\hlstd{asset2} \hlkwb{=} \hlstd{R[,} \hlnum{3}\hlstd{]}
+
+\hlcom{# Create combined data series}
+\hlstd{cAssets} \hlkwb{=} \hlkwd{cbind}\hlstd{(asset1, asset2)}
+
+\hlcom{# Scatterplot of returns}
+\hlkwd{plot}\hlstd{(}\hlkwd{coredata}\hlstd{(asset1),} \hlkwd{coredata}\hlstd{(asset2),} \hlkwc{xlab} \hlstd{=} \hlkwd{colnames}\hlstd{(asset1),} \hlkwc{ylab} \hlstd{=} \hlkwd{colnames}\hlstd{(asset2),}
+    \hlkwc{main} \hlstd{=} \hlstr{"Scatterplot of Returns"}\hlstd{)}
+\hlkwd{abline}\hlstd{(}\hlkwc{h} \hlstd{=} \hlnum{0}\hlstd{,} \hlkwc{v} \hlstd{=} \hlnum{0}\hlstd{,} \hlkwc{lty} \hlstd{=} \hlnum{3}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/ex2} 
+
+\end{knitrout}
+
+\subsection{EWMA Correlation and Volatility}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Calculate EWMA cov and cor, applying default lambda - 0.94}
+\hlstd{cAssetsEWMACov} \hlkwb{<-} \hlkwd{EWMA}\hlstd{(cAssets,} \hlkwc{lambda} \hlstd{=} \hlnum{0.94}\hlstd{,} \hlkwc{initialWindow} \hlstd{=} \hlnum{50}\hlstd{,} \hlkwc{cor} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlstd{cAssetsEWMACor} \hlkwb{<-} \hlkwd{EWMA}\hlstd{(cAssets,} \hlkwc{lambda} \hlstd{=} \hlnum{0.94}\hlstd{,} \hlkwc{initialWindow} \hlstd{=} \hlnum{50}\hlstd{,} \hlkwc{cor} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+
+\hlcom{# Plots}
+\hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{2}\hlstd{,} \hlnum{1}\hlstd{))}
+\hlkwd{plot}\hlstd{(cAssetsEWMACov,} \hlkwc{asset1} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{asset2} \hlstd{=} \hlnum{2}\hlstd{)}
+\hlkwd{plot}\hlstd{(cAssetsEWMACor,} \hlkwc{asset1} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{asset2} \hlstd{=} \hlnum{2}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/ex3} 
+\begin{kframe}\begin{alltt}
+\hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{))}
+
+\hlcom{# Compute EWMA cov and cor for longer half-life of}
+\hlstd{halfLife} \hlkwb{=} \hlkwd{log}\hlstd{(}\hlnum{0.5}\hlstd{)}\hlopt{/}\hlkwd{log}\hlstd{(}\hlnum{0.94}\hlstd{)} \hlopt{+} \hlnum{5}
+\hlstd{lambda} \hlkwb{=} \hlkwd{exp}\hlstd{(}\hlkwd{log}\hlstd{(}\hlnum{0.5}\hlstd{)}\hlopt{/}\hlstd{halfLife)}
+\hlstd{covEwma} \hlkwb{<-} \hlkwd{EWMA}\hlstd{(cAssets, lambda)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\section{GARCH(1,1) Conditional Correlation and Variance}
+\subsection{GARCH(1,1) Estimation and Plotting}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Garch11 testing: need 100 plus data points to forecast.  Load lengthier}
+\hlcom{# dataset.}
+\hlkwd{data}\hlstd{(returns)}
+\hlstd{cAssetsReturns} \hlkwb{=} \hlkwd{cbind}\hlstd{(returns[,} \hlstr{"SPY"}\hlstd{], returns[,} \hlstr{"AAPL"}\hlstd{])}
+\hlcom{# Dynamic Conditional Cor/Cov}
+\hlstd{garch11} \hlkwb{<-} \hlkwd{garch11}\hlstd{(cAssetsReturns)}
+
+\hlcom{# garch11 is a dcc.fit object. There are multiple extraction functions to be}
+\hlcom{# exploited.  Illustrate garch11, dcc.fit object.}
+
+\hlcom{# Conditional Sigma (vs Realized Absolute Returns)}
+\hlkwd{plot}\hlstd{(garch11,} \hlkwc{which} \hlstd{=} \hlnum{2}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/ex41} 
+\begin{kframe}\begin{alltt}
+\hlcom{# Conditional covar of each series}
+\hlkwd{plot}\hlstd{(garch11,} \hlkwc{which} \hlstd{=} \hlnum{3}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/ex42} 
+\begin{kframe}\begin{alltt}
+\hlcom{# Conditional cor}
+\hlkwd{plot}\hlstd{(garch11,} \hlkwc{which} \hlstd{=} \hlnum{4}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/ex43} 
+
+\end{knitrout}
+
+\subsection{Forecasting GARCH(1,1) Plotting}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Forecasting conditional vol and cor, default wd = 100}
+\hlstd{fcstGarch11} \hlkwb{=} \hlkwd{fcstGarch11}\hlstd{(garch11,} \hlnum{100}\hlstd{)}
+
+\hlcom{# Many method functions - see help on DCCforecast class rshape, rskew,}
+\hlcom{# fitted, sigma, plot, rcor, rcov, show}
+
+\hlcom{# Show forecasts}
+\hlstd{fcstGarch11}
+\end{alltt}
+\begin{verbatim}
+## 
+## *---------------------------------*
+## *       DCC GARCH Forecast        *
+## *---------------------------------*
+## 
+## Distribution         :  mvnorm
+## Model                :  DCC(1,1)
+## Horizon              :  100
+## Roll Steps           :  0
+## -----------------------------------
+## 
+## 0-roll forecast: 
+## 
+## First 2 Correlation Forecasts
+## , , 1
+## 
+##        [,1]   [,2]
+## [1,] 1.0000 0.3425
+## [2,] 0.3425 1.0000
+## 
+## , , 2
+## 
+##        [,1]   [,2]
+## [1,] 1.0000 0.3433
+## [2,] 0.3433 1.0000
+## 
+## . .
+## . .
+## 
+## Last 2 Correlation Forecasts
+## , , 1
+## 
+##        [,1]   [,2]
+## [1,] 1.0000 0.4041
+## [2,] 0.4041 1.0000
+## 
+## , , 2
+## 
+##        [,1]   [,2]
+## [1,] 1.0000 0.4046
+## [2,] 0.4046 1.0000
+\end{verbatim}
+\begin{alltt}
+\hlcom{# Plot Conditional Covar Forecast}
+\hlkwd{plot}\hlstd{(fcstGarch11,} \hlkwc{which} \hlstd{=} \hlnum{3}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/ex5} 
+
+\end{knitrout}
+
+
+\end{document}

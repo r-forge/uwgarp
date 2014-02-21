@@ -125,8 +125,12 @@ getStatistics <- function(object){
 getStatistics.capm_uv <- function(object){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
   tmp_sm <- summary.lm(object)
-  # gets t-value, and p-value of model
+  # Gets t-value, and p-value of model
   result = coef(tmp_sm)[,c(1:4)]
+  tstat = (result[2,1] - 1 )/result[2,2]
+  # Two sided t-test
+  pvalue= (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2)))
+  result[2,3:4] = cbind(tstat, pvalue)
   rownames(result) = cbind(c(paste("alpha.", colnames(object$y_data))),c(paste("beta. ", colnames(object$y_data))))
   return(result)
 }
@@ -146,6 +150,10 @@ getStatistics.capm_mlm <- function(object){
     n = i*2 +1
   }
   rownames(tmp_sm) <- c(holder)
+  tstat = (tmp_sm[seq(2,nrow(tmp_sm),2),1] - 1 )/tmp_sm[seq(2,nrow(tmp_sm),2),2]
+  #' Two sided t-test
+  pvalue = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2)))
+  tmp_sm[seq(2,nrow(tmp_sm),2),3:4] = cbind(tstat,pvalue)
   return(tmp_sm)
 }
 
@@ -154,13 +162,13 @@ getStatistics.capm_mlm <- function(object){
 plot.capm_uv <- function(object){
   xlab <- colnames(object$x_data)
   ylab <- colnames(object$y_data)
-  plot(x=coredata(object$x_data), y=(object$y_data), xlab=xlab, ylab=ylab, main="CAPM Plot")
+  plot(x=coredata(object$x_data), y=(object$y_data), xlab=xlab, ylab=ylab, main="CAPM")
   abline(object)
   abline(h=0,v=0,lty=3)
   alpha = coef(summary(object))[1,1]
-  a_tstat = coef(summary(object))[1,3]
+  a_tstat = coef(summary(object))[1,2]
   beta = coef(summary(object))[2,1]
-  b_tstat = coef(summary(object))[2,3]
+  b_tstat = coef(summary(object))[2,2]
   legend("topleft", legend=c(paste("alpha =", round(alpha,dig=2),"(", round(a_tstat,dig=2),")"),
                              paste("beta =", round(beta,dig=2),"(", round(b_tstat,dig=2),")")), cex=.8, bty="n")
   
@@ -215,10 +223,11 @@ hypTest <- function(object,CI){
 hypTest.capm_uv <- function(object,CI = 0.05){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
   tmp_sm = getStatistics(object)
-  tmp_A = tmp_sm[1,3] < CI
-  tstat = (tmp_sm[2,2] - 1 )/tmp_sm[2,3]
+  tmp_A = tmp_sm[1,4] < CI
+  # tstat = (tmp_sm[2,1] - 1 )/tmp_sm[2,2]
   #' Two sided t-test
-  tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-1))) < CI
+  # tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
+  tmp_B = tmp_sm[2,4] < CI
   result = list(alpha = tmp_A, beta = tmp_B)
   return(result)
 }
@@ -229,9 +238,10 @@ hypTest.capm_mlm <- function(object,CI = 0.05){
   if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   tmp_sm = getStatistics(object)
   tmp_A = tmp_sm[seq(1,nrow(tmp_sm),2),4] < CI
-  tstat = (tmp_sm[seq(2,nrow(tmp_sm),2),1] - 1 )/tmp_sm[seq(2,nrow(tmp_sm),2),2]
+  # tstat = (tmp_sm[seq(2,nrow(tmp_sm),2),1] - 1 )/tmp_sm[seq(2,nrow(tmp_sm),2),2]
   #' Two sided t-test
-  tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
+  # tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
+  tmp_B = tmp_sm[seq(2,nrow(tmp_sm),2),4] < CI
   result = list(alpha = tmp_A, beta = tmp_B)  
   return(result)
 }

@@ -59,67 +59,60 @@ The Consumption-Oriented CAPM is analogous to the simple form of the CAPM. Excep
 \section{Fitting CAPM}
 \subsection{Selected Returns Time Series}
 <<ex1>>=
-# 'Load the GARPFRM package and the CAPM dataset.
+# 'Load the GARPFRM package and CRSP dataset for CAPM analysis.
 suppressMessages(library(GARPFRM))
 options(digits=3)
 data(crsp.short)
-data(cons)
 
 stock.df <- largecap.ts[, 1:20]
-cons <- xts(cons[,2], index(largecap.ts))
-colnames(cons)= c("CONS")
-R.market <- largecap.ts[, "market"]
+mrkt <- largecap.ts[, "market"]
 rfr <- largecap.ts[, "t90"]
 
-colnames(stock.df)
+# Plot first four stocks from 
+plot.zoo(stock.df[,1:4], main="First Four Large Cap Returns")
 @
 
 
-Summarize the first and last  data values corresponding to the first 5 dates for the first 5 returns.
+Summarize the start and end dates corresponding to the first 4 large cap returns.
 <<ex2>>=
-head(stock.df[,1:5])
-tail(stock.df[,1:5])
-# Count the number of rows
+# Illustrate the type of data being analzyed: start-end dates.
+start(stock.df[,1:4])
+end(stock.df[,1:4])
+# Count the number of rows: sample size.
 nrow(stock.df)
 @
 \subsection{Estimate Excess Returns}
 Estimate excess returns: subtracting off risk-free rate.
-To strip off the dates and just return a plain vector/matrix coredata() can be used.
 <<ex3>>=
-# Excess Returns
+# Excess Returns initialized before utilizing in CAPM
 exReturns <- Return.excess(stock.df, rfr)
 colnames(exReturns)= c(colnames(stock.df))
 @
 
 \subsection{Fitting CAPM Model: Univariate}
-Run CAPM regression for AMAT
+Run CAPM regression for AMAT and estimate CAPM with $\alpha=0$ \& $\beta=1$ for asset.
 <<ex4>>=
 # Univariate CAPM
-uv <- CAPM(exReturns[,1], R.market)
-coef(summary(uv))
+uv <- CAPM(exReturns[,1], mrkt)
+getStatistics(uv)
 
 # Plot data with regression line
 plot(uv)
 @
-\subsection{Fitting CAPM Model: Multiple Linear Model}
-Run CAPM regression for AMAT
+\subsection{CAPM Model: Multiple Asset Analysis}
+Run CAPM regression
 <<ex5>>=
-# MLM CAPM
-mlm <- CAPM(exReturns[,1:3], R.market)
-coef(summary(mlm))
+# MLM CAPM for AMAT, AMGN, and CAT
+mlm <- CAPM(exReturns[,1:3], mrkt)
+getStatistics(mlm)
 
 # Plot data with regression line
 plot(mlm)
 @
 \section{Testing CAPM}
-\subsection{Retrieve CAPM Statistics}
-Estimating CAPM with $\alpha=0$ \& $\beta=1$ for asset.
+\subsection{Retrieve $\alpha$ \& $\beta$ and Estimate Result Significance}
+Retrieve $\alpha$ \& $\beta$ from CAPM object for one or multiple assets and run hypothesis test.
 <<ex6>>=
-getStatistics(uv)
-@
-\subsection{Estimate Significance and Test Beta Results}
-Retrieve tstats from function for assets.
-<<ex7>>=
 # For uv
 getBetas(uv)
 getAlphas(uv)
@@ -133,9 +126,9 @@ hypTest(mlm, CI=0.05)
 \subsection{Estimate Expected Returns and Plot}
 Plot expected return versus beta.
 Estimate expected returns
-<<ex8>>=
+<<ex7>>=
 # MLM CAPM
-mlm <- CAPM(exReturns[,], R.market)
+mlm <- CAPM(exReturns[,], mrkt)
 
 # Plot expected returns versus betas
 chartSML(mlm)
@@ -144,9 +137,14 @@ chartSML(mlm)
 \section{Consumption-Oriented CAPM}
 \subsection{Fitting C-CAPM}
 Run C-CAPM regression for CONS (Consumption).
-<<ex9>>=
-capm.cons = CAPM(cons, R.market)
-summary(capm.cons)
+<<ex8>>=
+# Load FED consumption data: CONS
+data(cons)
+cons <- xts(cons[,2], index(largecap.ts))
+colnames(cons)= c("CONS")
+
+capm.cons = CAPM(cons, mrkt)
+coef(summary(capm.cons))
 
 # Plot data with regression line
 plot(capm.cons)
