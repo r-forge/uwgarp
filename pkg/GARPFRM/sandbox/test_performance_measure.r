@@ -1,21 +1,29 @@
 # 'Load the GARPFRM package and the CAPM dataset.
 suppressMessages(library(GARPFRM))
-options(digits=3)
+options(digits=5)
 data(crsp.short)
-stock_rets.df <- largecap.ts
+
+# Make the assumption that the last two time series are the Market and RF series
+
+#stock_rets.df <- largecap.ts
+
+# Store results
 Measures = rep(NULL,4)
 
-## keep it simple and use this thoughout
-## no need to transform to zoo, matrix, or df objects
-# Equal weight portfolio
-R.portfolio <- Return.portfolio(largecap.ts[, 1:5])
 
-# Market returns
-R.market <- largecap.ts[, "market"]
 
-# risk free rate
-rf <- largecap.ts[, "t90"]
-## 
+# If equalWts is true portfolio weights will be 1/numberOfSecurities
+equalWts = TRUE
+
+randWts = TRUE
+if(equalWts) randWts = FALSE
+
+# Number of securities to use is 
+numberOfSecurities = 3
+
+# type of chaining in forming the aggregate return
+# If geometric is TRUE use geometric chaining if False use arithemetic chaining
+geometricB = TRUE
 
 # Definitioned/Constant variables
 relation = c("Less Than","Equal To","Greater Than")
@@ -54,56 +62,64 @@ colnames(Measures) = c("Measure","Portfolio","Market","RiskFree")
 
 # Summarize the first and last data values corresponding to the first 5 dates for the first 5 returns.
 
-colnames(stock_rets.df)
-head(stock_rets.df)
-tail(stock_rets.df)
-
+colnames(largecap.ts)
+head(largecap.ts)
+tail(largecap.ts)
 
 # Number time periods for year for data set
 freQ = 12
 
-# Estimate a zooreg object: regularly spaced zoo object.
-# 
-stock.z = zooreg(stock_rets.df[,-1], start=c(1993, 1), end=c(2013,11), 
-                 frequency=freQ)
 
-index(stock.z) = as.yearmon(index(stock.z))
 
-# Summarize Start, End, and Number of Rows
-start(stock.z)
-end(stock.z)
-nRow = nrow(stock.z)
+nRow = nrow(largecap.ts)
 nRow
 
 # pointer to column with the market returns
-ptrMkt = which(colnames(stock.z)==mrktDataName,arr.ind=TRUE)
+# ptrMkt = which(colnames(stock.z)==mrktDataName,arr.ind=TRUE)
+ptrMkt = which(colnames(largecap.ts)==mrktDataName,arr.ind=TRUE)
 ptrMkt
 # pointer to column of Risk Free Ratw
-ptrRF = which(colnames(stock.z)==rfDataName,arr.ind=TRUE)
+ptrRF = which(colnames(largecap.ts)==rfDataName,arr.ind=TRUE)
 ptrRF
 
-# as.data.frame to check if an object is a data frame, or coerce it if possible.
-returns.mat = as.matrix(coredata(stock.z))
+# Market returns
+R.market <- largecap.ts[, ptrMkt]
+
+# risk free rate
+rf <- largecap.ts[, ptrRF]
+## 
+
 
 # Number of time series in data set
-nSec = ncol(returns.mat)
+nSec = ncol(largecap.ts)
+
+if (numberOfSecurities>(nSec-2)) numberOfSecurities = nSec - 2
+cat('\n Number of Securities being used in portfolio = ',numberOfSecurities, '\n')
 
 # Random create a portfolio from the non-market non RF series
 # Get a normalized set of weights
 # Could set up the application to create a random portfolio from a subset or 
 # Input specific securities and weights
-coefs = runif(nSec-2)
-alphas = coefs/sum(coefs)
-sum(alphas)
+#
+if (randWts){
+  coefs = runif(nSec-2)
+  alphas = coefs/sum(coefs)
+  sum(alphas)
+}  
 
+if (equalWts) {
+  R.portfolio <- Return.portfolio(largecap.ts[, 1:numberOfSecurities],geometric=geometricB)  
+} else {
+  R.portfolio = Return.portfolio(largecap.ts[, 1:numberOfSecurities],weights=alphas,geometric=geometricB) 
+}
 
-portfolio = returns.mat[,1:(nSec-2)]%*%as.vector(alphas)
 colnames(portfolio) ="PortRets"
 
-salient = matrix(data=c("Mean",mean(portfolio),mean(returns.mat[,ptrMkt]),mean(returns.mat[,ptrRF]),
-                   "Stdev",sd(portfolio),sd(returns.mat[,ptrMkt]),sd(returns.mat[,ptrRF]),
+salient = matrix(data=c("Mean",mean(R.portfolio),mean(R.market),mean(rf),
+                   "Stdev",sd(R.portfolio),sd(R.market),sd(rf),
+                   "NbrSecuritiesInPort",numberOfSecurities,"","",
                    "AnnuallyFrequency",rep(freQ,3),
-                   "Number of Samples",rep(nRow,3)),nrow=4,ncol=4,byrow=TRUE)
+                   "Number of Samples",rep(nRow,3)),ncol=4,byrow=TRUE)
 
 Measures = rbind(Measures, salient)
 
@@ -115,21 +131,27 @@ Measures = rbind(Measures, salient)
 # Really should investigate the latter,  I am sure the users will do so
 
 # Compute beta
-beta = cov(portfolio[,1],returns.mat[,ptrMkt])/var(returns.mat[,ptrMkt])
-cat('\n Beta =',beta,', between the portfolio represented by ',PortName,' and the market represented by ',MrktName,' \n')
+beta = cov(R.portfolio,R.market)/var(R.market)
+betaRF = cov((R.portfolio[,1]-rf),(R.market-rf))/var((R.market-rf))
 
-Measures = rbind(Measures,c("Beta",beta,"",""))
+cat('\n Beta =',beta,', between the portfolio represented by ',PortName,' and the market represented by ',MrktName,' \n')
+cat('\n Beta =',betaRF,', between the excess portfolio represented by ',PortName,' and the excess market represented by ',MrktName,' \n')
+
+Measures = rbind(Measures,c("Beta",betaRF,"",""))
 
 # Compute Treynor
 
    # Performance Analytics (PA) computation of Treynor for portfolio and market
-tr = TreynorRatio(portfolio[,1,drop=FALSE], returns.mat[,ptrMkt,drop=FALSE],returns.mat[,ptrRF,drop=FALSE],freQ )
-trMarket = TreynorRatio(returns.mat[,ptrMkt,drop=FALSE], returns.mat[,ptrMkt,drop=FALSE],returns.mat[,ptrRF,drop=FALSE],freQ )
+tr = TreynorRatio(R.portfolio, R.market,rf,freQ )
+trMarket = TreynorRatio(R.market,R.market,rf,freQ )
   
    # From formula (Hand) computation of Treynor for portfolio and market
-trHand = freQ*(mean(portfolio[,1])-mean(returns.mat[,ptrRF]))/beta
+trHandGeom = (prod(1+(R.portfolio-rf))^(freQ/nRow) - 1)/betaRF
+trHand = freQ*mean(R.portfolio-rf)/betaRF
+
 # beta of Treynor for market is 1
-trHandM = freQ*(mean(returns.mat[,ptrMkt])-mean(returns.mat[,ptrRF]))
+trHandMGeom = (prod(1+(R.market-rf))^(freQ/nRow) - 1)
+trHandM = freQ*(mean(R.market-rf))
 
    # Output results from Treynor Ratio computation
 cat('\n PA computed for ',PortName,' Treynor Ratio = ',tr,'\n')
@@ -155,13 +177,14 @@ fit <- lm(R.portfolio.x ~ R.market.x)
 beta.lm <- coef(fit)[2]
 
 # calculate beta another way
-beta <- as.numeric(cov(R.portfolio.x, R.market.x) / var(R.market.x))
+beta2 <- as.numeric(cov(R.portfolio.x, R.market.x) / var(R.market.x))
 
 # Annualized portfolio excess returns / beta
 # This should match the TreynorRatio from PerformanceAnalytics
-TR.rb <- as.numeric(Return.annualized(R.portfolio.x) / beta.lm)
+TR.rb <- as.numeric(Return.annualized(R.portfolio.x,scale=12) / beta.lm)
+TR.rb2 <- as.numeric(Return.annualized(R.portfolio.x,scale=12,geometric=FALSE) / beta.lm)
 
-as.numeric(Return.annualized(R.portfolio.x) / beta)
+as.numeric(Return.annualized(R.portfolio.x) / beta2)
 
 # Calcualte Treynor Ratio with PerformanceAnalytics
 TR.PA <- TreynorRatio(R.portfolio, R.market, rf)
@@ -174,37 +197,59 @@ cat("Treynor Ratio with PerformanceAnalytics: ", TR.PA, "\n")
 # Compute Sharpe
 
    # PA computation of Sharpe
-shr = SharpeRatio(portfolio[,1,drop=FALSE], returns.mat[,ptrRF,drop=FALSE], p = 0.95,
-FUN = "StdDev")
+shr = SharpeRatio(R.portfolio, rf, FUN = "StdDev")
+shrAnn = SharpeRatio.annualized(R.portfolio, rf, scale=freQ, geometric=TRUE)
 
    # Compute excess portfolio returns (portfolio returns net of RF returns) 
-xCess = portfolio[,1] - returns.mat[,ptrRF]
+xCess = R.portfolio - rf
    # Hand computation of Sharpe
+
 shrHand = mean(xCess)/sd(xCess)
+
+shrHandAnn =((prod(1+xCess))^(freQ/nRow) - 1)/(sqrt(freQ)*sd(xCess))
 
    # Output results from Sharpe Ratio computation
 cat('\n PA computed ',PortName,' Sharpe Ratio = ',shr,'\n')
 cat('\n Hand computed ',PortName,' Sharpe Ratio = ',shrHand,'\n')
 
-Measures = rbind(Measures,c("Sharpe Ratio",shr,"",""))
+cat('\n PA computed ',PortName,' Annualized Sharpe Ratio = ',shrAnn,'\n')
+cat('\n Hand computed ',PortName,' Annualized Sharpe Ratio = ',shrHandAnn,'\n')
+
+cat('\n Difference PA and hand computed Sharpe Ratio = ',as.numeric(shr) - as.numeric(shrHand),'\n')
+
+
+Measures = rbind(Measures,c("Sharpe Ratio",shr,"","","Sharpe Ratio Annualized",shrAnn,"",""))
 
 # Compute Jensen's Alpha
 
    # Mean of risk free rate over sampling time series
-meanRF = mean(returns.mat[,ptrRF])
+meanRF = mean(rf)
 
    # PA computation of Jensen's Alpha
-ja = CAPM.jensenAlpha(portfolio[,1,drop=FALSE], returns.mat[,ptrMkt,drop=FALSE],meanRF)
+
+## The risk-free rate varies through time so just computing the mean
+## is oversimplifying and could be part of the reason for the differences
+## you are seeing between your hand calculation and PerformanceAnalytics
+
+   # True but If put rf rather than meanRF will get a series of ja's
+   # rather than a single value  
+
+   # It appears to be an annualized value
+
+   # Produces one value
+jaStatic = CAPM.jensenAlpha(R.portfolio,R.market,meanRF)
+
+   # Produces multiple values
+jaTV = CAPM.jensenAlpha(R.portfolio, R.market,rf)
+
 
 # Hand computation of Jensen's Alpha using regression apprach
 
 
    # Precompute excess returns
-## The risk-free rate varies through time so just computing the mean
-## is oversimplifying and could be part of the reason for the differences
-## you are seeing between your hand calculation and PerformanceAnalytics
-xCessP1 = portfolio[,1]-meanRF
-xCessM1 = returns.mat[,ptrMkt]-meanRF
+
+xCessP1 = R.portfolio - rf
+xCessM1 = R.market - rf
 
    # Regression computation and salient results
 lm_ja1.fit = lm(xCessP1 ~ xCessM1)
@@ -213,32 +258,41 @@ values1
 analT1 = values1[[4]]
 
    # Annualize Jensen's Alpha
-jaHand = (1+(mean(portfolio[,1]) - meanRF - beta*(mean(returns.mat[,ptrMkt])-meanRF)))^12 -1
+   # (mean(R.portfolio) - meanRF - betaRF*(mean(R.market)-meanRF)) same as regression coefficent
+jaHandA = (1+(mean(R.portfolio) - meanRF - betaRF*(mean(R.market)-meanRF)))^freQ -1
+   
+   # Alternative annualization using individual values
+jaHandA2 = prod((1+((R.portfolio - rf) - as.numeric(betaRF)*(R.market-rf))))^(freQ/nRow) - 1
+
 
    # Use Delta Method to approximate standard error of analyzed Jensen's Alpha
 deltaCoef = (freQ*(1+analT1[1,1])^(freQ-1))^2
 
    # Output salient results for Jensen's Alpha
-cat('\n PA computed ',PortName,' Jensen\'s Alpha = ',ja,'\n')
+cat('\n PA computed ',PortName,' Static Jensen\'s Alpha = ',jaStatic,'\n')
 cat('\n Regression computed ',PortName,' Jensen\'s Alpha, Not Annualized= ',analT1[1,1],'\n')
-cat('\n Hand computed Annualized ',PortName,' Jensen Alpha = ',jaHand,'\n')
+cat('\n Hand computed Annualized ',PortName,' Jensen Alpha = ',jaHandA,'\n')
 cat('\n Delta Method Coefficient Value = ', deltaCoef,'\n')
 
    # t stat and pvalue under H0: alpha = 0 against HA: alpha != 0 
-tStat = jaHand/(analT1[1,2]*deltaCoef^0.5)
+tStat = jaHandA/(analT1[1,2]*deltaCoef^0.5)
 pValue = 2*(1-pt(tStat,nRow-2))
 cat('\n H0: alpha = 0, HA: alpha != 0  p-value: ',pValue,'\n')
 
 Measures = rbind(Measures,c("Jensen's Alpha",ja,"",""))
 Measures = rbind(Measures,c("Jensen's Alpha P Value",pValue,"",""))
 
+
+
 # Compute Tracking Error
 
    # PA computation of Tracking Error   
-te = TrackingError(portfolio[,1,drop=FALSE], returns.mat[,ptrMkt,drop=FALSE], scale = freQ)
+te = TrackingError(R.portfolio, R.market, scale = freQ)
 
    # Precompute required values to computr Tracking Error by Hand
-RR = portfolio[,1]-returns.mat[,ptrMkt]
+   # Lipper Definition ARR =SUM(sp RR)/n sp, where sp == sub-period    
+
+RR = R.portfolio-R.market
 ARR = mean(RR)
 
    # Hand computation of Tracking Error   
@@ -247,52 +301,64 @@ teHand = sqrt(sum((RR-ARR)^2)/(nRow-1))*sqrt(freQ)
    # Output results from Tracking Error computation
 cat('\n PA computed ',PortName,' Tracking Error = ',te,'\n')
 cat('\n Hand computed ', PortName,' Tracking Error = ',teHand,'\n')
+cat('\n Difference PA_TE - Hand_TE = ',te - teHand,'\n')
 
 Measures = rbind(Measures,c("Tracking Error",te,"",""))
 
 # Compute Information Ratio
 
    # PA computation of Information Ratio
-ir = InformationRatio(portfolio[,1,drop=FALSE], returns.mat[,ptrMkt,drop=FALSE], scale = freQ)
+ir = InformationRatio(R.portfolio, R.market, scale = freQ)
 
    # Hand computation of Information Ratio 
-irHand = (ARR/(sqrt(sum((RR-ARR)^2)/(nRow-1))))*sqrt(freQ)
+   # Lipper definition = ARR/TE
+irHand = (ARR/te)*sqrt(freQ)
 
-   # Output results from Information Ratio computation  
+# Definition PA, InformationRatio = ActivePremium/TrackingError
+#Active Premium = Investment's annualized return - Benchmark's annualized return
+irHand2 = ((prod(1+(R.portfolio))^(freQ/nRow) - prod(1+(R.market))^(freQ/nRow))/te)
+
+# Output results from Information Ratio computation  
 cat('\n PA computed ',PortName,' Information Ratio = ',ir,'\n')
-cat('\n Hand computed ',PortName,' Information Ratio = ',irHand,'\n')
+cat('\n Hand computed ',PortName,' Lipper Method Information Ratio = ',irHand,'\n')
+cat('\n Hand computed ',PortName,' PA formula Information Ratio = ',irHand,'\n')
 
 Measures = rbind(Measures,c("Information Ratio",ir,"",""))
 
 # Compute Sortino Ratio (including Downside Deviation)
 
    # PA computation of Sortino Ratio
-sr = SortinoRatio(portfolio[,1,drop=FALSE], MAR = MAR_set, weights = NULL)
+sr = SortinoRatio(R.portfolio, MAR = MAR_set, weights = NULL)
 
    # Set value of denominator for Downside Deviation from the parameter denom set earlier
 denomVal = nRow
 if (denom != "full")
    { 
-    denomVal = sum(ifelse((portfolio[,1] - MAR_set)<0,1,0))
+    denomVal = sum(ifelse((R.portfolio - MAR_set)<0,1,0))
    }
 cat('\n Denominator parameter is set to: ',denom,' which results in a denominator value of ',denomVal,'\n')
 
    # PA computation of Downside Deviation
-dwn = DownsideDeviation(portfolio[,1], MAR = MAR_set, method = "full")
+dwn = DownsideDeviation(R.portfolio, MAR = MAR_set, method = "full")
 
    # Hand computation of Downside Deviation
-dwnHand = sqrt(sum((min((portfolio[,1,drop=FALSE] - MAR_set),0))^2)/(denomVal))
+   # Lipper Difference is denom d.f.
+dwnHand = sqrt(sum(apply(cbind((R.portfolio - MAR_set),rep(0,nRow)),1,min)^2)/(denomVal-1))
 
    # Output computation of Downside Deviation
 cat('\n PA computed ',PortName,' Downside Deviation = ',dwn,'\n')
 cat('\n Hand computed ',PortName,' Downside Deviation = ',dwnHand,'\n')
 
-   # Hand computation of Sortino Ratio
+   # Hand computation of Sortino Ratio Lipper 
 srHand = sqrt(freQ)*ARR/dwn
 
+   # Hand computation PA Formula
+srHand2 = mean(R.portfolio-MAR_set)/dwn
+
    # Output computation of Sortino Ratio
-cat('\n PA computed ',PortName,' Sortino Ratio = ',sr,'\n')
-cat('\n Hand computed ',PortName,' Sortino Ratio = ',srHand,'\n')
+cat('\n PA computed ',PortName,'  Sortino Ratio = ',sr,'\n')
+cat('\n Hand computed ',PortName,' Annualized Lipper Sortino Ratio = ',srHand,'\n')
+cat('\n Hand computed ',PortName,' PA formula Sortino Ratio = ',srHand2,'\n')
 
 Measures = rbind(Measures,c("Downside Deviation",dwn,"",""))
 Measures = rbind(Measures,c("Denominator DD",denomVal,"",""))
