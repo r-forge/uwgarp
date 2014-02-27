@@ -7,7 +7,7 @@ initialWindow = 10
 testWindow = nrow(R) -initialWindow
 CI = 0.95
 lags = -1
-resultVaR = rollapply(temp, width= initialWindow, FUN = backTestVaR, p=CI, by.column = FALSE, align = "right")
+resultVaR = rollapply(temp, width= initialWindow, FUN = backTestVaR, CI=CI, by.column = FALSE, align = "right")
 # VaR lags original data by definition
 resultVaR = lag(resultVaR, k=lags)
 # Chart together
