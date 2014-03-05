@@ -9,6 +9,12 @@
 #' @param initialWindow initial window of observations used in estimating the 
 #' initial covariance or correlation
 #' @param TRUE/FALSE to return a correlation matrix. Default cor = FALSE.
+#' @examples
+#' data(crsp.short)
+#' # Use the first 5 assets in largecap.ts for the returns data
+#' R <- largecap.ts[, 1:5]
+#' # Estimate the covariance matrix via EWMA
+#' covEst <- EWMA(R, 0.94, 15)
 #' @export
 EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
   # Check for lambda between 0 and 1 & initialWindow must be greater than ncol(R)
@@ -63,6 +69,16 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
 #' @param assets character vector or numeric vector. If 
 #' \code{assets} is of length 1, then the variance will be returned. 
 #' The assets can be specified by name or index.
+#' @examples
+#' data(crsp.short)
+#' # Use the first 5 assets in largecap.ts for the returns data
+#' R <- largecap.ts[, 1:5]
+#' # Estimate the covariance matrix via EWMA
+#' covEst <- EWMA(R, 0.94, 15)
+#' # get the covariance between AMAT and CAT
+#' covAMATCAT <- getCov(covEst, assets=c("AMAT", "CAT"))
+#' cov13 <- getCov(covEst, assets=c(1, 3))
+#' all.equal(covAMATCAT, cov13)
 #' @export
 getCov <- function(EWMA, assets){
   UseMethod("getCov")
@@ -121,6 +137,16 @@ getCov.varEWMA <- function(EWMA, assets=1){
 #' @param object an EWMA object created by \code{EWMA}
 #' @param assets character vector or numeric vector. The assets can be 
 #' specified by name or index.
+#' @examples
+#' data(crsp.short)
+#' # Use the first 5 assets in largecap.ts for the returns data
+#' R <- largecap.ts[, 1:5]
+#' # Estimate the correlation matrix via EWMA
+#' corEst <- EWMA(R, 0.94, 15, TRUE)
+#' # get the correlation between AMAT and CAT
+#' corAMATCAT <- getCov(corEst, assets=c("AMAT", "CAT"))
+#' cor13 <- getCov(corEst, assets=c(1, 3))
+#' all.equal(corAMATCAT, cor13)
 #' @export
 getCor <- function(EWMA, assets){
   UseMethod("getCor")
