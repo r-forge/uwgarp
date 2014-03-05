@@ -2,8 +2,8 @@
 \alias{monteCarlo}
 \title{Monte Carlo Price Path Simulation}
 \usage{
-  monteCarlo(mu, sigma, N = 100, Time = 1, steps = 52,
-    starting_value = 100, log = TRUE)
+  monteCarlo(mu, sigma, N = 100, time = 1, steps = 52,
+    starting_value = 100)
 }
 \arguments{
   \item{mu}{annualized expected return}
@@ -17,9 +17,6 @@
   \item{steps}{number of time steps}
 
   \item{starting_value}{asset price starting value}
-
-  \item{log}{TRUE/FALSE (default = TRUE) simulate ln(S)
-  rather than S; where S is the price of the asset.}
 }
 \value{
   matrix of simulated price paths where each column
@@ -41,5 +38,10 @@
   large number of simulations. More efficient methods in
   terms of speed and memory should be used, for example, to
   price options.
+}
+\examples{
+library(GARPFRM)
+
+mc <- monteCarlo(0.05, 0.25, 500, 1, 52, 10)
 }
 

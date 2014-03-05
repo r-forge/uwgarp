@@ -1,24 +1,30 @@
+# TODO: We should implement this in C or C++ later assuming we get funding 
+# and we use monte carlo for option pricing
+
 # Monte Carlo Function
-generateMC <- function(mu, sigma, Time=1, steps=52, starting_value=100){
-  dt <- Time / steps
-  S <- vector("numeric", steps+1)
-  eps <- rnorm(steps)
-  S[1] <- starting_value
-  for(i in 2:length(S)){
-    dS <- mu * dt + sigma * eps(i-1) * sqrt(dt)
-    S[i] <- dS + S[i-1]
-  }
-  return(S)
-}
+# generateMC <- function(mu, sigma, Time=1, steps=52, starting_value=100){
+#   dt <- Time / steps
+#   S <- vector("numeric", steps+1)
+#   eps <- rnorm(steps)
+#   S[1] <- starting_value
+#   for(i in 2:length(S)){
+#     dS <- mu * dt + sigma * eps(i-1) * sqrt(dt)
+#     S[i] <- dS + S[i-1]
+#   }
+#   return(S)
+# }
 
 # Monte Carlo using ln(S) rather than S
 # more accurate
 generateLogMC <- function(mu, sigma, Time=1, steps=52, starting_value=100){
   dt <- Time / steps
+  musigdt <- (mu - 0.5 * sigma^2) * dt
+  sigdt <- sigma * sqrt(dt)
   S <- vector("numeric", steps+1)
+  eps <- rnorm(steps)
   S[1] <- starting_value
   for(i in 2:length(S)){
-    S[i] <- S[i-1] * exp((mu - 0.5 * sigma^2) * dt + sigma * eps(i-1) * sqrt(dt))
+    S[i] <- S[i-1] * exp(musigdt + sigdt * eps[i-1])
   }
   return(S)
 }
@@ -43,26 +49,24 @@ generateLogMC <- function(mu, sigma, Time=1, steps=52, starting_value=100){
 #' @param Time length of simulation (in years)
 #' @param steps number of time steps
 #' @param starting_value asset price starting value
-#' @param log TRUE/FALSE (default = TRUE) simulate ln(S) rather than S; where S 
-#' is the price of the asset.
 #' @return matrix of simulated price paths where each column represents a price path
+#' @examples
+#' library(GARPFRM)
+#' 
+#' mc <- monteCarlo(0.05, 0.25, 500, 1, 52, 10)
 #' @export
-monteCarlo <- function(mu, sigma, N=100, Time=1, steps=52, starting_value=100, log=TRUE){
-  mc_mat <- matrix(0, steps, N)
-  if(log){
-    for(i in 1:N){
-      mc_mat[,i] <- generateLogMC(mu, sigma, Time, steps, starting_value)
-    }
-  } else {
-    for(i in 1:N){
-      mc_mat[,i] <- generateMC(mu, sigma, Time, steps, starting_value)
-    }
+monteCarlo <- function(mu, sigma, N=100, time=1, steps=52, starting_value=100){
+  mc_mat <- matrix(0, steps+1, N)
+  for(i in 1:N){
+    mc_mat[,i] <- generateLogMC(mu, sigma, time, steps, starting_value)
   }
-  class(mc_mat) <- "monte_carlo"
+  class(mc_mat) <- "MonteCarlo"
   return(mc_mat)
 }
 
-plot.monte_carlo <-function(x, y, ..., main="Monte Carlo Simulation", xlab="Time Index", ylab="Price"){
+#' @method plot MonteCarlo
+#' @S3method plot MonteCarlo
+plot.MonteCarlo <-function(x, y, ..., main="Monte Carlo Simulation", xlab="Time Index", ylab="Price"){
   plot(x[,1], type="n", ylim=range(x), main=main, xlab=xlab, ylab=ylab, ...)
   for(i in 1:ncol(x)){
     lines(x[,i])
@@ -72,24 +76,35 @@ plot.monte_carlo <-function(x, y, ..., main="Monte Carlo Simulation", xlab="Time
 #' Ending Prices of Monte Carlo Simulation
 #' 
 #' Get the ending prices, i.e. terminal values, of a monte carlo simulation
-#' @param mc monte carlo object created with \link{\code{monteCarlo}}
+#' @param mc monte carlo object created with \code{monteCarlo}
 #' @return vector ending prices
+#' library(GARPFRM)
+#' 
+#' mc <- monteCarlo(0.05, 0.25, 500, 1, 52, 10)
+#' ep <- endingPrices(mc)
 #' @export
 endingPrices <- function(mc){
-  if(!inherits(mc, "monte_carlo")) stop("mc must be of class 'monte_carlo'")
+  if(!inherits(mc, "MonteCarlo")) stop("mc must be of class 'MonteCarlo'")
   return(mc[nrow(mc),])
 }
 
 #' Plot Ending Prices 
 #' 
-#' Plot the ending prices from a Monte Carlo simulation
-#' @param mc monte carlo object created with \link{\code{monteCarlo}}
+#' Plot the kernel density estimate and histogram of the ending prices
+#' from a Monte Carlo simulation.
+#' @param mc monte carlo object created with \code{monteCarlo}
+#' @param \dots additional arguments passed to \code{hist}
+#' @examples
+#' library(GARPFRM)
+#' 
+#' mc <- monteCarlo(0.05, 0.25, 500, 1, 52, 10)
+#' plotEndingPrices(mc)
 #' @export
-plotEndingPrices <- function(mc){
-  if(!inherits(mc, "monte_carlo")) stop("mc must be of class 'monte_carlo'")
+plotEndingPrices <- function(mc, ..., main="Ending Prices", xlab="Price", ylab="Density"){
+  if(!inherits(mc, "MonteCarlo")) stop("mc must be of class 'MonteCarlo'")
   ending_prices <- endingPrices(mc)
   dens_ep <- density(ending_prices)
-  hist(ending_prices, freq=FALSE)
+  hist(ending_prices, freq=FALSE, ylim=range(dens_ep$y), ...=..., main=main, xlab=xlab, ylab=ylab)
   lines(dens_ep)
   invisible(list(ending_prices=ending_prices, density=dens_ep))
 }

@@ -20,4 +20,11 @@
   Use an exponentially weighted moving average to estimate
   the covariance or correlation of asset returns.
 }
+\examples{
+data(crsp.short)
+# Use the first 5 assets in largecap.ts for the returns data
+R <- largecap.ts[, 1:5]
+# Estimate the covariance matrix via EWMA
+covEst <- EWMA(R, 0.94, 15)
+}
 
