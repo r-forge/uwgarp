@@ -51,6 +51,7 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
   } else if ((cor == FALSE) & (ncol(R) == 1)){
     class(out) <- c("varEWMA")
   }
+  class(out) <- c("EWMA", class(out))
   return(out)
 }
 
@@ -151,7 +152,8 @@ getCor.corEWMA <- function(EWMA, assets=c(1,2)){
 }
 
 # EWMA plotting for covar
-#' @export
+#' @method plot covEWMA
+#' @S3method plot covEWMA
 plot.covEWMA <- function(object, ..., assets=c(1, 2), xlab="", ylab="Covariance", main="EWMA Estimate"){
   # Check if asset is a character 
   if(is.character(assets[1]) & is.character(assets[2])){
@@ -172,7 +174,8 @@ plot.covEWMA <- function(object, ..., assets=c(1, 2), xlab="", ylab="Covariance"
 
 
 # EWMA plotting for var
-#' @export
+#' @method plot varEWMA
+#' @S3method plot varEWMA
 plot.varEWMA <- function(object, ..., assets=c(1,2), xlab="", ylab="Covariance", main="EWMA Estimate"){
   tmp = getCov(object, assets[1])
   plot(x=time(as.zoo(tmp)),y=tmp, ...=..., type="l", xlab=xlab, ylab=ylab, main=main)
@@ -182,7 +185,8 @@ plot.varEWMA <- function(object, ..., assets=c(1,2), xlab="", ylab="Covariance",
 
 
 # EWMA plotting for correlation
-#' @export
+#' @method plot corEWMA
+#' @S3method plot corEWMA
 plot.corEWMA <- function(object, ..., assets=c(1,2), xlab="", ylab="Covariance", main="EWMA Estimate"){
   # Check if asset is a character 
   if(is.character(assets[1]) & is.character(assets[2])){
@@ -199,4 +203,13 @@ plot.corEWMA <- function(object, ..., assets=c(1,2), xlab="", ylab="Covariance",
   plot(x=time(as.zoo(tmp)), y=tmp, ...=..., type="l", xlab=xlab, ylab=ylab, main=main)
   grid()
   abline(h=cor(object$R)[idx1,idx2], lwd=2, col="red")
+}
+
+#' @method print EWMA
+#' @S3method print EWMA
+print.EWMA <- function(x, ...){
+  n <- length(x$EWMA)
+  cat("Final Period EWMA Estimate: ")
+  cat(names(x$EWMA)[n], "\n")
+  print(x$EWMA[[n]])
 }
