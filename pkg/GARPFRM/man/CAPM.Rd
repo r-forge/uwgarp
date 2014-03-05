@@ -2,7 +2,7 @@
 \alias{CAPM}
 \title{Capital Asset Pricing Model}
 \usage{
-CAPM(R, Rmkt)
+  CAPM(R, Rmkt)
 }
 \arguments{
   \item{R}{asset returns}
@@ -10,10 +10,10 @@ CAPM(R, Rmkt)
   \item{Rmkt}{market returns}
 }
 \description{
-Description of CAPM Retrieves alphas, betas, as well as
-pvalue and tstats. The Model is used to determine a
-theoretically appropriate rate of return of an asset's
-non-diversifiable risk.
+  Description of CAPM Retrieves alphas, betas, as well as
+  pvalue and tstats. The Model is used to determine a
+  theoretically appropriate rate of return of an asset's
+  non-diversifiable risk.
 }
 \examples{
 data(crsp.short)

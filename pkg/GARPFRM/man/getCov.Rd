@@ -1,14 +1,18 @@
 \name{getCov}
 \alias{getCov}
-\title{EWMA Volatility/Cross-Volatility}
+\title{EWMA Covariance}
 \usage{
-getCov(object, asset1, asset2)
+  getCov(EWMA, assets)
 }
 \arguments{
-  \item{object}{a EWMA object created by
-  \code{\link{EWMA}}}
+  \item{EWMA}{an EWMA object created by \link{\code{EWMA}}}
+
+  \item{assets}{character vector or numeric vector. If
+  \code{assets} is of length 1, then the variance will be
+  returned. The assets can be specified by name or index.}
 }
 \description{
-Description of EWMA Vola
+  Extract the covariance between two assets from an EWMA
+  object
 }
 

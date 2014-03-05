@@ -2,19 +2,22 @@
 \alias{EWMA}
 \title{Exponential Weighted Moving Average (EWMA)}
 \usage{
-EWMA(R, lambda = 0.94, initialWindow = 10, cor = FALSE)
+  EWMA(R, lambda = 0.94, initialWindow = 10, cor = FALSE)
 }
 \arguments{
-  \item{R}{}
+  \item{R}{asset returns}
 
-  \item{lambda}{}
+  \item{lambda}{smoothing parameter, must be greater than 0
+  or less than 1}
 
-  \item{initialWindow}{is the initializing window}
+  \item{initialWindow}{initial window of observations used
+  in estimating the initial covariance or correlation}
 
-  \item{correlation}{option (cor by default = FALSE)}
+  \item{TRUE/FALSE}{to return a correlation matrix. Default
+  cor = FALSE.}
 }
 \description{
-Description of EWMA. The function handles UV and MLM
-objects and returns either cov/cor.
+  Use an exponentially weighted moving average to estimate
+  the covariance or correlation of asset returns.
 }
 

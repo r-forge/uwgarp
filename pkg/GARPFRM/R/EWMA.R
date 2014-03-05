@@ -58,7 +58,7 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
 #' 
 #' Extract the covariance between two assets from an EWMA object
 #' 
-#' @param EWMA an EWMA object created by \code{\link{EWMA}}
+#' @param EWMA an EWMA object created by \link{\code{EWMA}}
 #' @param assets character vector or numeric vector. If 
 #' \code{assets} is of length 1, then the variance will be returned. 
 #' The assets can be specified by name or index.
@@ -109,9 +109,11 @@ getCov.varEWMA <- function(EWMA, assets=1){
 
 #' EWMA Correlation
 #' 
-#' Extract the correlation of two assets from an EWMA object
+#' Extract the correlation of two assets from an \code{EWMA} object
 #' 
-#' @param object an EWMA object created by \code{\link{EWMA}}
+#' @param object an EWMA object created by \link{\code{EWMA}}
+#' @param assets character vector or numeric vector. The assets can be 
+#' specified by name or index.
 #' @export
 getCor <- function(EWMA, assets){
   UseMethod("getCor")

@@ -13,3 +13,9 @@ Depends:
 Suggests:
     quadprog
 License: GPL
+Collate:
+    'backTestVaR.R'
+    'capm.R'
+    'EWMA.R'
+    'garch11.R'
+    'monte_carlo.R'

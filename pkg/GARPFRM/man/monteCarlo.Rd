@@ -2,8 +2,8 @@
 \alias{monteCarlo}
 \title{Monte Carlo Price Path Simulation}
 \usage{
-monteCarlo(mu, sigma, N = 100, Time = 1, steps = 52,
-  starting_value = 100, log = TRUE)
+  monteCarlo(mu, sigma, N = 100, Time = 1, steps = 52,
+    starting_value = 100, log = TRUE)
 }
 \arguments{
   \item{mu}{annualized expected return}
@@ -16,16 +16,30 @@ monteCarlo(mu, sigma, N = 100, Time = 1, steps = 52,
 
   \item{steps}{number of time steps}
 
-  \item{starting_value}{price to start at}
+  \item{starting_value}{asset price starting value}
 
-  \item{log}{TRUE/FALSE (default = TRUE) simulate ln(P)
+  \item{log}{TRUE/FALSE (default = TRUE) simulate ln(S)
   rather than S; where S is the price of the asset.}
 }
 \value{
-matrix of Monte Carlo simulated price paths
+  matrix of simulated price paths where each column
+  represents a price path
 }
 \description{
-Description for Monte Carlo. Geometric brownian motion. mu
-and sigma are assumed constant
+  Run \code{N} monte carlo simulations to generate asset
+  price paths following a geometric brownian motion
+  process.
+}
+\details{
+  TODO: add equations for GBM
+}
+\note{
+  This function returns a m x N matrix of simulated price
+  paths where m is the number of steps + 1 and N is the
+  number of simulations. This can be very memory and
+  compute intensive with a large number of steps and/or a
+  large number of simulations. More efficient methods in
+  terms of speed and memory should be used, for example, to
+  price options.
 }
 

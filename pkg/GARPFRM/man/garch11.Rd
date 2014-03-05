@@ -2,7 +2,7 @@
 \alias{garch11}
 \title{GARCH(1,1)}
 \usage{
-garch11(R, model = "sGARCH", distribution.model = "norm")
+  garch11(R, model = "sGARCH", distribution.model = "norm")
 }
 \arguments{
   \item{R}{GARCH(1,1)}
@@ -20,6 +20,6 @@ garch11(R, model = "sGARCH", distribution.model = "norm")
   “jsu” for Johnson's SU distribution.}
 }
 \description{
-Description of GARCH(1,1)
+  Description of GARCH(1,1)
 }
 
