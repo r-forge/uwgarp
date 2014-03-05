@@ -1,94 +1,131 @@
+
+##### functions #####
+
+# function to compute EWMA volatility estimates
+volEWMA <- function(R, lambda=0.94, initialWindow=10){
+  # Check for lambda between 0 and 1 & initialWindow must be greater than ncol(R)
+  if ((lambda > 1) || (lambda < 0)) stop("lambda must be greater than 0 or less than 1")
+  if (initialWindow > nrow(R)) stop("Initial window must be less than the number of observations")
+  
+  # R must be an xts object and have only 1 column of data for univariate EWMA estimate
+  # R must be an xts object and have only 2 columns of data for bivariate EWMA estimate
+  if(ncol(R) > 1){
+    warning("Only using first column of data")
+    R <- R[,1]
+  }
+  
+  # Separate data into a initializing window and a testing window
+  initialR = R[1:initialWindow,]
+  testR = R[(initialWindow+1):nrow(R),]
+  
+  # Compute initial variance estimate
+  varOld <- var(initialR)
+  
+  # initialize output vector
+  tmp <- vector("numeric", nrow(testR))
+  
+  for(i in 1:nrow(testR)){
+    tmp[i] <- lambda * varOld + (1 - lambda) * testR[i]^2
+    varOld <- tmp[i]
+  }
+  # pad with leading NA and compute sqrt of variance vector
+  out <- xts(c(rep(NA, initialWindow), sqrt(tmp)), index(R))
+  colnames(out) <- colnames(R)
+  return(out)
+}
+
+# function to compute EWMA covariance estimates
+covEWMA <- function(R, lambda=0.94, initialWindow=10){
+  # Check for lambda between 0 and 1 & initialWindow must be greater than ncol(R)
+  if ((lambda > 1) || (lambda < 0)) stop("lambda must be greater than 0 or less than 1")
+  if (initialWindow > nrow(R)) stop("Initial window must be less than the number of observations")
+  
+  # R must be an xts object and have only 2 columnw of data for bivariate EWMA estimate
+  if(ncol(R) > 2){
+    warning("Only using first two columns of data")
+    R <- R[,1:2]
+  }
+  
+  # Separate data into a initializing window and a testing window
+  initialR = R[1:initialWindow,]
+  testR = coredata(R[(initialWindow+1):nrow(R),])
+  
+  # Compute initial estimate
+  covOld <- cov(initialR[,1], initialR[,2])
+  
+  # initialize output vector
+  tmp <- vector("numeric", nrow(testR))
+  
+  for(i in 1:nrow(testR)){ 
+    tmp[i] <- covOld + (1 - lambda) * (testR[i, 1] * testR[i, 2]  - covOld)
+    covOld <- tmp[i]
+  }
+  # pad with leading NA
+  out <- xts(c(rep(NA, initialWindow), tmp), index(R))
+  colnames(out) <- paste(colnames(R), collapse=".")
+  return(out)
+}
+
+# function to compute EWMA correlation estimates
+corEWMA <- function(R, lambda=0.94, initialWindow=10){
+  # Check for lambda between 0 and 1 & initialWindow must be greater than ncol(R)
+  if ((lambda > 1) || (lambda < 0)) stop("lambda must be greater than 0 or less than 1")
+  if (initialWindow > nrow(R)) stop("Initial window must be less than the number of observations")
+  
+  # R must be an xts object and have only 2 columns of data for bivariate EWMA estimate
+  if(ncol(R) > 2){
+    warning("Only using first two columns of data")
+    R <- R[,1:2]
+  }
+  
+  # Separate data into a initializing window and a testing window
+  initialR = R[1:initialWindow,]
+  testR = coredata(R[(initialWindow+1):nrow(R),])
+  
+  # Compute initial estimates
+  covOld <- cov(initialR[,1], initialR[,2])
+  varOldX <- var(initialR[,1])
+  varOldY <- var(initialR[,2])
+  
+  # initialize output vector
+  tmp <- vector("numeric", nrow(testR))
+  
+  for(i in 1:nrow(testR)){
+    # compute the covariance EWMA estimate
+    tmpCov <- covOld + (1 - lambda) * (testR[i, 1] * testR[i, 2]  - covOld)
+    # compute the variance EWMA estimate for each asset
+    tmpVarX <- lambda * varOldX + (1 - lambda) * testR[i,1]^2
+    tmpVarY <- lambda * varOldY + (1 - lambda) * testR[i,2]^2
+    # compute correlation with the covariance and volatility of each asset
+    tmp[i] <- tmpCov / (sqrt(tmpVarX) * sqrt(tmpVarY))
+    # now update the old values
+    covOld <- tmpCov
+    varOldX <- tmpVarX
+    varOldY <- tmpVarY
+  }
+  # pad with leading NA
+  out <- xts(c(rep(NA, initialWindow), tmp), index(R))
+  colnames(out) <- paste(colnames(R), collapse=".")
+  return(out)
+}
+
+##### testing #####
 library(GARPFRM)
 
 data(crsp.short)
-R <- largecap.ts[, 1:4]
+R <- largecap.ts[, 1:2]
+lambda <- 0.94
+initialWindow <- 15
 
-ewma_est <- EWMA(R)
-# This is a list of two elements
-names(ewma_est)
+# volatility estimate via EWMA
+vol1 <- volEWMA(R[,1], lambda, initialWindow)
 
-# extract the EWMA estimate 
-ewma_est$EWMA
+# covariance estimate via EWMA
+cov1 <- covEWMA(R, lambda, initialWindow)
 
-# extract the data
-ewma_est$R
+# correlation estimate via EWMA
+cor1 <- corEWMA(R, lambda, initialWindow)
 
-tmpCov <- getCov(ewma_est, 1, 2)
-
-# This should throw an error because ewma_est is a covariance estimate
-getCor(ewma_est, 1, 2)
-
-# correlation between assets 1 and 4
-estCor <- getCor(EWMA(R, cor=TRUE), 1, 4)
-
-plot(ewma_est, asset1=1, asset2=2)
-
-plot(EWMA(R, cor=TRUE), asset1=1, asset2=2)
-
-# # might need a separate function for univariate time series of returns
-# 
-# # estimate covariance or correlation using EWMA for a multivariate data set
-# rbEWMA <- function(R, lambda=0.94, training_period=10, cor=FALSE){
-#   # check for training_period must be greater than ncol(R)
-#   # check for lambda between 0 and 1
-#   
-#   # Separate data into a training set and a testing set
-#   R_training <- R[1:training_period,]
-#   R_testing <- R[(training_period+1):nrow(R),]
-#   
-#   # calculate a starting covariance matrix
-#   cov_start <- cov(R_training)
-#   cov_lag <- cov_start
-#   tmp_cov <- vector("list", nrow(R_testing))
-#   
-#   for(i in 1:nrow(R_testing)){
-#     # extract R for the ith time step
-#     tmpR <- R_testing[i,]
-#     tmp_cov[[i]] <- lambda * (t(tmpR) %*% tmpR) + (1 - lambda) * cov_lag
-#     # update cov_lag to be tmp_cov from the current period
-#     cov_lag <- tmp_cov[[i]]
-#   }
-#   out <- tmp_cov
-#   names(out) <- index(R_testing)
-#   if(cor) out <- lapply(out, cov2cor)
-#   return(out)
-# }
-# 
-# 
-# 
-# getCov <- function(object, asset1, asset2){
-#   # check for 
-#   if(is.character(asset1) & is.character(asset2)){
-#     idx1 <- grep(asset1, colnames(object[[1]]))
-#     if(length(idx1) == 0) stop("name for asset1 not in object")
-#     idx2 <- grep(asset2, colnames(object[[1]]))
-#     if(length(idx2) == 0) stop("name for asset2 not in object")
-#   } else {
-#     # checks for dimensions
-#     idx1 <- asset1
-#     idx2 <- asset2
-#   }
-#   out <- xts(unlist(lapply(x, function(x) x[idx1, idx2])), as.Date(index(x)))
-#   colnames(out) <- paste(asset1, asset2, sep=".")
-#   # detect if estimating cor or cov and set a class 
-#   # (i.e. EWMA_cov or EWMA_cor classes)
-#   # This will change how we handle getCov or getCor
-#   # For example, if someone uses EWMA with cor = TRUE, we probably don't want
-#   # them to be able to call getCov on correlations estimated with EWMA. It would
-#   # still return the right value based on the index, but it is misleading that
-#   # they used getCov to return the correlations.
-#   return(out)
-# }
-# 
-# 
-# x <- rbEWMA(R, training_period=20)[[1]]
-# x <- rbEWMA(R[,1])
-# x
-# covAMATAMGN <- getCov(x, "AMATGLG", "AMGN")
-# 
-# # should have a plot method that takes an EWMA_cov or EWMA_cor object and then
-# # use getCov or getCor to extract the time series to plot
-# 
-# 
-# plot(covAMATAMGN)
-# 
+plot(vol1)
+plot(cov1)
+plot(cor1)
