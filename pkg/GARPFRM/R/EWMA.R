@@ -40,12 +40,12 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
   # Check correlation option
   if(cor & ncol(R) > 1) {
     out$EWMA <- lapply(out$EWMA, cov2cor)
-    class(out) <- c("EWMACor")
+    class(out) <- c("corEWMA")
   } else if(cor & (ncol(R) == 1)) {
     stop("EWMA correlation is only to be estimated for two or more assets")
   }
   
-  # Check for Covar or Var
+  # Check for covariance or variance
   if((cor == FALSE) & (ncol(R) > 1)) { 
     class(out) <- c("covEWMA")
   } else if ((cor == FALSE) & (ncol(R) == 1)){
@@ -58,7 +58,7 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, cor=FALSE){
 #' 
 #' Extract the covariance between two assets from an EWMA object
 #' 
-#' @param EWMA an EWMA object created by \link{\code{EWMA}}
+#' @param EWMA an EWMA object created by \code{EWMA}
 #' @param assets character vector or numeric vector. If 
 #' \code{assets} is of length 1, then the variance will be returned. 
 #' The assets can be specified by name or index.
@@ -72,20 +72,24 @@ getCov <- function(EWMA, assets){
 getCov.covEWMA <- function(EWMA, assets=c(1,2)){
   if(!inherits(EWMA, "covEWMA")) stop("object must be of class covEWMA")
   
+  if(length(assets) == 1) assets[2] <- assets[1]
+  
+  cnames <- colnames(EWMA$EWMA[[1]])
+  
   # Check if asset is a character
   if(is.character(assets[1]) & is.character(assets[2])){
-    idx1 = grep(assets[1], colnames(EWMA$EWMA[[1]]))
+    idx1 = grep(assets[1], cnames)
     if(length(idx1) == 0) stop("name for asset1 not in object")
-    idx2 = grep(assets[2], colnames(EWMA$EWMA[[1]]))
+    idx2 = grep(assets[2], cnames)
     if(length(idx2) == 0) stop("name for asset2 not in object")
   } else {
     # Then dimensions are enough to find covar
     idx1 = assets[1]
-    idx2 = assets[1]
+    idx2 = assets[2]
   }
   
   out = xts(unlist(lapply(EWMA$EWMA, function(X) X[idx1, idx2])), as.Date(names(EWMA$EWMA)))
-  colnames(out) = paste(assets[1], assets[2], sep=".")
+  colnames(out) = paste(cnames[idx1], cnames[idx2], sep=".")
   
   return(out)
 }
@@ -95,15 +99,17 @@ getCov.covEWMA <- function(EWMA, assets=c(1,2)){
 getCov.varEWMA <- function(EWMA, assets=1){
   if(!inherits(EWMA, "varEWMA")) stop("EWMA must be of class varEWMA")
   
+  cnames <- colnames(EWMA$EWMA[[1]])
+  
   # Check if asset is a character
   if(is.character(assets[1])){
-    idx1 = grep(assets[1], colnames(EWMA$EWMA[[1]]))
+    idx1 = grep(assets[1], cnames)
     if(length(idx1) == 0) stop("name for asset not in EWMA object")
   } else {
     idx1 = assets[1]
   }
   out = xts(unlist(lapply(EWMA$EWMA, function(x) x[idx1])), as.Date(names(EWMA$EWMA)))
-  colnames(out) = assets[1]
+  colnames(out) = cnames[idx1]
   return(out)
 }
 
@@ -111,7 +117,7 @@ getCov.varEWMA <- function(EWMA, assets=1){
 #' 
 #' Extract the correlation of two assets from an \code{EWMA} object
 #' 
-#' @param object an EWMA object created by \link{\code{EWMA}}
+#' @param object an EWMA object created by \code{EWMA}
 #' @param assets character vector or numeric vector. The assets can be 
 #' specified by name or index.
 #' @export
@@ -124,11 +130,13 @@ getCor <- function(EWMA, assets){
 getCor.corEWMA <- function(EWMA, assets=c(1,2)){
   if(!inherits(EWMA, "corEWMA")) stop("EWMA must be of class corEWMA")
   
+  cnames <- colnames(EWMA$EWMA[[1]])
+  
   # Check if asset is a character 
   if(is.character(assets[1]) & is.character(assets[2])){
-    idx1 = grep(assets[1], colnames(EWMA$EWMA[[1]]))
+    idx1 = grep(assets[1], cnames)
     if(length(idx1) == 0) stop("name for asset1 not in EWMA object")
-    idx2 = grep(assets[2], colnames(EWMA$EWMA[[1]]))
+    idx2 = grep(assets[2], cnames)
     if(length(idx2) == 0) stop("name for asset2 not in EWMA object")
   } else {
     # Then dimensions are enough to find covar
@@ -137,34 +145,27 @@ getCor.corEWMA <- function(EWMA, assets=c(1,2)){
   }
   
   out = xts(unlist(lapply(EWMA$EWMA, function(x) x[idx1, idx2])), as.Date(names(EWMA$EWMA)))
-  colnames(out) = paste(assets[1], assets[2], sep=".")
+  colnames(out) = paste(cnames[idx1], cnames[idx2], sep=".")
   
   return(out)
 }
 
-# The generic method for plot is
-# plot(x, y, ...)
-# The first arguments for your plot.* methods must match the generic plot method
-
-# plot.EWMACovar(x, y, ..., asset1, asset2)
-
 # EWMA plotting for covar
 #' @export
-plot.covEWMA <- function(object, ..., assets=c(1, 2)){
+plot.covEWMA <- function(object, ..., assets=c(1, 2), xlab="", ylab="Covariance", main="EWMA Estimate"){
   # Check if asset is a character 
   if(is.character(assets[1]) & is.character(assets[2])){
-    idx1 = grep(assets[1], colnames(object[[1]]))
+    idx1 = grep(assets[1], colnames(object$EWMA[[1]]))
     if(length(idx1) == 0) stop("name for assets[1] not in object")
-    idx2 = grep(assets[2], colnames(object[[1]]))
+    idx2 = grep(assets[2], colnames(object$EWMA[[1]]))
     if(length(idx2) == 0) stop("name for assets[2] not in object")
   } else {
     # Then dimensions are enough to find covar
     idx1 = assets[1]
     idx2 = assets[2]
   }
-  tmp = getCov(object, ..., assets)
-  plot(x=time(as.zoo(tmp)), y=tmp, type="l", xlab="Time", ylab="Covariance", 
-       lwd=2, col="blue", main="EWMA Covariance")
+  tmp = getCov(object, assets)
+  plot(x=time(as.zoo(tmp)), y=tmp, ...=..., type="l", xlab=xlab, ylab=ylab, main=main)
   grid()
   abline(h=var(object$R)[idx1,idx2], lwd=2, col="red")
 }
@@ -172,10 +173,9 @@ plot.covEWMA <- function(object, ..., assets=c(1, 2)){
 
 # EWMA plotting for var
 #' @export
-plot.varEWMA <- function(object, ..., assets=c(1,2)){
+plot.varEWMA <- function(object, ..., assets=c(1,2), xlab="", ylab="Covariance", main="EWMA Estimate"){
   tmp = getCov(object, assets[1])
-  plot(x=time(as.zoo(tmp)),y=tmp, type="l", xlab="Time", ylab="Variance", 
-       lwd=2, col="blue", main="EWMA Variance");
+  plot(x=time(as.zoo(tmp)),y=tmp, ...=..., type="l", xlab=xlab, ylab=ylab, main=main)
   grid()
   abline(h=var(object$R), lwd=2, col="red")
 }
@@ -183,12 +183,12 @@ plot.varEWMA <- function(object, ..., assets=c(1,2)){
 
 # EWMA plotting for correlation
 #' @export
-plot.corEWMA <- function(object, ..., assets=c(1,2)){
+plot.corEWMA <- function(object, ..., assets=c(1,2), xlab="", ylab="Covariance", main="EWMA Estimate"){
   # Check if asset is a character 
   if(is.character(assets[1]) & is.character(assets[2])){
-    idx1 = grep(assets[1], colnames(object[[1]]))
+    idx1 = grep(assets[1], colnames(object$EWMA[[1]]))
     if(length(idx1) == 0) stop("name for asset1 not in object")
-    idx2 = grep(assets[2], colnames(object[[1]]))
+    idx2 = grep(assets[2], colnames(object$EWMA[[1]]))
     if(length(idx2) == 0) stop("name for asset2 not in object")
   } else {
     # Then dimensions are enough to find covar
@@ -196,8 +196,7 @@ plot.corEWMA <- function(object, ..., assets=c(1,2)){
     idx2 = assets[2]
   }
   tmp = getCor(object, assets)
-  plot(x=time(as.zoo(tmp)), y=tmp, type="l", xlab="Time", ylab="Correlation", 
-       lwd=2, col="blue", main="EWMA Correlation")
+  plot(x=time(as.zoo(tmp)), y=tmp, ...=..., type="l", xlab=xlab, ylab=ylab, main=main)
   grid()
   abline(h=cor(object$R)[idx1,idx2], lwd=2, col="red")
 }

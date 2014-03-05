@@ -5,7 +5,7 @@
   getCov(EWMA, assets)
 }
 \arguments{
-  \item{EWMA}{an EWMA object created by \link{\code{EWMA}}}
+  \item{EWMA}{an EWMA object created by \code{EWMA}}
 
   \item{assets}{character vector or numeric vector. If
   \code{assets} is of length 1, then the variance will be
