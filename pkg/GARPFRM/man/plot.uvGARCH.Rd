@@ -1,0 +1,20 @@
+\name{plot.uvGARCH}
+\alias{plot.uvGARCH}
+\title{Plot GARCH Model}
+\usage{
+  plot.uvGARCH(x, y, ..., which)
+}
+\arguments{
+  \item{x}{uvGARCH object create via \code{uvGARCH}}
+
+  \item{y}{}
+
+  \item{\dots}{additional parameters passed to plot method
+  for uGARCHfit objects}
+
+  \item{which}{plot selection}
+}
+\description{
+  Plots for fitted GARCH Models
+}
+
