@@ -1,29 +1,54 @@
-#' GARCH(1,1)
+
+# Because our function is a wrapper around functions in the rugarch and
+# rmgarch packages, we need to give proper credit (i.e. citation("rugarch")
+# and citation("rmgarch"))
+
+# rugarch: univariate garch models
+# rmgarch: multivariate garch models
+
+# we need to support GARCH models for both univariate and multivariate data
+
+#' GARCH Models
 #' 
-#' Description of GARCH(1,1)
+#' This function is a basic wrapper of functions in the rugarch and rmgarch
+#' packages to specify and fit GARCH models. The rugarch and rmgarch packages
+#' provide functions to specify and fit a rich set of GARCH models. 
+#' The purpose of this function is to specify and fit a GARCH model while 
+#' abstracting away some complexities.
 #' 
-#' @param R GARCH(1,1)
+#' The rugarch package implements univariate garch models and the
+#' rmgarch package implements multivariate garch models. Univariate or 
+#' multivariate data is automatically detected and the appropriate GARCH model
+#' will be specified and fit.
+#' 
+#' For complete functionality of GARCH models, it is recommended to 
+#' directly use functions in the rugarch and rmgarch packages.
+#' 
+#' @param R xts object of asset returns
 #' @param model “sGARCH”, “fGARCH”, “eGARCH”, “gjrGARCH”, “apARCH” and “iGARCH” and “csGARCH”
 #' @param distribution.model. Valid choices are “norm” for the normal distibution, “snorm” for the skew-normal distribution, “std” for the student-t, “sstd” for the skew-student, “ged” for the generalized error distribution, “sged” for the skew-generalized error distribution, “nig” for the normal inverse gaussian distribution, “ghyp” for the Generalized Hyperbolic, and “jsu” for Johnson's SU distribution. 
 #' @export
 # By default we use UV N~GARCH(1,1) and Bollerslev for each series
 garch11 <- function(R, model = "sGARCH", distribution.model = "norm"){
-garch11.spec = ugarchspec(mean.model = list(armaOrder = c(0,0)), 
-                          variance.model = list(garchOrder = c(1,1), model = model), 
-                          distribution.model)
-
-# DCC specification: GARCH(1,1) for conditional cor
-nbColumns = ncol(R)
-dcc.garch11.spec = dccspec(uspec = multispec( replicate(nbColumns, garch11.spec) ), 
-                           dccOrder = c(1,1), distribution = "mvnorm")
-dcc.garch11.spec
-
-dcc.fit = dccfit(dcc.garch11.spec, data = R)
-class(dcc.fit)
-slotNames(dcc.fit)
-names(dcc.fit@mfit)
-names(dcc.fit@model)
-return(dcc.fit)
+  # if univariate data, load the rugarch package
+  # if multivariate data, load the rmgarch package
+  
+  garch11.spec = ugarchspec(mean.model = list(armaOrder = c(0,0)), 
+                            variance.model = list(garchOrder = c(1,1), model = model), 
+                            distribution.model)
+  
+  # DCC specification: GARCH(1,1) for conditional cor
+  nbColumns = ncol(R)
+  dcc.garch11.spec = dccspec(uspec = multispec( replicate(nbColumns, garch11.spec) ), 
+                             dccOrder = c(1,1), distribution = "mvnorm")
+  dcc.garch11.spec
+  
+  dcc.fit = dccfit(dcc.garch11.spec, data = R)
+  class(dcc.fit)
+  slotNames(dcc.fit)
+  names(dcc.fit@mfit)
+  names(dcc.fit@model)
+  return(dcc.fit)
 }
 
 #' Forecast GARCH(1,1)
@@ -47,4 +72,146 @@ fcstGarch11.DCCfit <- function(object, window = 100){
   class(result@mforecast)
   names(result@mforecast)
   return(result)
+}
+
+
+#' Univariate GARCH Model
+#' 
+#' Specify and fit a univariate GARCH model
+#' 
+#' @param R xts object of asset returns.
+#' @param model GARCH Model to specify and fit. Valid GARCH models are
+#' “sGARCH”, “fGARCH”, “eGARCH”, “gjrGARCH”, “apARCH”, “iGARCH” and “csGARCH”.
+#' @param garchOrder the ARCH(q) and GARCH(p) orders.
+#' @param armaOrder the autoregressive and moving average orders.
+#' @param distribution conditional density to use for the innovations. Valid 
+#' distributions are “norm” for the normal distibution, “snorm” for the 
+#' skew-normal distribution, “std” for the student-t, 
+#' “sstd” for the skew-student, “ged” for the generalized error distribution, 
+#' “sged” for the skew-generalized error distribution, 
+#' “nig” for the normal inverse gaussian distribution, 
+#' “ghyp” for the Generalized Hyperbolic, and “jsu” for Johnson's SU distribution.
+#' @param fixedParams named list of parameters to keep fixed.
+#' @param solver the solver to use to fit the GARCH model. Valid solvers are
+#' “nlminb”, “solnp”, “lbfgs”, “gosolnp”, “nloptr” or “hybrid” 
+#' @param outSample number of periods of data used to fit the model. 
+#' \code{nrow(R) - outSample} number of periods to keep as out of sample data
+#' points.
+#' @param fitControl named list of arguments for the fitting routine
+#' @param solverControl named list of arguments for the solver
+#' @return a list of length two containing GARCH specification and GARCH fit objects
+#' @export
+uvGARCH <- function(R, model="sGARCH", 
+                    garchOrder=c(1, 1), 
+                    armaOrder=c(1,1), 
+                    distribution="norm",
+                    fixedParams=NULL,
+                    solver="hybrid",
+                    outSample=0,
+                    fitControl=NULL,
+                    solverControl=NULL){
+  # Function to specify and fit a univariate GARCH model
+  
+  stopifnot("package:rugarch" %in% search() || require("rugarch", quietly = TRUE))
+  
+  if(is.null(fixedParams)){
+    fixedParams <- list()
+  }
+  
+  # Specify the GARCH model
+  # uGARCHspec object
+  spec <- ugarchspec(variance.model=list(model=model, garchOrder=garchOrder),
+                     mean.model=list(armaOrder=armaOrder),
+                     distribution.model=distribution,
+                     fixed.pars=fixedParams)
+  
+  # Fit the GARCH model
+  # uGARCHfit object
+  
+  if(is.null(fitControl)){
+    fitControl <- list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all')
+  }
+  
+  if(is.null(solverControl)){
+    solverControl <- list()
+  }
+  
+  fit <- ugarchfit(spec=spec, data=R, out.sample=outSample, solver=solver, 
+                   fit.control=fitControl, solver.control=solverControl)
+  
+  # structure and return the univariate GARCH model specification and fit
+  return(structure(list(spec=spec, fit=fit),
+                   class="uvGARCH"))
+}
+
+#' Get GARCH Specification
+#' 
+#' Function to extract the GARCH specification object 
+#' 
+#' @param garch a GARCH model specification and fit created with \code{uvGARCH}
+#' @return an object of class uGARCHspec
+#' @export
+getSpec <- function(garch){
+  UseMethod("getSpec")
+}
+
+#' @method getSpec uvGARCH
+#' @S3method getSpec uvGARCH
+getSpec.uvGARCH <- function(garch){
+  garch$spec
+}
+
+#' Get GARCH Model Fit
+#' 
+#' Function to extract the GARCH fit object 
+#' 
+#' @param garch a GARCH model specification and fit created with \code{uvGARCH}
+#' @return an object of class uGARCHfit
+#' @export
+getFit <- function(garch){
+  UseMethod("getFit")
+}
+
+#' @method getFit uvGARCH
+#' @S3method getFit uvGARCH
+getFit.uvGARCH <- function(garch){
+  garch$fit
+}
+
+#' Plot GARCH Model
+#' 
+#' Plots for fitted GARCH Models
+#' 
+#' @param x uvGARCH object create via \code{uvGARCH}
+#' @param y
+#' @param \dots additional parameters passed to plot method for uGARCHfit objects
+#' @param which plot selection
+plot.uvGARCH <- function(x, y, ..., which){
+  plot(getFit(x), which=which, ...=...)
+}
+
+#' Forecast Univariate GARCH Models
+#' 
+#' Forecasting for GARCH models fit via \code{uvGARCH}
+#' 
+#' @note For rolling forecasts specified with the \code{nRoll} argument, the
+#' GARCH model must be fit with \code{outSample} argument greater than or 
+#' equal to \code{nRoll}.
+#' 
+#' @param garch GARCH model fit via \code{uvGARCH}
+#' @param nAhead number of steps ahead to forecast
+#' @param nRoll number of rolling forecasts
+#' @param externalForecasts named list of external regressors in the mean and/or
+#' variance equations
+#' @param \dots additional parameters passed to \code{ugarchforecast}
+#' @return a uGARCHforecast object with the GARCH forecast data
+#' @export
+forecast <- function(garch, nAhead=10, nRoll=0, externalForecasts=NULL, ...){
+  
+  if(is.null(externalForecasts)){
+    externalForecasts <- list(mregfor = NULL, vregfor = NULL)
+  }
+  out <- ugarchforecast(garch$fit, n.ahead=nAhead, n.roll=nRoll, 
+                        external.forecasts=externalForecasts, ...=...)
+  return(out)
 }

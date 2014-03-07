@@ -12,6 +12,7 @@ Depends:
     PerformanceAnalytics (>= 1.0.0)
 Suggests:
     quadprog
+    rugarch (>= 1.3.1)
 License: GPL
 Collate:
     'backTestVaR.R'
