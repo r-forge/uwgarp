@@ -21,6 +21,9 @@ if(equalWts) randWts = FALSE
 # Number of securities to use is 
 numberOfSecurities = 3
 
+# Security Selection Method, randomSeq or serialSeq
+secSel = "serialSeq"
+
 # type of chaining in forming the aggregate return
 # If geometric is TRUE use geometric chaining if False use arithemetic chaining
 geometricB = TRUE
@@ -96,22 +99,31 @@ nSec = ncol(largecap.ts)
 if (numberOfSecurities>(nSec-2)) numberOfSecurities = nSec - 2
 cat('\n Number of Securities being used in portfolio = ',numberOfSecurities, '\n')
 
-# Random create a portfolio from the non-market non RF series
-# Get a normalized set of weights
-# Could set up the application to create a random portfolio from a subset or 
-# Input specific securities and weights
+# Security position numbers of securities in portfolio
+secNbrs = seq(1,numberOfSecurities)
+if(secSel=="randomSeq") secNbrs = sample.int(nSec, size = numberOfSecurities, replace = FALSE)
+
+cat('\n Selected Security position indicies')
+print(secNbrs)
+
 #
+# Created random wts from the non-market non RF series if selected
 if (randWts){
-  coefs = runif(nSec-2)
+  coefs = runif(numberOfSecurities)
   alphas = coefs/sum(coefs)
   sum(alphas)
 }  
 
+# Generate portfolio from selected securities and associated weigts
 if (equalWts) {
-  R.portfolio <- Return.portfolio(largecap.ts[, 1:numberOfSecurities],geometric=geometricB)  
+  R.portfolio <- Return.portfolio(largecap.ts[, secNbrs],geometric=geometricB)  
 } else {
-  R.portfolio = Return.portfolio(largecap.ts[, 1:numberOfSecurities],weights=alphas,geometric=geometricB) 
+  R.portfolio = Return.portfolio(largecap.ts[, secNbrs],weights=alphas,geometric=geometricB) 
 }
+
+# Print names of securities in portfolio
+cat('\n Securities in Portfolio')
+print(colnames(largecap.ts)[secNbrs]) 
 
 colnames(portfolio) ="PortRets"
 
@@ -218,7 +230,7 @@ cat('\n Hand computed ',PortName,' Annualized Sharpe Ratio = ',shrHandAnn,'\n')
 cat('\n Difference PA and hand computed Sharpe Ratio = ',as.numeric(shr) - as.numeric(shrHand),'\n')
 
 
-Measures = rbind(Measures,c("Sharpe Ratio",shr,"","","Sharpe Ratio Annualized",shrAnn,"",""))
+Measures = rbind(Measures,matrix(c("Sharpe Ratio",shr,"","","Sharpe Ratio Annualized",shrAnn,"",""),ncol=4,byrow=TRUE))
 
 # Compute Jensen's Alpha
 
@@ -279,9 +291,8 @@ tStat = jaHandA/(analT1[1,2]*deltaCoef^0.5)
 pValue = 2*(1-pt(tStat,nRow-2))
 cat('\n H0: alpha = 0, HA: alpha != 0  p-value: ',pValue,'\n')
 
-Measures = rbind(Measures,c("Jensen's Alpha",ja,"",""))
-Measures = rbind(Measures,c("Jensen's Alpha P Value",pValue,"",""))
-
+Measures = rbind(Measures,matrix(c("Jensen's Alpha",jaStatic,"","","Jensen's Alpha Annualized",jaHandA,"","",
+                                   "Jensen's Alpha P Value",pValue,"",""),ncol=4,byrow=TRUE))
 
 
 # Compute Tracking Error
@@ -363,6 +374,9 @@ cat('\n Hand computed ',PortName,' PA formula Sortino Ratio = ',srHand2,'\n')
 Measures = rbind(Measures,c("Downside Deviation",dwn,"",""))
 Measures = rbind(Measures,c("Denominator DD",denomVal,"",""))
 Measures = rbind(Measures,c("Sortino Ratio",sr,"",""))
-Measures.df= as.data.frame(Measures,stringsAsFactors=FALSE)
+Measures.few = cbind(Measures[,1],substr(Measures[,2:4],1,8))
+Measures.few = rbind(Measures[1,],Measures.few[-1,])
+
+Measures.df= as.data.frame(Measures.few,stringsAsFactors=FALSE)
 
 print(Measures.df)
