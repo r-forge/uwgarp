@@ -12,3 +12,7 @@ ending_prices <- endingPrices(mc)
 
 # plot the ending prices
 plotEndingPrices(mc)
+
+# Add examples of pricing options
+# european
+# path-dependent like Asian or barrier options
