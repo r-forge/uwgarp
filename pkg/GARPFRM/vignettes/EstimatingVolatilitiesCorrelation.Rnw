@@ -1,0 +1,150 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{Rd}
+
+\begin{document}
+
+<<echo=FALSE>>=
+opts_chunk$set(tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
+@
+
+
+\title{Estimating Volatilities and Correlation}
+\author{Ross Bennett}
+
+\maketitle
+
+\begin{abstract}
+The purpose of this vignette is to demonstrate methods for estimating volatility and correlation as outlined in Chapter 10 of Foundations of Risk Management.
+\end{abstract}
+
+\tableofcontents
+
+\section{Estimating Volatility}
+We define $\sigma_n$ as the volatility on day $n$, as estimated at the end of day $n-1$. This section describes the standard approach to estimating $\sigma_n$ from historical data.
+
+First we define the continuously compounded return between the end of day $i-1$ and the end of day $i$.
+
+\begin{equation}
+u_i = \ln \frac{S_i}{S_{i-1}}
+\end{equation}
+where:
+\begin{description}
+  \item[$S_i$] is the value of the market variable at the end of day $i$ (e.g. asset prices)
+\end{description}
+
+An unbiased estimate of the variance rate per day on day $n$, $\sigma_n^2$, using the $m$ most recent observations is
+
+\begin{equation}
+\sigma_n^2 = \frac{1}{m-1} \sum_{i=1}^m (u_{n-1} - \bar{u})^2
+\end{equation}
+
+where $\bar{u}$ is the mean of $u_i$ for $i = {1, 2, ..., m}$
+\begin{equation}
+\bar{u} = \frac{1}{m} \sum_{i=1}^m u_{n-1}
+\end{equation}
+
+A few changes can be made to simplify the equation for monitoring daily volatility.
+\begin{enumerate}
+  \item define $u_i$ as the percentage change in the market variable between the end of day $i-1$ and the end of day $i$.
+  \begin{equation}
+  u_i = \frac{S_i - S_{i-1}}{S_i}
+  \end{equation}
+  \item Assume $\bar{u}$ to be zero
+  \item Replace $m-1$ with $m$
+\end{enumerate}
+
+These changes simplify the formula for the variance rate to
+\begin{equation}
+\sigma_n^2 = \frac{1}{m} \sum_{i=1}^m u_{n-1}^2
+\end{equation}
+
+This equation gives equal weight to each of the previous $m$ observations. A model that allows one to assign weights to the previous observations is
+\begin{equation}
+\sigma_n^2 = \sum_{i=1}^m \alpha_i u_{n-1}^2
+\end{equation}
+
+Where $\alpha_i$ is the weight given to the observation $i$ days ago.
+
+TODO: add information about the ARCH model
+
+A special case of equation is the Exponentially Weighted Moving Average (EWMA) Model.
+
+\section{Exponentially Weighted Moving Average Model}
+The Exponentially Weighted Moving Average (EWMA) Model is a special case of a weighted moving average where the weights $\alpha_i$ decrease exponentially as we move backwards through time. Greater weights are given to more recent observations.
+
+This weighting scheme leads to simple formula for updating volatility estimates. The predictive version of the variance rate of day $n$ is given as
+
+\begin{equation}
+\hat{\sigma}_n^2 = \lambda \hat{\sigma}_{n-1}^2 + (1 - \lambda) u_{n-1}^2
+\end{equation}
+
+where:
+\begin{description}
+  \item[$\hat{\sigma}_{n-1}^2$] is the estimated variance rate of period $n-1$
+  \item[$u_{n-1}$] is the return of preiod $n-1$
+  \item[$\lambda$] is a constant between 0 and 1
+\end{description}
+
+The value for $\lambda$ determines how responsive the volatility estimate is to the most recent percentage change, $u_{n-1}$. A lower (higher) value for $\lambda$ leads to a greater (lesser) weight given to $u_{n-1}$. One way to think of this is that values of $\lambda$ close to 1 produce volatility estimates that respond relatively slow to new information coming into the market provided by $u_{n-1}$.
+
+Load the package and data. Unless noted otherwise, the weekly returns of Microsoft (MSFT) will be used as the asset return data.
+<<>>=
+library(GARPFRM)
+data(crsp_weekly)
+
+# Use the weekly MSFT returns
+R <- largecap_weekly[, "MSFT"]
+@
+
+Here we calculate the volatility estimates of the MSFT weekly returns using the EWMA model. We choose \code{lambda=0.94}. The RiskMetrics database, originally created by J.P. Morgan and made publicly available in 1994, uses the EWMA model with $\lambda = 0.94$ for updating daily volatility in its RiskMetrics database. An \code{initialWindow=15} is specified to use the first 15 periods to calculate the initial conditions, $u_0$ and $\sigma_0$. 
+
+<<>>=
+lambda <- 0.94
+initialWindow <- 15
+volEst <- volEWMA(R, lambda, initialWindow)
+tail(volEst)
+@
+
+An important point to note is that we are using weekly returns to estimate weekly volatility while the lambda value used in the RiskMetrics database is for daily volatility. A data driven approach for selecting a value for $\lambda$ is to determine the $\lambda$ that minimizes the sum of squared errors between the realized volatility and the estimated volatility from the EWMA model.
+
+Here we calculate the realized volatility defined as the equally weighted average of the standard deviation of the subsequent $n$ periods.
+<<>>=
+vol <- realizedVol(R, n=5)
+@
+
+Now we plot the estimated volatility from the EWMA model and the realized volatility.
+<<>>=
+plot(vol, main="EWMA Volatility Estimate vs. Realized Volatility")
+lines(volEst, col="red")
+@
+
+The \code{estimateLambda} function estimates the value for $\lambda$ by minimizing the sum of squared errors between the realized volatility and the EWMA model estimated volatility.
+<<>>=
+# Estimate lambda
+# Use initialWindow = 15 for the EWMA volatility estimate and
+# n = 5 to calculate the realized volatility
+lambda <- estimateLambda(R, initialWindow, n=5)
+lambda
+
+volEst2 <- volEWMA(R, lambda, initialWindow)
+@
+
+Here we plot the realized volatility along with the EWMA estimated volatility with $\lambda = 0.94$ and $\lambda = 0.7187$ to gain intuition through visualization of the EWMA volatility estimates.
+<<>>=
+# Realized volatility
+plot(vol, main="EWMA Volatility Estimate vs. Realized Volatility")
+# EWMA volatility estimate, lambda = 0.94
+lines(volEst, col="red")
+# EWMA volatility estimate, lambda = 0.7187
+lines(volEst2, col="blue")
+legend("topright", legend=c("Realized Volatility", 
+                            "EWMA Volatility, lambda = 0.94",
+                            "EWMA Volatility, lambda = 0.7187"),
+       col=c("black", "red", "blue"), lty=c(1, 1, 1), cex=0.7, bty="n")
+@
+
+
+
+\end{document}
