@@ -1,8 +1,8 @@
-\name{getCov}
-\alias{getCov}
-\title{EWMA Covariance}
+\name{getVar}
+\alias{getVar}
+\title{EWMA Variance}
 \usage{
-  getCov(EWMA, assets)
+  getVar(EWMA, assets)
 }
 \arguments{
   \item{object}{an EWMA object created by \code{EWMA}}
@@ -11,7 +11,7 @@
   assets can be specified by name or index.}
 }
 \description{
-  Extract the covariance of two assets from an \code{EWMA}
+  Extract the Variance of an asset from an \code{EWMA}
   object
 }
 

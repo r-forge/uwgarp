@@ -1,0 +1,16 @@
+\name{realizedVol}
+\alias{realizedVol}
+\title{Realized Volatility}
+\usage{
+  realizedVol(R, n)
+}
+\arguments{
+  \item{R}{xts object of asset returns}
+
+  \item{n}{number of periods used to calculate realized
+  volatility}
+}
+\description{
+  Calculate realized volatility
+}
+

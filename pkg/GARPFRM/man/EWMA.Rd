@@ -1,30 +1,35 @@
 \name{EWMA}
 \alias{EWMA}
-\title{Exponential Weighted Moving Average (EWMA)}
+\title{EWMA Model}
 \usage{
-  EWMA(R, lambda = 0.94, initialWindow = 10, cor = FALSE)
+  EWMA(R, lambda = 0.94, initialWindow = 10, n = 10,
+    type = c("volatility", "covariance", "correlation"))
 }
 \arguments{
-  \item{R}{asset returns}
+  \item{R}{xts object of asset returns}
 
   \item{lambda}{smoothing parameter, must be greater than 0
-  or less than 1}
+  or less than 1. If NULL, lambda will be estimated by
+  minimizing the sum of squared difference between the
+  estimated value and the realized value.}
 
   \item{initialWindow}{initial window of observations used
-  in estimating the initial covariance or correlation}
+  in estimating the initial conditions}
 
-  \item{TRUE/FALSE}{to return a correlation matrix. Default
-  cor = FALSE.}
+  \item{n}{number of periods used to calculate realized
+  volatility, covariance, or correlation.}
+
+  \item{type}{estimate volatility, covariance, or
+  correlation.}
 }
 \description{
-  Use an exponentially weighted moving average to estimate
-  the covariance or correlation of asset returns.
+  EWMA model to estimate volatility, covariance, and
+  correlation
 }
-\examples{
-data(crsp.short)
-# Use the first 5 assets in largecap.ts for the returns data
-R <- largecap.ts[, 1:5]
-# Estimate the covariance matrix via EWMA
-covEst <- EWMA(R, 0.94, 15)
+\details{
+  If lambda=NULL, the lambda value can be estimated for
+  univariate estimates of volatility, covariance, and
+  correlation by minimizing the sum of squared differences
+  between the estimated value and realized value.
 }
 
