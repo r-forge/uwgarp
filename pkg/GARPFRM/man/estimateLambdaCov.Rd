@@ -16,4 +16,15 @@
 \description{
   Estimate lambda for EWMA covariance estimate
 }
+\details{
+  The optimal value for lambda is calcualted by minimizing
+  the mean squared error between the estimated covariance
+  and realized covariance.
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[, 1:2]
+initialWindow <- 150
+lambda <- estimateLambdaCov(R, initialWindow, n=10)
+}
 

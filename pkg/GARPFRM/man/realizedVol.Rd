@@ -13,4 +13,15 @@
 \description{
   Calculate realized volatility
 }
+\details{
+  Realized volatility is defined as the standard deviation
+  of using the previous \code{n} periods.
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[, 1]
+# Calculate realized volatility
+realizedVolatility <- realizedVol(R[,1], 10)
+head(realizedVolatility)
+}
 

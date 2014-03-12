@@ -32,4 +32,42 @@
   correlation by minimizing the sum of squared differences
   between the estimated value and realized value.
 }
+\examples{
+# data and parameters for EWMA estimate
+data(crsp_weekly)
+R <- largecap_weekly[, 1:2]
+mvR <- largecap_weekly[,1:4]
+lambda <- 0.94
+initialWindow <- 150
+
+# volatility estimate of univariate data
+lambda <- estimateLambdaVol(R[,1], initialWindow, n=10)
+vol1 <- EWMA(R[,1], lambda=NULL, initialWindow, n=10, "volatility")
+vol1a <- EWMA(R[,1], lambda, initialWindow, n=10, "volatility")
+all.equal(vol1$estimate, vol1a$estimate)
+vol1
+
+# covariance estimate of bivariate data
+lambda <- estimateLambdaCov(R, initialWindow, n=10)
+cov1 <- EWMA(R, lambda=NULL, initialWindow, n=10, "covariance")
+cov1a <- EWMA(R, lambda, initialWindow, n=10, "covariance")
+all.equal(cov1$estimate, cov1a$estimate)
+cov1
+
+# correlation estimate of bivariate data
+lambda <- estimateLambdaCor(R, initialWindow, n=10)
+cor1 <- EWMA(R, lambda=NULL, initialWindow, n=10, "correlation")
+cor1a <- EWMA(R, lambda, initialWindow, n=10, "correlation")
+all.equal(cor1$estimate, cor1a$estimate)
+cor1
+
+# Multivariate EWMA estimate of covariance
+lambda <- 0.94
+cov_mv <- EWMA(mvR, lambda, initialWindow, type="covariance")
+cov_mv
+
+# Multivariate EWMA estimate of correlation
+cor_mv <- EWMA(mvR, lambda, initialWindow, type="correlation")
+cor_mv
+}
 

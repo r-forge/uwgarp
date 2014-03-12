@@ -13,4 +13,15 @@
 \description{
   Calculate realized covariance
 }
+\details{
+  Realized covariance is calculated using the previous
+  \code{n} periods.
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[, 1:2]
+# Calculate realized covariance
+realizedCovariance <- realizedCov(R, 10)
+head(realizedCovariance)
+}
 

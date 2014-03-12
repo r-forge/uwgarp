@@ -21,3 +21,4 @@ Collate:
     'garch11.R'
     'monte_carlo.R'
     'efficient_frontier.R'
+    'rollFUN.R'

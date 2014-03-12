@@ -16,4 +16,15 @@
 \description{
   Estimate lambda for EWMA volatility estimate
 }
+\details{
+  The optimal value for lambda is calcualted by minimizing
+  the mean squared error between the estimated volatility
+  and realized volatility.
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[, 1]
+initialWindow <- 150
+lambda <- estimateLambdaVol(R, initialWindow, n=10)
+}
 

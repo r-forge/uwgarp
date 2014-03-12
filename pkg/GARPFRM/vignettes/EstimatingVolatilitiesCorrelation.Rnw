@@ -103,8 +103,8 @@ Here we calculate the volatility estimates of the MSFT weekly returns using the 
 <<>>=
 lambda <- 0.94
 initialWindow <- 15
-volEst <- volEWMA(R, lambda, initialWindow)
-tail(volEst)
+volEst <- EWMA(R, lambda, initialWindow, type="volatility")
+volEst
 @
 
 An important point to note is that we are using weekly returns to estimate weekly volatility while the lambda value used in the RiskMetrics database is for daily volatility. A data driven approach for selecting a value for $\lambda$ is to determine the $\lambda$ that minimizes the sum of squared errors between the realized volatility and the estimated volatility from the EWMA model.
@@ -116,35 +116,51 @@ vol <- realizedVol(R, n=5)
 
 Now we plot the estimated volatility from the EWMA model and the realized volatility.
 <<>>=
-plot(vol, main="EWMA Volatility Estimate vs. Realized Volatility")
-lines(volEst, col="red")
+plot(volEst, main="EWMA Volatility Estimate vs. Realized Volatility")
+lines(vol, col="red")
 @
 
-The \code{estimateLambda} function estimates the value for $\lambda$ by minimizing the sum of squared errors between the realized volatility and the EWMA model estimated volatility.
+The \code{estimateLambda} function estimates the value for $\lambda$ by minimizing the mean squared error between the realized volatility and the EWMA model estimated volatility.
 <<>>=
 # Estimate lambda
 # Use initialWindow = 15 for the EWMA volatility estimate and
 # n = 5 to calculate the realized volatility
-lambda <- estimateLambda(R, initialWindow, n=5)
+lambda <- estimateLambdaVol(R, initialWindow, n=5)
 lambda
 
-volEst2 <- volEWMA(R, lambda, initialWindow)
+volEst2 <- EWMA(R, lambda, initialWindow, type="volatility")
+volEst2
 @
 
-Here we plot the realized volatility along with the EWMA estimated volatility with $\lambda = 0.94$ and $\lambda = 0.7187$ to gain intuition through visualization of the EWMA volatility estimates.
+Here we plot the realized volatility along with the EWMA estimated volatility with $\lambda = 0.94$ and $\lambda = 0.7359253$ to gain intuition through visualization of the EWMA volatility estimates.
 <<>>=
 # Realized volatility
 plot(vol, main="EWMA Volatility Estimate vs. Realized Volatility")
 # EWMA volatility estimate, lambda = 0.94
-lines(volEst, col="red")
+lines(volEst$estimate, col="red")
 # EWMA volatility estimate, lambda = 0.7187
-lines(volEst2, col="blue")
+lines(volEst2$estimate, col="blue")
 legend("topright", legend=c("Realized Volatility", 
                             "EWMA Volatility, lambda = 0.94",
                             "EWMA Volatility, lambda = 0.7187"),
        col=c("black", "red", "blue"), lty=c(1, 1, 1), cex=0.7, bty="n")
 @
 
+Now we move to using the EWMA model to calculate the covariance between the returns of two assets. Note that we set \code{lambda=NULL} in the \code{EWMA} function. If \code{lambda = NULL}, the optimal $\lambda$ value is estimated by minimizing the mean squared error between the estimated covariance and realized covariance.
+<<>>=
+# Use the first 2 columns of the large
+R <- largecap_weekly[,1:2]
+initialWindow <- 52
+covEst <- EWMA(R, lambda=NULL, initialWindow, n=10, "covariance")
+covEst
+plot(covEst, main="EWMA Estimated Covariance")
+@
 
 
+In a similar fashion, we can also use the EWMA model to calculate the correlation between the returns of two assets.
+<<>>=
+corEst <- EWMA(R, lambda=NULL, initialWindow, n=10, "correlation")
+corEst
+plot(corEst, main="EWMA Estimated Correlation")
+@
 \end{document}

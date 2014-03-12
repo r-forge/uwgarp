@@ -16,4 +16,15 @@
 \description{
   Estimate lambda for EWMA correlation estimate
 }
+\details{
+  The optimal value for lambda is calcualted by minimizing
+  the mean squared error between the estimated correlation
+  and realized correlation.
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[, 1:2]
+initialWindow <- 150
+lambda <- estimateLambdaCor(R, initialWindow, n=10)
+}
 

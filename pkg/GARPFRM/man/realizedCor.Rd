@@ -13,4 +13,15 @@
 \description{
   Calculate realized correlation
 }
+\details{
+  Realized correlation is calculated using the previous
+  \code{n} periods.
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[, 1:2]
+# Calculate realized correlation
+realizedCorrelation <- realizedCor(R, 10)
+head(realizedCorrelation)
+}
 

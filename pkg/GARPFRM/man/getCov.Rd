@@ -11,7 +11,16 @@
   assets can be specified by name or index.}
 }
 \description{
-  Extract the covariance of two assets from an \code{EWMA}
-  object
+  Extract the covariance of two assets from an
+  \code{mvEWMAcov} object
+}
+\examples{
+data(crsp_weekly)
+mvR <- largecap_weekly[,1:4]
+lambda <- 0.94
+initialWindow <- 150
+cov_mv <- EWMA(mvR, lambda, initialWindow, type="covariance")
+# Extract the estimated covariance between ORCL and MSFT
+tail(getCov(cov_mv, assets=c("ORCL", "MSFT")))
 }
 
