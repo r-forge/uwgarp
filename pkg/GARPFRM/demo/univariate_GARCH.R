@@ -9,7 +9,7 @@ R <- largecap_weekly[,"MSFT"]
 # Specify and fit the MSFT returns to a standard ARMA(0,0)-GARCH(1,1) model
 model0 <- uvGARCH(R, armaOrder=c(0,0))
 
-# The uvGARCH function uses the excellent rugarch packages, which has a rich
+# The uvGARCH function uses the excellent rugarch package, which has a rich
 # set of functions for analysis of fitted GARCH models. The fitted model can 
 # be extracted with the getFit function. Refer to help("uGARCHfit-class") 
 # for available all methods for the uGARCHfit object that is returned by getFit.
@@ -76,3 +76,4 @@ model11 <- uvGARCH(R)
 model21 <- uvGARCH(R, garchOrder=c(2,1))
 getSpec(model21)
 getFit(model21)
+
