@@ -275,34 +275,76 @@ uvEWMAcor <- function(R, lambda=0.94, initialWindow=10){
 }
 
 # multivariate EWMA covariance estimate
+# mvEWMAcov <- function(R, lambda, initialWindow){
+#   # Separate data into a initializing window and a testing window
+#   initialR = R[1:initialWindow,]
+#   testR = R[(initialWindow+1):nrow(R),]
+#   
+#   # Initialize starting values
+#   lagCov = cov(initialR)
+#   oldR = as.numeric(colMeans(initialR))
+#   
+#   est = vector("list", nrow(testR))
+#   for(i in 1:nrow(testR)){
+#     est[[i]] = lambda * (oldR %*% t(oldR)) + (1 - lambda) * lagCov
+#     # Update values from the current period
+#     lagCov = est[[i]]
+#     oldR = as.numeric(testR[i,])
+#   }
+#   # Properly assign list key to date
+#   names(est) <- index(testR)
+#   return(est)
+# }
+
+# multivariate EWMA covariance estimate
 mvEWMAcov <- function(R, lambda, initialWindow){
-  # Separate data into a initializing window and a testing window
-  initialR = R[1:initialWindow,]
-  testR = R[(initialWindow+1):nrow(R),]
-  
-  # Initialize starting values
-  lagCov = cov(initialR)
-  oldR = as.numeric(colMeans(initialR))
-  
-  est = vector("list", nrow(testR))
-  for(i in 1:nrow(testR)){
-    est[[i]] = lambda * (oldR %*% t(oldR)) + (1 - lambda) * lagCov
-    # Update values from the current period
-    lagCov = est[[i]]
-    oldR = as.numeric(testR[i,])
+  # This computes the covariance matrix for the final time period
+  cnames <- colnames(R)
+  n <- ncol(R)
+  mat <- matrix(0, n, n)
+  rownames(mat) <- cnames
+  colnames(mat) <- cnames
+  for(i in 1:n){
+    for(j in i:n){
+      # EWMA covariance estimate
+      tmpCov <- uvEWMAcov(cbind(R[,i], R[,j]), lambda, initialWindow)
+      mat[i,j] <- as.numeric(last(tmpCov))
+      if(i != j){
+        mat[j,i] <- as.numeric(last(tmpCov))
+      }
+    }
   }
-  # Properly assign list key to date
-  names(est) <- index(testR)
-  return(est)
+  return(mat)
 }
 
 # multivariate EWMA correlation estimate
+# mvEWMAcor <- function(R, lambda, initialWindow){
+#   # Separate data into a initializing window and a testing window
+#   initialR = R[1:initialWindow,]
+#   testR = R[(initialWindow+1):nrow(R),]
+#   
+#   # Initialize starting values
+#   lagCov = cov(initialR)
+#   oldR = as.numeric(colMeans(initialR))
+#   
+#   est = vector("list", nrow(testR))
+#   for(i in 1:nrow(testR)){
+#     # est[[i]] = lambda * (oldR %*% t(oldR)) + (1 - lambda) * lagCov
+#     tmp = lambda * (oldR %*% t(oldR)) + (1 - lambda) * lagCov
+#     # Update values from the current period
+#     # lagCov = est[[i]]
+#     est[[i]] <- cov2cor(tmp)
+#     lagCov <- tmp
+#     oldR = as.numeric(testR[i,])
+#   }
+#   # Properly assign list key to date
+#   names(est) <- index(testR)
+#   return(est)
+# }
+
+# multivariate EWMA correlation estimate
 mvEWMAcor <- function(R, lambda, initialWindow){
-  cov_est <- mvEWMAcov(R=R, lambda=lambda, initialWindow=initialWindow)
-  est <- lapply(cov_est, cov2cor)
-  # Properly assign list key to date
-  # names(est) <- index(testR)
-  return(est)
+  cov2cor(mvEWMAcov(R, lambda, initialWindow))
 }
 
 #' Realized Volatility
@@ -489,7 +531,11 @@ print.EWMA <- function(x, ...){
   cat("type: ", x$model$type, "\n\n", sep="")
   
   cat("Final Period EWMA Estimate: \n")
-  print(last(x$estimate))
+  if(inherits(x, "mvEWMAcov") | inherits(x, "mvEWMAcor")){
+    print(x$estimate)
+  } else {
+    print(last(x$estimate))
+  }
 }
 
 # extract the covariance between two assets from an mvEWMAcov object
@@ -521,7 +567,11 @@ getCov.mvEWMAcov <- function(EWMA, assets=c(1,2)){
   
   if(length(assets) == 1) assets[2] <- assets[1]
   
-  cnames <- colnames(EWMA$estimate[[1]])
+  # cnames <- colnames(EWMA$estimate[[1]])
+  cnames <- colnames(EWMA$estimate)
+  R <- EWMA$data$R
+  lambda <- EWMA$model$lambda
+  initialWindow <- EWMA$model$initialWindow
   
   # Check if asset is a character
   if(is.character(assets[1]) & is.character(assets[2])){
@@ -534,10 +584,10 @@ getCov.mvEWMAcov <- function(EWMA, assets=c(1,2)){
     idx1 = assets[1]
     idx2 = assets[2]
   }
-  
-  out = xts(unlist(lapply(EWMA$estimate, function(X) X[idx1, idx2])), as.Date(names(EWMA$estimate)))
-  colnames(out) = paste(cnames[idx1], cnames[idx2], sep=".")
-  
+  #out = xts(unlist(lapply(EWMA$estimate, function(X) X[idx1, idx2])), as.Date(names(EWMA$estimate)))
+  #colnames(out) = paste(cnames[idx1], cnames[idx2], sep=".")
+  # estimate the EWMA cov between the assets specified
+  out <- uvEWMAcov(R=R[,c(idx1,idx2)], lambda=lambda, initialWindow=initialWindow)
   return(out)
 }
 
@@ -602,7 +652,11 @@ getCor.mvEWMAcor <- function(EWMA, assets=c(1,2)){
   
   if(length(assets) == 1) assets[2] <- assets[1]
   
-  cnames <- colnames(EWMA$estimate[[1]])
+  # cnames <- colnames(EWMA$estimate[[1]])
+  cnames <- colnames(EWMA$estimate)
+  R <- EWMA$data$R
+  lambda <- EWMA$model$lambda
+  initialWindow <- EWMA$model$initialWindow
   
   # Check if asset is a character
   if(is.character(assets[1]) & is.character(assets[2])){
@@ -615,10 +669,10 @@ getCor.mvEWMAcor <- function(EWMA, assets=c(1,2)){
     idx1 = assets[1]
     idx2 = assets[2]
   }
-  
-  out = xts(unlist(lapply(EWMA$estimate, function(X) X[idx1, idx2])), as.Date(names(EWMA$estimate)))
-  colnames(out) = paste(cnames[idx1], cnames[idx2], sep=".")
-  
+  #out = xts(unlist(lapply(EWMA$estimate, function(X) X[idx1, idx2])), as.Date(names(EWMA$estimate)))
+  #colnames(out) = paste(cnames[idx1], cnames[idx2], sep=".")
+  # estimate the EWMA cov between the assets specified
+  out <- uvEWMAcor(R=R[,c(idx1,idx2)], lambda=lambda, initialWindow=initialWindow)
   return(out)
 }
 

@@ -67,8 +67,6 @@ This equation gives equal weight to each of the previous $m$ observations. A mod
 
 Where $\alpha_i$ is the weight given to the observation $i$ days ago.
 
-TODO: add information about the ARCH model
-
 A special case of equation is the Exponentially Weighted Moving Average (EWMA) Model.
 
 \section{Exponentially Weighted Moving Average Model}
@@ -83,7 +81,7 @@ This weighting scheme leads to simple formula for updating volatility estimates.
 where:
 \begin{description}
   \item[$\hat{\sigma}_{n-1}^2$] is the estimated variance rate of period $n-1$
-  \item[$u_{n-1}$] is the return of preiod $n-1$
+  \item[$u_{n-1}^2$] is the squared return of preiod $n-1$
   \item[$\lambda$] is a constant between 0 and 1
 \end{description}
 
@@ -107,7 +105,7 @@ volEst <- EWMA(R, lambda, initialWindow, type="volatility")
 volEst
 @
 
-An important point to note is that we are using weekly returns to estimate weekly volatility while the lambda value used in the RiskMetrics database is for daily volatility. A data driven approach for selecting a value for $\lambda$ is to determine the $\lambda$ that minimizes the sum of squared errors between the realized volatility and the estimated volatility from the EWMA model.
+An important point to note is that we are using weekly returns to estimate weekly volatility while the lambda value used in the RiskMetrics database is for daily volatility estimates. A data driven approach for selecting a value for $\lambda$ is to determine the $\lambda$ that minimizes the mean squared error between the realized volatility and the estimated volatility from the EWMA model.
 
 Here we calculate the realized volatility defined as the equally weighted average of the standard deviation of the subsequent $n$ periods.
 <<>>=
@@ -122,7 +120,7 @@ legend("topright", legend=c("Realized Volatility", "EWMA Volatility Estimate"),
        col=c("black", "red"), lty=c(1,1), cex=0.8, bty="n")
 @
 
-The \code{estimateLambda} function estimates the value for $\lambda$ by minimizing the mean squared error between the realized volatility and the EWMA model estimated volatility.
+The \code{estimateLambdaVol} function estimates the value for $\lambda$ by minimizing the mean squared error between the realized volatility and the EWMA model estimated volatility.
 <<>>=
 # Estimate lambda
 # Use initialWindow = 15 for the EWMA volatility estimate and
@@ -197,7 +195,7 @@ corEst
 plot(corEst, main="EWMA Estimated Correlation")
 @
 
-The previous examples demonstrated using and EWMA model to estimate the volatility of the returns of a single asset, and the correlation and volatility between the returns of two assets. Now we move to using an EWMA model to estimated the covariance and correlation of a multivariate data set.
+The previous examples demonstrated using an EWMA model to estimate the volatility of the returns of a single asset, and the correlation and volatility between the returns of two assets. Now we move to using an EWMA model to estimated the covariance and correlation of a multivariate data set.
 
 <<>>=
 # Use the first 4 columns of the largecap_weekly dataset
@@ -214,7 +212,6 @@ covEst <- EWMA(R, lambda, initialWindow, type="covariance")
 covEst
 @
 
-TODO: GETTING UNRELIABLE CORRELATION ESTIMATES... NOT SURE WHY
 In a similar fashion, we can also use the EWMA model to estimate the correlation matrix.
 <<>>=
 # calculate the sample covariance matrix
@@ -230,7 +227,7 @@ corEst
 
 
 \section{The GARCH(1,1) Model}
-We now present the generalized autoregressive conditional heteroskedasticity (GARCH) as presented by Bollerslev in 1986 as a way to estimate volatility. The general GARCH(p,q) model calculates $\sigma_n^2$ from the most recent $p$ observations of $u^2$ and the most recent $q$ estimates of $\sigma_n^2$. The GARCH(1,1) model refers to the most recent observation of $u^2$ and the most recent estimate of $\sigma_n^2$. The GARCH(1,1) is a popular model and the one we will focus on. The equation for the GARCH(1,1) model is
+We now demonstrate the generalized autoregressive conditional heteroskedasticity (GARCH) as presented by Bollerslev in 1986 as a way to estimate volatility. The general GARCH(p,q) model calculates $\sigma_n^2$ from the most recent $p$ observations of $u^2$ and the most recent $q$ estimates of $\sigma_n^2$. The GARCH(1,1) model refers to the most recent observation of $u^2$ and the most recent estimate of $\sigma_n^2$. The GARCH(1,1) is a popular model and the one we will focus on. The equation for the GARCH(1,1) model is
 
 \begin{equation}
 \sigma_n^2 = \gamma V_L + \alpha u_{n-1}^2 + \beta \sigma_{n-1}^2

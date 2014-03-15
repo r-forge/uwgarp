@@ -48,7 +48,6 @@ cov_mv <- EWMA(mvR, lambda, initialWindow, type="covariance")
 cov_mv
 # Extract the estimated covariance between ORCL and MSFT
 tail(getCov(cov_mv, assets=c("ORCL", "MSFT")))
-
 # These two are equivalent
 plot(cov_mv, assets=c("ORCL", "MSFT"))
 plot(cov_mv, assets=c(1, 2))
@@ -63,8 +62,5 @@ cor_mv
 # These two are equivalent
 plot(cor_mv, assets=c("ORCL", "EMC"))
 plot(cor_mv, assets=c(1, 4))
-
-
-
 
 
