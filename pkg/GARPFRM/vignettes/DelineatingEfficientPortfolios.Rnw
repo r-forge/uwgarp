@@ -6,7 +6,7 @@
 \begin{document}
 
 <<echo=FALSE>>=
-opts_chunk$set(warning=FALSE, fig.width=5, fig.height=5)
+opts_chunk$set(tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
 @
 
 
@@ -191,11 +191,15 @@ Figure 4 also shows that there is a point along the curve that is a portfolio wi
 \sigma_P = (X_C^2 \sigma_C^2 + (1 - X_C)^2 \sigma_S^2 + 2 X_C (1 - X_C) \rho_{CS} \sigma_C \sigma_S)^{1/2}
 \end{equation}
 
-TODO: The derivative of this equation is
+The derivative of this equation is
+
+\begin{equation}
+\frac{\partial \sigma_P}{\partial X_c} = \frac{1}{2} \frac{2 X_c \sigma_c^2 - 2 \sigma_s^2 + 2 X_c \sigma_s^2 + 2 \sigma_c \sigma_s \rho_{cs} - 4 X_c \sigma_c \sigma_s \rho_{cs} }{\left( X_c^2 \sigma_c^2 + (1 - X_c)^2 \sigma_s^2 + 2 X_c (1 - X_c) \sigma_c \sigma_s \rho_{cs} \right)^{1/2}}
+\end{equation}
 
 Set the derivative equal to zero and solve for $X_C$. 
 \begin{equation}
-X_C = \frac{\sigma_S^2 - \sigma_C \sigma_S \rho_{CS}}{\sigma_C^2 + \sigma_S^2 - 2 \sigma_C \sigma_S \rho_{CS}}
+X_c = \frac{\sigma_s^2 - \sigma_c \sigma_s \rho_{cs}}{\sigma_c^2 + \sigma_s^2 - 2 \sigma_c \sigma_s \rho_{cs}}
 \end{equation}
 
 We can easily write an \code{R} function to solve for the weights of the minimum risk portfolio.
@@ -407,7 +411,7 @@ R <- cbind(R_large, R_mid, R_small)
 # Specify the list of groups such that each market cap is in its own group
 groups <- list(c(1:5), c(6:10), c(11:15))
 
-# Specify the sum weights for each group:
+# Specify the sum of weights for each group:
 # largecap: no more than 60% and no less than 30%
 # midcap: no more than 50% and no less than 20%
 # smallcap: no more than 40% and no less than 15%
@@ -418,7 +422,7 @@ groupMax <- c(0.6, 0.5, 0.4)
 efGroup <- efficientFrontier(R, groupList=groups, 
                              groupMin=groupMin, 
                              groupMax=groupMax)
-plot(efGroup)
+plot(efGroup, labelAssets=FALSE)
 @
 
 In this vignette, we have demonstrated the behavior of efficient frontiers of two assets as the correlation varies under the full investment constraint with and without short selling allowed. We have also presented the more general case for generating portfolios along an efficient frontier for more than 2 assets. We also demonstrated functionality to generate portfolios along the efficient frontier with box constraints as well as group constraints.

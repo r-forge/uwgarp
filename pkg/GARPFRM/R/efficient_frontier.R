@@ -259,6 +259,7 @@ efficientFrontier <- function(R, nPortfolios=25, minBox=0, maxBox=1, groupList=N
 #' @param \dots passthrough parameters
 #' @param rf risk free rate
 #' @param chartAssets TRUE/FALSE to include the assets in the plot
+#' @param labelAssets TRUE/FALSE to include the labels of the assets in the plot
 #' @param main a main title for the plot
 #' @param xlim set the x-axis limit, same as in \code{plot}
 #' @param ylim set the x-axis limit, same as in \code{plot}
@@ -269,12 +270,15 @@ efficientFrontier <- function(R, nPortfolios=25, minBox=0, maxBox=1, groupList=N
 #' @method plot efficient.frontier
 #' @S3method plot efficient.frontier
 plot.efficient.frontier <- function(x, y, ..., rf=0, chartAssets=TRUE, 
+                                    labelAssets=TRUE,
                                     main="Efficient Frontier", 
                                     xlim=NULL, ylim=NULL, type="l",
                                     pchAssets=19, cexAssets=0.8){
   chart.EfficientFrontier(object=x, ...=..., match.col="StdDev", 
                           xlim=xlim, ylim=ylim, type=type, cex.axis=0.8, 
                           main=main, rf=rf, tangent.line=TRUE, 
-                          chart.assets=chartAssets, pch.assets=pchAssets, 
+                          chart.assets=chartAssets, 
+                          labels.assets=labelAssets,
+                          pch.assets=pchAssets, 
                           cex.assets=cexAssets)
 }

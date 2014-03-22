@@ -3,9 +3,9 @@
 \title{Efficient Frontier Plot}
 \usage{
   \method{plot}{efficient.frontier} (x, y, ..., rf = 0,
-    chartAssets = TRUE, main = "Efficient Frontier",
-    xlim = NULL, ylim = NULL, type = "l", pchAssets = 19,
-    cexAssets = 0.8)
+    chartAssets = TRUE, labelAssets = TRUE,
+    main = "Efficient Frontier", xlim = NULL, ylim = NULL,
+    type = "l", pchAssets = 19, cexAssets = 0.8)
 }
 \arguments{
   \item{x}{object of class \code{efficient.frontier}}
@@ -18,6 +18,9 @@
 
   \item{chartAssets}{TRUE/FALSE to include the assets in
   the plot}
+
+  \item{labelAssets}{TRUE/FALSE to include the labels of
+  the assets in the plot}
 
   \item{main}{a main title for the plot}
 
