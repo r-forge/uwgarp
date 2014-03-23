@@ -10,12 +10,12 @@
   \item{width}{width of rolling window}
 }
 \description{
-  This function calculates the correlation estimate of the
-  returns of two assets over a rolling window
+  This function calculates the correlation estimate between
+  the returns of a pair of assets over a rolling window.
 }
 \examples{
 data(crsp_weekly)
-R <- largecap_weekly[,1:2]
+R <- largecap_weekly[,1:4]
 tail(rollCor(R, 10))
 }
 \author{

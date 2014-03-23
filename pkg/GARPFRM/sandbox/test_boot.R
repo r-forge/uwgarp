@@ -5,9 +5,9 @@ R <- largecap_weekly[,1:4]
 R1 <- R[1:100,1]
 
 set.seed(123)
-.bootFUN(R1, FUN="mean", replications=10000, parallel=FALSE)
+bootFUN(R1, FUN="mean", replications=10000, parallel=FALSE)
 set.seed(123)
-.bootFUN(R1, FUN="mean", replications=10000, parallel=TRUE)
+bootFUN(R1, FUN="mean", replications=10000, parallel=TRUE)
 
 # bootstrap various statistics
 # mean
@@ -23,7 +23,8 @@ bootStdDev(R[,1])
 bootStdDev(R)
 
 # simpleVolatility
-
+bootSimpleVolatility(R[,1])
+bootSimpleVolatility(R)
 
 # cor
 bootCor(R[,1:2])
