@@ -23,3 +23,5 @@ Collate:
     'efficient_frontier.R'
     'rollFUN.R'
     'volatility.R'
+    'boot.R'
+    'utils.R'
