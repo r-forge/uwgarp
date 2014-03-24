@@ -6,7 +6,11 @@
 #' @details
 #' \code{R} is the data passed to \code{FUN}. \code{FUN} must have \code{x} or
 #' \code{R} as arguments for the data. For example, see the functions linked to
-#' in the 'See Also' section.
+#' in the 'See Also' section. Care must be taken when using \code{bootFUN} on
+#' multivariate data. This function is designed to only accept univariate 
+#' (i.e. ncol(R) = 1) data, however is made to work with bivariate data for
+#' \code{bootCor} and \code{bootCov}. For multivariate data, a wrapper function
+#' should be written to apply the bootstrap function to each column of data.
 #' 
 #' To run the bootstrap in parallael, this function uses the \code{foreach}
 #' pacakge. From the \code{\link[foreach]{foreach}} documentation, the 
@@ -85,7 +89,10 @@ bootFUN <- function(R, FUN="mean", ..., replications=1000, parallel=FALSE){
     }
   }
   # compute the expected value of the statistic on resampled data
-  mean(out)
+  estimate <- mean(out)
+  # compute the standard error of the bootstrap estimate
+  std.err <- sd(out)
+  matrix(c(estimate, std.err), nrow=2, ncol=1, dimnames=list(c(FUN, "std.err")))
 }
 
 .bootMean <- function(R, ..., replications=1000, parallel=FALSE){
@@ -102,20 +109,28 @@ bootFUN <- function(R, FUN="mean", ..., replications=1000, parallel=FALSE){
 #' @param replications number of bootstrap replications.
 #' @param parallel TRUE/FALSE (default FALSE) to compute the bootstrap in parallel. 
 #' @author Ross Bennett
+#' @examples
+#' data(crsp_weekly)
+#' R <- largecap_weekly[,1:4]
+#' bootMean(R[,1])
+#' bootMean(R)
 #' @export
 bootMean <- function(R, ..., replications=1000, parallel=FALSE){
   if(!is.matrix(R) | !is.xts(R)) stop("R must be an xts or matrix")
   
   if(ncol(R) == 1){
-    tmp <- .bootMean(R=R, ...=..., replications=replications, parallel=parallel)
+    out <- .bootMean(R=R, ...=..., replications=replications, parallel=parallel)
   } else {
-    tmp <- vector("numeric", ncol(R))
     for(i in 1:ncol(R)){
-      tmp[i] <- .bootMean(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      if(i == 1){
+        out <- .bootMean(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      } else {
+        out <- cbind(out, .bootMean(R=R[,i], ...=..., replications=replications, parallel=parallel))
+      }
     }
   }
-  out <- matrix(tmp, nrow=1, ncol=ncol(R))
-  rownames(out) <- "mean"
+  #out <- matrix(tmp, nrow=1, ncol=ncol(R))
+  rownames(out) <- c("mean", "std.err")
   colnames(out) <- colnames(R)
   return(out)
 }
@@ -134,20 +149,27 @@ bootMean <- function(R, ..., replications=1000, parallel=FALSE){
 #' @param replications number of bootstrap replications.
 #' @param parallel TRUE/FALSE (default FALSE) to compute the bootstrap in parallel. 
 #' @author Ross Bennett
+#' @examples
+#' data(crsp_weekly)
+#' R <- largecap_weekly[,1:4]
+#' bootSD(R[,1])
+#' bootSD(R)
 #' @export
 bootSD <- function(R, ..., replications=1000, parallel=FALSE){
   if(!is.matrix(R) | !is.xts(R)) stop("R must be an xts or matrix")
   
   if(ncol(R) == 1){
-    tmp <- .bootSD(R=R, ...=..., replications=replications, parallel=parallel)
+    out <- .bootSD(R=R, ...=..., replications=replications, parallel=parallel)
   } else {
-    tmp <- vector("numeric", ncol(R))
     for(i in 1:ncol(R)){
-      tmp[i] <- .bootSD(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      if(i == 1){
+        out <- .bootSD(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      } else {
+        out <- cbind(out, .bootSD(R=R[,i], ...=..., replications=replications, parallel=parallel))
+      }
     }
   }
-  out <- matrix(tmp, nrow=1, ncol=ncol(R))
-  rownames(out) <- "sd"
+  rownames(out) <- c("sd", "std.err")
   colnames(out) <- colnames(R)
   return(out)
 }
@@ -166,20 +188,27 @@ bootSD <- function(R, ..., replications=1000, parallel=FALSE){
 #' @param replications number of bootstrap replications.
 #' @param parallel TRUE/FALSE (default FALSE) to compute the bootstrap in parallel. 
 #' @author Ross Bennett
+#' @examples
+#' data(crsp_weekly)
+#' R <- largecap_weekly[,1:4]
+#' bootStdDev(R[,1])
+#' bootStdDev(R)
 #' @export
 bootStdDev <- function(R, ..., replications=1000, parallel=FALSE){
   if(!is.matrix(R) | !is.xts(R)) stop("R must be an xts or matrix")
   
   if(ncol(R) == 1){
-    tmp <- .bootStdDev(R=R, ...=..., replications=replications, parallel=parallel)
+    out <- .bootStdDev(R=R, ...=..., replications=replications, parallel=parallel)
   } else {
-    tmp <- vector("numeric", ncol(R))
     for(i in 1:ncol(R)){
-      tmp[i] <- .bootStdDev(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      if(i == 1){
+        out <- .bootStdDev(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      } else {
+        out <- cbind(out, .bootStdDev(R=R[,i], ...=..., replications=replications, parallel=parallel))
+      }
     }
   }
-  out <- matrix(tmp, nrow=1, ncol=ncol(R))
-  rownames(out) <- "StdDev"
+  rownames(out) <- c("StdDev", "std.err")
   colnames(out) <- colnames(R)
   return(out)
 }
@@ -198,27 +227,35 @@ bootStdDev <- function(R, ..., replications=1000, parallel=FALSE){
 #' @param replications number of bootstrap replications.
 #' @param parallel TRUE/FALSE (default FALSE) to compute the bootstrap in parallel. 
 #' @author Ross Bennett
+#' @examples
+#' data(crsp_weekly)
+#' R <- largecap_weekly[,1:4]
+#' bootSimpleVolatility(R[,1])
+#' bootSimpleVolatility(R)
 #' @export
 bootSimpleVolatility <- function(R, ..., replications=1000, parallel=FALSE){
   if(!is.matrix(R) | !is.xts(R)) stop("R must be an xts or matrix")
   
   if(ncol(R) == 1){
-    tmp <- .bootSimpleVolatility(R=R, ...=..., replications=replications, parallel=parallel)
+    out <- .bootSimpleVolatility(R=R, ...=..., replications=replications, parallel=parallel)
   } else {
     tmp <- vector("numeric", ncol(R))
     for(i in 1:ncol(R)){
-      tmp[i] <- .bootSimpleVolatility(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      if(i == 1){
+        out <- .bootSimpleVolatility(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      } else {
+        out <- cbind(out, .bootSimpleVolatility(R=R[,i], ...=..., replications=replications, parallel=parallel))
+      }
     }
   }
-  out <- matrix(tmp, nrow=1, ncol=ncol(R))
-  rownames(out) <- "SimpleVolatility"
+  rownames(out) <- c("SimpleVolatility", "std.err")
   colnames(out) <- colnames(R)
   return(out)
 }
 
 tmpCor <- function(R, ...){
   # R should be a bivariate xts object
-  cor(x=R[,1], y=R[,2], ...=...)
+  cor(x=R[,1], y=R[,2], ...)
 }
 
 .bootCor <- function(R, ..., replications=1000, parallel=FALSE){
@@ -235,6 +272,12 @@ tmpCor <- function(R, ...){
 #' @param replications number of bootstrap replications.
 #' @param parallel TRUE/FALSE (default FALSE) to compute the bootstrap in parallel. 
 #' @author Ross Bennett
+#' @examples
+#' data(crsp_weekly)
+#' R <- largecap_weekly[,1:4]
+#' bootCor(R[,1:2])
+#' bootCor(R[,1:2], method="kendall")
+#' bootCor(R)
 #' @export
 bootCor <- function(R, ..., replications=1000, parallel=FALSE){
   if(!is.matrix(R) | !is.xts(R)) stop("R must be an xts or matrix")
@@ -242,32 +285,33 @@ bootCor <- function(R, ..., replications=1000, parallel=FALSE){
   if(ncol(R) < 2) stop("R must have 2 or more columns of asset returns")
   cnames <- colnames(R)
   if(ncol(R) == 2){
-    tmp <- .bootCor(R=R, ...=..., replications=replications, parallel=parallel)
+    out <- .bootCor(R=R, ...=..., replications=replications, parallel=parallel)
     out_names <- paste(cnames[1], cnames[2], sep=".")
     num_col <- 1
   } else {
-    tmp <- vector("numeric", choose(ncol(R), 2))
-    out_names <- vector("numeric", length(tmp))
-    num_col <- length(tmp)
+    out_names <- vector("numeric", choose(ncol(R), 2))
+    num_col <- length(out_names)
     k <- 1
     for(i in 1:(ncol(R)-1)){
       for(j in (i+1):ncol(R)){
-        tmp[k] <- .bootCor(R=cbind(R[,i], R[,j]), ...=..., replications=replications, parallel=parallel)
+        if(k == 1){
+          out <- .bootCor(R=cbind(R[,i], R[,j]), ...=..., replications=replications, parallel=parallel)
+        } else {
+          out <- cbind(out, .bootCor(R=cbind(R[,i], R[,j]), ...=..., replications=replications, parallel=parallel))
+        }
         out_names[k] <- paste(cnames[i], cnames[j], sep=".")
         k <- k + 1
       }
     }
   }
-  # out <- matrix(tmp, nrow=1, ncol=ncol(R))
-  out <- matrix(tmp, nrow=1, ncol=num_col)
-  rownames(out) <- "cor"
+  rownames(out) <- c("cor", "std.err")
   colnames(out) <- out_names
   return(out)
 }
 
 tmpCov <- function(R, ...){
   # R should be a bivariate xts object
-  cov(x=R[,1], y=R[,2], ...=...)
+  cov(x=R[,1], y=R[,2], ...)
 }
 
 .bootCov <- function(R, ..., replications=1000, parallel=FALSE){
@@ -284,31 +328,37 @@ tmpCov <- function(R, ...){
 #' @param replications number of bootstrap replications.
 #' @param parallel TRUE/FALSE (default FALSE) to compute the bootstrap in parallel. 
 #' @author Ross Bennett
+#' @examples
+#' data(crsp_weekly)
+#' R <- largecap_weekly[,1:4]
+#' bootCov(R[,1:2])
+#' bootCov(R)
 #' @export
 bootCov <- function(R, ..., replications=1000, parallel=FALSE){
   if(!is.matrix(R) | !is.xts(R)) stop("R must be an xts or matrix")
   
   cnames <- colnames(R)
   if(ncol(R) == 2){
-    tmp <- .bootCov(R=R, ...=..., replications=replications, parallel=parallel)
+    out <- .bootCov(R=R, ...=..., replications=replications, parallel=parallel)
     out_names <- paste(cnames[1], cnames[2], sep=".")
     num_col <- 1
   } else {
-    tmp <- vector("numeric", choose(ncol(R), 2))
-    out_names <- vector("numeric", length(tmp))
-    num_col <- length(tmp)
+    out_names <- vector("numeric", choose(ncol(R), 2))
+    num_col <- length(out_names)
     k <- 1
     for(i in 1:(ncol(R)-1)){
       for(j in (i+1):ncol(R)){
-        tmp[k] <- .bootCov(R=cbind(R[,i], R[,j]), ...=..., replications=replications, parallel=parallel)
+        if(k == 1){
+          out <- .bootCov(R=cbind(R[,i], R[,j]), ...=..., replications=replications, parallel=parallel)
+        } else {
+          out <- cbind(out, .bootCov(R=cbind(R[,i], R[,j]), ...=..., replications=replications, parallel=parallel))
+        }
         out_names[k] <- paste(cnames[i], cnames[j], sep=".")
         k <- k + 1
       }
     }
   }
-  # out <- matrix(tmp, nrow=1, ncol=ncol(R))
-  out <- matrix(tmp, nrow=1, ncol=num_col)
-  rownames(out) <- "cov"
+  rownames(out) <- c("cov", "std.err")
   colnames(out) <- out_names
   return(out)
 }
@@ -327,20 +377,28 @@ bootCov <- function(R, ..., replications=1000, parallel=FALSE){
 #' @param replications number of bootstrap replications.
 #' @param parallel TRUE/FALSE (default FALSE) to compute the bootstrap in parallel. 
 #' @author Ross Bennett
+#' @examples
+#' data(crsp_weekly)
+#' R <- largecap_weekly[,1:4]
+#' bootVaR(R[,1], p=0.9, method="historical")
+#' bootVaR(R[,1], p=0.9, method="gaussian")
+#' bootVaR(R, p=0.9, method="historical", invert=FALSE)
 #' @export
 bootVaR <- function(R, ..., replications=1000, parallel=FALSE){
   if(!is.matrix(R) | !is.xts(R)) stop("R must be an xts or matrix")
   
   if(ncol(R) == 1){
-    tmp <- .bootVaR(R=R, ...=..., replications=replications, parallel=parallel)
+    out <- .bootVaR(R=R, ...=..., replications=replications, parallel=parallel)
   } else {
-    tmp <- vector("numeric", ncol(R))
     for(i in 1:ncol(R)){
-      tmp[i] <- .bootVaR(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      if(i == 1){
+        out <- .bootVaR(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      } else {
+        out <- cbind(out, .bootVaR(R=R[,i], ...=..., replications=replications, parallel=parallel))
+      }
     }
   }
-  out <- matrix(tmp, nrow=1, ncol=ncol(R))
-  rownames(out) <- "VaR"
+  rownames(out) <- c("VaR", "std.err")
   colnames(out) <- colnames(R)
   return(out)
 }
@@ -359,20 +417,28 @@ bootVaR <- function(R, ..., replications=1000, parallel=FALSE){
 #' @param replications number of bootstrap replications.
 #' @param parallel TRUE/FALSE (default FALSE) to compute the bootstrap in parallel. 
 #' @author Ross Bennett
+#' @examples
+#' data(crsp_weekly)
+#' R <- largecap_weekly[,1:4]
+#' bootVaR(R[,1], p=0.9, method="historical")
+#' bootVaR(R[,1], p=0.9, method="gaussian")
+#' bootVaR(R, p=0.9, method="historical", invert=FALSE)
 #' @export
 bootES <- function(R, ..., replications=1000, parallel=FALSE){
   if(!is.matrix(R) | !is.xts(R)) stop("R must be an xts or matrix")
   
   if(ncol(R) == 1){
-    tmp <- .bootES(R=R, ...=..., replications=replications, parallel=parallel)
+    out <- .bootES(R=R, ...=..., replications=replications, parallel=parallel)
   } else {
-    tmp <- vector("numeric", ncol(R))
     for(i in 1:ncol(R)){
-      tmp[i] <- .bootES(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      if(i == 1){
+        out <- .bootES(R=R[,i], ...=..., replications=replications, parallel=parallel)
+      } else {
+        out <- cbind(out, .bootES(R=R[,i], ...=..., replications=replications, parallel=parallel))
+      }
     }
   }
-  out <- matrix(tmp, nrow=1, ncol=ncol(R))
-  rownames(out) <- "ES"
+  rownames(out) <- c("ES", "std.err")
   colnames(out) <- colnames(R)
   return(out)
 }

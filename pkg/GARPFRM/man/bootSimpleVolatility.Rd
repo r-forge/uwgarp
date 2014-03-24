@@ -20,6 +20,12 @@
   Bootstrap the simple volatility of an xts object or
   matrix of asset returns
 }
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[,1:4]
+bootSimpleVolatility(R[,1])
+bootSimpleVolatility(R)
+}
 \author{
   Ross Bennett
 }

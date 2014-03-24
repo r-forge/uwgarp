@@ -25,7 +25,13 @@
   \code{R} is the data passed to \code{FUN}. \code{FUN}
   must have \code{x} or \code{R} as arguments for the data.
   For example, see the functions linked to in the 'See
-  Also' section.
+  Also' section. Care must be taken when using
+  \code{bootFUN} on multivariate data. This function is
+  designed to only accept univariate (i.e. ncol(R) = 1)
+  data, however is made to work with bivariate data for
+  \code{bootCor} and \code{bootCov}. For multivariate data,
+  a wrapper function should be written to apply the
+  bootstrap function to each column of data.
 
   To run the bootstrap in parallael, this function uses the
   \code{foreach} pacakge. From the

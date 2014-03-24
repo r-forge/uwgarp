@@ -16,8 +16,15 @@
   bootstrap in parallel.}
 }
 \description{
-  Bootstrap the correlation of an xts object of asset
-  returns
+  Bootstrap the correlation of an xts object or matrix of
+  asset returns
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[,1:4]
+bootCor(R[,1:2])
+bootCor(R[,1:2], method="kendall")
+bootCor(R)
 }
 \author{
   Ross Bennett

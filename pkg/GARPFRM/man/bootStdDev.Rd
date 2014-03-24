@@ -16,7 +16,14 @@
   bootstrap in parallel.}
 }
 \description{
-  Bootstrap the StdDev of an xts object of asset returns
+  Bootstrap the StdDev of an xts object or matrix of asset
+  returns
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[,1:4]
+bootStdDev(R[,1])
+bootStdDev(R)
 }
 \author{
   Ross Bennett

@@ -16,8 +16,14 @@
   bootstrap in parallel.}
 }
 \description{
-  Bootstrap the standard deviation of an xts object of
-  asset returns
+  Bootstrap the standard deviation of an xts object or
+  matrix of asset returns
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[,1:4]
+bootSD(R[,1])
+bootSD(R)
 }
 \author{
   Ross Bennett

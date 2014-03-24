@@ -16,8 +16,14 @@
   bootstrap in parallel.}
 }
 \description{
-  Bootstrap the covariance of an xts object of asset
-  returns
+  Bootstrap the covariance of an xts object or matrix of
+  asset returns
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[,1:4]
+bootCov(R[,1:2])
+bootCov(R)
 }
 \author{
   Ross Bennett

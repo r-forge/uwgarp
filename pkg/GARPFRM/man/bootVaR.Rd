@@ -16,8 +16,15 @@
   bootstrap in parallel.}
 }
 \description{
-  Bootstrap the Value at Risk (VaR) of an xts object of
-  asset returns
+  Bootstrap the Value at Risk (VaR) of an xts object or
+  matrix of asset returns
+}
+\examples{
+data(crsp_weekly)
+R <- largecap_weekly[,1:4]
+bootVaR(R[,1], p=0.9, method="historical")
+bootVaR(R[,1], p=0.9, method="gaussian")
+bootVaR(R, p=0.9, method="historical", invert=FALSE)
 }
 \author{
   Ross Bennett
