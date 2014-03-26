@@ -189,5 +189,3 @@ getFit.uvGARCH <- function(garch){
 plot.uvGARCH <- function(x, y, ..., which){
   plot(getFit(x), which=which, ...=...)
 }
-
-

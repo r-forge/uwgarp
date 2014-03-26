@@ -87,6 +87,7 @@ backtestVaR <- function(R, window=100, p=0.95, method="historical", bootstrap=FA
     warning("VaR backtest only supported for univariate series. Using R[,1]")
     R <- R[,1]
   }
+  p <- p[1]
   # number of observations
   n <- nrow(R)
   # vector to store the VaR estimates
@@ -113,7 +114,7 @@ backtestVaR <- function(R, window=100, p=0.95, method="historical", bootstrap=FA
   }
   # convert to xts and lag by k=1 for 1-step ahead VaR forecast
   est <- na.omit(lag(xts(est, index(R)[seq.int(from=window, to=n, by=1L)]), k=1))
-  colnames(est) <- paste(method, "VaR", sep=".")
+  colnames(est) <- paste(method, " VaR (", (1-p)*100, "%)" )
   
   # subset the actual returns to the same period as the VaR forecast estimates
   backtestR <- R[seq.int(from=(window+1), to=n, by=1L)]
@@ -133,6 +134,56 @@ backtestVaR <- function(R, window=100, p=0.95, method="historical", bootstrap=FA
   # structure and return
   structure(list(VaR=dataVaR, R=R, parameters=parameters), class="backtestVaR")
 }
+
+#' GARCH Model VaR Backtest
+#' 
+#' Function for rolling estimate of GARCH model and VaR backtest
+#' 
+#' @param garch uvGARCH object create via \code{\link{uvGARCH}}
+#' @param p confidence level for the VaR estimate.
+#' @param nAhead number of steps ahead to forecast. (nAhead = 1 only supported)
+#' @param refitEvery number of periods the mode is refit
+#' @param window size of the moving window in the rolling VaR estimate.
+#' @author Ross Bennett
+#' @seealso \code{\link[rugarch]{ugarchroll}}
+#' @export
+backtestVaR.GARCH <- function(garch, p=c(0.95, 0.99), nAhead=1, refitEvery=25, window=100){
+  # GARCH model VaR Backtesting
+  # http://www.unstarched.net/wp-content/uploads/2013/06/an-example-in-rugarch.pdf
+  # extract R from the fit object
+  R <- xts(garchModel$fit@model$modeldata$data, garchModel$fit@model$modeldata$index)
+  # call ugarchroll
+  modelRoll <- ugarchroll(spec=getSpec(garch), data=R, n.ahead=nAhead, 
+                          refit.every=refitEvery, refit.window="moving", 
+                          window.size=window, VaR.alpha=(1-p))
+  estimatedVaR <- modelRoll@forecast$VaR
+  
+  dates <- as.Date(rownames(estimatedVaR))
+  # GARCH VaR estimates
+  idx <- grep(pattern="alpha", x=colnames(estimatedVaR))
+  est <- xts(estimatedVaR[, idx], dates)
+  colnames(est) <- paste("GARCH VaR", colnames(estimatedVaR)[idx])
+  
+  # Realized returns
+  backtestR <- xts(estimatedVaR[, "realized"], dates)
+  
+  # matrix of violations
+  violation <- matrix(0, nrow=nrow(est), ncol=ncol(est))
+  colnames(violation) <- colnames(est)
+  for(i in 1:ncol(est)){
+    violation[,i] <- backtestR < est[,i]
+  }
+  violation <- xts(violation, index(est))
+  
+  # put the VaR estimate and violation into a list
+  dataVaR <- list(estimate=est, violation=violation)
+  
+  # put the model parameters into a list
+  parameters <- list(p=p, window=window)
+  structure(list(VaR=dataVaR, R=R, parameters=parameters), 
+            class=c("backtestVaR", "uGARCHroll"))
+}
+
 
 #' VaR Estimates
 #' Extract VaR Estimates from a VaR Backtest
@@ -240,7 +291,7 @@ plot.backtestVaR <- function(x, y, ..., pch=NULL, main="VaR Backtest", ylim=NULL
   
   # add the legend to the plot
   if(!is.null(legendLoc)){
-    legendNames <- c("observed returns", paste(colnames(tmpVaR), " (", 1-x$parameters$p, ")", sep=""))
+    legendNames <- c("observed returns", colnames(tmpVaR))
     legend(legendLoc, legend=legendNames, col=c(1, colorset), 
     lty=rep(1, ncol(tmpVaR)+1), cex=legendCex, bty="n")
   }

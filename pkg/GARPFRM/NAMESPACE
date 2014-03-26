@@ -1,3 +1,4 @@
+export(backtestVaR.GARCH)
 export(backtestVaR)
 export(bootCor)
 export(bootCov)
