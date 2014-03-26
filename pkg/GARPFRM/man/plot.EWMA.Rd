@@ -7,9 +7,9 @@
     cexLegend = 0.8)
 }
 \arguments{
-  \item{x}{an EWMA object}
+  \item{x}{an EWMA object created via \code{\link{EWMA}}}
 
-  \item{y}{NULL}
+  \item{y}{not used}
 
   \item{\dots}{additional arguments passed to
   \code{plot.xts}}

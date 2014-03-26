@@ -1,0 +1,26 @@
+\name{getVaRViolations}
+\alias{getVaRViolations}
+\title{VaR Violations
+Extract VaR Violations from a VaR Backtest}
+\usage{
+  getVaRViolations(object, ...)
+}
+\arguments{
+  \item{object}{an object created by
+  \code{\link{backtestVaR}}.}
+
+  \item{\dots}{not currently used #'}
+}
+\value{
+  xts object of VaR violations
+}
+\description{
+  VaR Violations Extract VaR Violations from a VaR Backtest
+}
+\author{
+  Ross Bennett
+}
+\seealso{
+  \code{\link{backtestVaR}}
+}
+

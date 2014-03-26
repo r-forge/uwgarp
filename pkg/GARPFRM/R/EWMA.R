@@ -680,8 +680,8 @@ getCor.mvEWMAcor <- function(EWMA, assets=c(1,2)){
 #' 
 #' Plot method for EWMA objects.
 #' 
-#' @param x an EWMA object
-#' @param y NULL
+#' @param x an EWMA object created via \code{\link{EWMA}}
+#' @param y not used
 #' @param \dots additional arguments passed to \code{plot.xts}
 #' @param assets character vector or numeric vector of assets to extract from 
 #' the covariance or correlation matrix. The assets can be specified by name or 
