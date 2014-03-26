@@ -1,33 +1,23 @@
 \name{forecast}
 \alias{forecast}
-\title{Forecast Univariate GARCH Models}
+\title{Model Forecasting}
 \usage{
-  forecast(garch, nAhead = 10, nRoll = 0,
-    externalForecasts = NULL, ...)
+  forecast(model, nAhead, ...)
 }
 \arguments{
-  \item{garch}{GARCH model fit via \code{uvGARCH}}
+  \item{model}{a model object}
 
-  \item{nAhead}{number of steps ahead to forecast}
+  \item{nAhead}{number of periods ahead to forecast}
 
-  \item{nRoll}{number of rolling forecasts}
-
-  \item{externalForecasts}{named list of external
-  regressors in the mean and/or variance equations}
-
-  \item{\dots}{additional parameters passed to
-  \code{ugarchforecast}}
+  \item{\dots}{any other passthrough parameters}
 }
 \value{
-  a uGARCHforecast object with the GARCH forecast data
+  forecasted value from model
 }
 \description{
-  Forecasting for GARCH models fit via \code{uvGARCH}
+  Generic method for forecasting from EWMA and GARCH models
 }
-\note{
-  For rolling forecasts specified with the \code{nRoll}
-  argument, the GARCH model must be fit with
-  \code{outSample} argument greater than or equal to
-  \code{nRoll}.
+\author{
+  Ross Bennett
 }
 

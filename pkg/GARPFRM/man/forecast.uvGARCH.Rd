@@ -1,0 +1,34 @@
+\name{forecast.uvGARCH}
+\alias{forecast.uvGARCH}
+\title{Forecast Univariate GARCH Models}
+\usage{
+  \method{forecast}{uvGARCH} (model, nAhead = 10, ...,
+    nRoll = 0, externalForecasts = NULL)
+}
+\arguments{
+  \item{model}{GARCH model fit via \code{\link{uvGARCH}}}
+
+  \item{nAhead}{number of steps ahead to forecast}
+
+  \item{\dots}{additional parameters passed to
+  \code{ugarchforecast}}
+
+  \item{nRoll}{number of rolling forecasts}
+
+  \item{externalForecasts}{named list of external
+  regressors in the mean and/or variance equations}
+}
+\value{
+  a uGARCHforecast object with the GARCH forecast data
+}
+\description{
+  Forecasting for GARCH models fit via
+  \code{\link{uvGARCH}}
+}
+\note{
+  For rolling forecasts specified with the \code{nRoll}
+  argument, the GARCH model must be fit with
+  \code{outSample} argument greater than or equal to
+  \code{nRoll}.
+}
+

@@ -190,28 +190,4 @@ plot.uvGARCH <- function(x, y, ..., which){
   plot(getFit(x), which=which, ...=...)
 }
 
-#' Forecast Univariate GARCH Models
-#' 
-#' Forecasting for GARCH models fit via \code{uvGARCH}
-#' 
-#' @note For rolling forecasts specified with the \code{nRoll} argument, the
-#' GARCH model must be fit with \code{outSample} argument greater than or 
-#' equal to \code{nRoll}.
-#' 
-#' @param garch GARCH model fit via \code{uvGARCH}
-#' @param nAhead number of steps ahead to forecast
-#' @param nRoll number of rolling forecasts
-#' @param externalForecasts named list of external regressors in the mean and/or
-#' variance equations
-#' @param \dots additional parameters passed to \code{ugarchforecast}
-#' @return a uGARCHforecast object with the GARCH forecast data
-#' @export
-forecast <- function(garch, nAhead=10, nRoll=0, externalForecasts=NULL, ...){
-  
-  if(is.null(externalForecasts)){
-    externalForecasts <- list(mregfor = NULL, vregfor = NULL)
-  }
-  out <- ugarchforecast(garch$fit, n.ahead=nAhead, n.roll=nRoll, 
-                        external.forecasts=externalForecasts, ...=...)
-  return(out)
-}
+
