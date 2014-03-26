@@ -97,7 +97,9 @@ backtestVaR <- function(R, window=100, p=0.95, method="historical", bootstrap=FA
       for(i in window:n){
         tmpR <- R[(i-window+1):i,]
         # compute VaR estimate
-        est[(i-window+1), j] <- bootVaR(R=tmpR, p=p, method=method[j], portfolio_method="single", replications=replications, parallel=bootParallel)
+        est[(i-window+1), j] <- bootVaR(R=tmpR, 
+                                        ...=pairlist(p=p, method=method[j], portfolio_method="single"), 
+                                        replications=replications, parallel=bootParallel)[1,]
       }
     }
   } else {
