@@ -107,7 +107,7 @@ volEst
 
 An important point to note is that we are using weekly returns to estimate weekly volatility while the lambda value used in the RiskMetrics database is for daily volatility estimates. A data driven approach for selecting a value for $\lambda$ is to determine the $\lambda$ that minimizes the mean squared error between the realized volatility and the estimated volatility from the EWMA model.
 
-Here we calculate the realized volatility defined as the equally weighted average of the standard deviation of the subsequent $n$ periods.
+Here we calculate the realized volatility defined as the equally weighted average of the standard deviation of the previous $n$ periods.
 <<>>=
 vol <- realizedVol(R, n=5)
 @
