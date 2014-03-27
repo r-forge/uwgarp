@@ -82,7 +82,7 @@ MKT.ret <- largecap.ts[, "market"]
 @
 
 
-Plot of the MKT weekly returns. 
+Plot of the MKT monthly returns. 
 <<>>=
 plot(MKT.ret, main="Market Monthly Returns")
 @
@@ -158,7 +158,7 @@ summary(MKT.ret)
 quantile(MKT.ret, probs=c(0, 0.25, 0.5, 0.75, 1))
 @
 
-Scatter plot of each pair of assets. This can be usefule to visually look for relationships among the assets.
+Scatter plot of each pair of assets. This can be useful to visually look for relationships among the assets.
 <<tidy=FALSE>>=
 pairs(coredata(crsp.returns), pch=20, col=rgb(0,0,100,50,maxColorValue=255))
 hexplom(coredata(crsp.returns), varname.cex=0.75)
@@ -171,7 +171,8 @@ cor(crsp.returns)
 @
 
 <<echo=FALSE>>=
-suppressWarnings(plotcov(cor(crsp.returns), method1="Sample Correlation Estimate"))
+suppressWarnings(plotcov(cor(crsp.returns), 
+                         method1="Sample Correlation Estimate"))
 @
 
 <<>>=
@@ -180,7 +181,8 @@ cov(crsp.returns)
 @
 
 <<echo=FALSE>>=
-suppressWarnings(plotcov(cov(crsp.returns), method1="Sample Covariance Estimate"))
+suppressWarnings(plotcov(cov(crsp.returns), 
+                         method1="Sample Covariance Estimate"))
 @
 
 
@@ -201,7 +203,7 @@ In general, the functions are as follows:
 \item d*: density
 \item p*: distribution function (probability)
 \item q*: quantile function
-\item r*: random generation
+\item r*: random number generation
 \end{itemize}
 where * is the appropriate distribution.
 
@@ -314,11 +316,11 @@ Examples of useful methods to access elements of the \verb"lm" object
 # Coefficients
 coef(model.fit)
 # Extract the fitted values
-# fitted(model.fit)
+head(fitted(model.fit))
 # Extract the residuals
-# resid(model.fit)
+head(resid(model.fit))
 # Exctract the standardized residuals
-# rstandard(model.fit)
+head(rstandard(model.fit))
 @
 
 Access elements of the \verb"lm.summary" object
@@ -473,8 +475,8 @@ summary(ff.fit)
 If we wanted to fit the model to more assets, we could manually fit the model with different assets as the response variable. However, we can automatically fit several models very easily with R.
 
 <<>>=
-# Omit the first column of returns because it is the SPY weekly returns, which is
-# a proxy for the market.
+# Omit the first column of returns because it is the SPY weekly returns, 
+# which is a proxy for the market.
 returns <- returns[, -1]
 
 # Calculate the excess returns of all assets in the returns object
