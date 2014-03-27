@@ -10,12 +10,20 @@
 
   \item{CI}{confidence level}
 }
+\value{
+  TRUE/FALSE if the null hypothesis is rejected
+}
 \description{
-  Description of CAPM beta/alpha hypothesis test TODO: We
-  need to clearly define the null hypothesis here
+  Test the CAPM coefficients for significance.
 }
 \details{
-  Generalization is termed a two-sided or two-tailed test.
-  Returns a true (reject) or false (fail to reject).
+  TODO: We need to clearly define the null hypothesis here.
+  This test if the coefficients are significantly different
+  from 0. The null hypothesis is that the coefficients are
+  equal to 0. If the p-value is less than the specified
+  confidence level, the null hypothesis is rejected meaning
+  that the coefficients are significantly different from 0.
+  If the p-value is greater than the specified confidence
+  level, the null hypothesis cannot be rejected.
 }
 

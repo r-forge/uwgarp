@@ -229,16 +229,28 @@ chartSML <- function(object, ..., main="Estimated SML"){
   legend("topleft",1, "Estimated SML",1)                  
 }
 
+# The current CAPM Hypothesis test uses the t-statistic and p-value from the
+# summary.lm() method. This tests if the coefficients are significantly 
+# different from 0. I thought the idea was to write a different hypothesis
+# test that alphas are significantly different from 0 and betas are 
+# significantly different from 1? -RB
+
 #' CAPM Hypothesis Test
 #' 
-#' Description of CAPM beta/alpha hypothesis test
-#' TODO: We need to clearly define the null hypothesis here
+#' Test the CAPM coefficients for significance.
 #' 
-#' Generalization is termed a two-sided or two-tailed test. 
-#' Returns a true (reject) or false (fail to reject).
+#' @details
+#' TODO: We need to clearly define the null hypothesis here.
+#' This test if the coefficients are significantly different from 0. The null
+#' hypothesis is that the coefficients are equal to 0. If the p-value is less
+#' than the specified confidence level, the null hypothesis is rejected meaning
+#' that the coefficients are significantly different from 0. If the p-value is
+#' greater than the specified confidence level, the null hypothesis cannot be
+#' rejected.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @param CI confidence level
+#' @return TRUE/FALSE if the null hypothesis is rejected
 #' @export
 hypTest <- function(object,CI){
   UseMethod("hypTest")
