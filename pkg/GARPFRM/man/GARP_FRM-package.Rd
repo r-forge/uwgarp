@@ -1,41 +1,57 @@
-\name{GARP_FRM-package}
-\alias{GARP_FRM-package}
-\alias{GARP_FRM}
+\name{GARPFRM-package}
+\alias{GARPFRM-package}
+\alias{GARPFRM}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Functions to implement the topics presented in 'Financial Risk Manager (FRM) Part 1' (2012) series of books.
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+TODO: Better description
+This package provides a framework to implement the topics and ideas presented in 'Financial Risk Manager (FRM) Part 1: Quantitative Analysis' (2012) and 'Financial Risk Manager (FRM) Part 1: Foundations of Risk Management' (2012)
 }
+
 \details{
 \tabular{ll}{
-Package: \tab GARP_FRM\cr
+Package: \tab GARPFRM\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 0.1.0\cr
 Date: \tab 2013-11-17\cr
 License: \tab What license is it under?\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
+
+An overview of how to use the package, including the most important functions.
+Discuss each section, borrowing text from vignettes. Also make sure that each area of functions is covered.
+\itemize{
+  \item Delineating Efficient Frontier
+  \item CAPM
+  \item Performance Measures
+  \item Monte Carlo
+  \item Bootstrap
+  \item EWMA
+  \item GARCH
+  \item VaR
+}
+
 }
 \author{
-Who wrote it
+Ross Bennett and Thomas Fillebeen
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer: Thomas Fillebeen <tdf17@uw.edu>
 }
 \references{
-~~ Literature or other references for background information ~~
+TODO: Add references
+rugarch
+PerformanceAnalytics
+xts
+GARP books
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R ~~
-~~ documentation directory ~~
+GARP,
+FRM
 \keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+% Optional links to other man pages, e.g.
+% \code{\link[<pkg>:<pkg>-package]{<pkg>}}
 }
 \examples{
-~~ simple examples of the most important functions ~~
+% simple examples of the most important functions
 }
