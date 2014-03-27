@@ -1,37 +1,11 @@
-\documentclass[a4paper]{article}
-\usepackage[OT1]{fontenc}
-\usepackage{Sweave}
-\usepackage{Rd}
+\documentclass{article}
+
 \usepackage{amsmath}
-\usepackage{hyperref}
-\usepackage{url}
-\usepackage[round]{natbib}
-\usepackage{bm}
+\usepackage{Rd}
 \usepackage{verbatim}
-\usepackage[latin1]{inputenc}
+
+\usepackage[round]{natbib}
 \bibliographystyle{abbrvnat}
-
-\let\proglang=\textsf
-%\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
-%\newcommand{\R}[1]{{\fontseries{b}\selectfont #1}}
-%\newcommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
-%\newcommand{\E}{\mathsf{E}}
-%\newcommand{\VAR}{\mathsf{VAR}}
-%\newcommand{\COV}{\mathsf{COV}}
-%\newcommand{\Prob}{\mathsf{P}}
-
-\renewcommand{\topfraction}{0.85}
-\renewcommand{\textfraction}{0.1}
-\renewcommand{\baselinestretch}{1.5}
-\setlength{\textwidth}{15cm} \setlength{\textheight}{22cm} \topmargin-1cm \evensidemargin0.5cm \oddsidemargin0.5cm
-
-\usepackage[latin1]{inputenc}
-% or whatever
-
-\usepackage{lmodern}
-\usepackage[T1]{fontenc}
-% Or whatever. Note that the encoding and the font should match. If T1
-% does not look nice, try deleting the line with the fontenc.
 
 \begin{document}
 
@@ -41,7 +15,7 @@
 \maketitle
 
 \begin{abstract}
-The goal of this vignette is to demonstrate key concepts in Financial Risk Manager (FRM \textsuperscript{\textregistered}) Part 1: Quantitative Analysis using R and the GARPFRM package. This vignette will cover exploratory data analysis, basic probability and statistics, and linear regression.
+The goal of this vignette is to demonstrate key concepts in Financial Risk Manager (FRM \textsuperscript{\textregistered}) Part 1: Quantitative Analysis using R and the GARPFRM package \citep{GARPFRM}. This vignette will cover exploratory data analysis, basic probability and statistics, and linear regression.
 \end{abstract}
 
 \tableofcontents
@@ -518,5 +492,6 @@ Display the summary object for each model
 summary(ff.fit)
 @
 
+\bibliography{GARPFRM}
 
 \end{document}

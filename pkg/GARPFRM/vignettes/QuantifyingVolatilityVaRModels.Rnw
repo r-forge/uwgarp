@@ -248,7 +248,6 @@ The VarCov approach assumes that asset returns are jointly normal and the return
 
 A key concern with the VarCov approach is the correlation estimate. As we saw with volatility in a previous section, correlation changes over time. For example, if correlations increase when markets fall, the VaR estimate of the position may be understated.
 
-
 The return aggregation approach is a "simulation" method where the returns are calculated using historical data, but the weights of each position today. For example, we calculate the returns we would have earned over the most recent $K$ periods by pretending the relative postions we hold today are the same positions we held $K$ days ago. This approach has the advantage that no parameters need to be estimated (not considering the $K$ lookback period). This means we do not have to estimate correlation. If markets fall and move together, this will be captured by the return aggregation approach. This approach will also capture fatter tails relative to a normal distribution.
 
 Suppose we have an equally weighted portfolio consisting of the first 10 assets in the largecap\_weekly dataset and use a lookback period of $K = 52$.
@@ -314,6 +313,33 @@ ewmaCov <- EWMA(tail(R, 52), lambda=0.9, initialWindow=10,
 # Compute the portfolio VaR estimate using the VarCov approach with EWMA
 # model estimated covariance matrix
 portfVaR.ewmaCov <- sqrt(t(weights) %*% ewmaCov %*% weights) * qnorm(0.05)
+@
+
+As discussed earlier, the correlation and covariance between assets change over time. To demonstrate this, we plot the rolling correlation and rolling covariance estimates. For simplicity, we only consider the first 2 assets.
+<<>>=
+# Compute rolling correlation estimates
+cor13 <- rollCor(R[,1:2], 13)
+cor26 <- rollCor(R[,1:2], 26)
+
+# Compute rolling covariance estimates
+cov13 <- rollCov(R[,1:2], 13)
+cov26 <- rollCov(R[,1:2], 26)
+
+# Plot rolling correlation estimates
+plot(cor13, type="n", main="Rolling Correlation", 
+     ylab="correlation")
+lines(cor13, col="blue")
+lines(cor26, col="red")
+legend("topleft", legend=c("rollCor(13)", "rollCor(26)"), 
+       bty="n", lty=c(1, 1), col=c("blue", "red"), cex=0.8)
+
+# Plot rolling covariance estimates
+plot(cov13, type="n", main="Rolling Covariance", 
+     ylab="covariance")
+lines(cov13, col="blue")
+lines(cov26, col="red")
+legend("topleft", legend=c("rollCov(13)", "rollCov(26)"), 
+       bty="n", lty=c(1, 1), col=c("blue", "red"), cex=0.8)
 @
 
 Returning our focus back to the return aggregation approach. We can also compute the portfolio VaR using methods we covered earlier when computing the VaR estimate of Conoco Phillips (COP) returns.

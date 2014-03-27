@@ -2,6 +2,10 @@
 
 \usepackage{amsmath}
 \usepackage{Rd}
+\usepackage{verbatim}
+
+\usepackage[round]{natbib}
+\bibliographystyle{abbrvnat}
 
 \begin{document}
 
@@ -375,8 +379,7 @@ plot(ef)
 @
 
 \section{Extended Examples for Portfolios with Multiple Assets}
-The previous sections all considered the case of a portfolios with two assets. Those assets, in general, could be portfolios or individual securities. The code used in this section depends on the PortfolioAnalytics (TODO citation) package. TODO add description of PortfolioAnalytics.
-
+The previous sections all considered the case of a portfolios with two assets. Those assets, in general, could be portfolios or individual securities. The code used in this section depends on the \verb"PortfolioAnalytics" package \citep{PortfolioAnalytics}. \verb"PortfolioAnalytics" is an R package designed to provide numerical solutions and visualizations for portfolio problems with complex constraints and objectives. 
 
 Load weekly returns data for a set of large cap, mid cap, and small cap stocks.
 <<>>=
@@ -427,5 +430,7 @@ plot(efGroup, labelAssets=FALSE)
 @
 
 In this vignette, we have demonstrated the behavior of efficient frontiers of two assets as the correlation varies under the full investment constraint with and without short selling allowed. We have also presented the more general case for generating portfolios along an efficient frontier for more than 2 assets. We also demonstrated functionality to generate portfolios along the efficient frontier with box constraints as well as group constraints.
+
+\bibliography{GARPFRM}
 
 \end{document}

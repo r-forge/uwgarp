@@ -2,6 +2,10 @@
 
 \usepackage{amsmath}
 \usepackage{Rd}
+\usepackage{verbatim}
+
+\usepackage[round]{natbib}
+\bibliographystyle{abbrvnat}
 
 \begin{document}
 
@@ -266,7 +270,7 @@ V_L &=& \omega / \gamma
 A key characteristic of the GARCH(1,1) model is mean reversion, i.e. the variance rate is pulled back to the long-run average variance rate over time. In contrast, the EWMA model is not mean reverting.
 
 \subsection{Estimating GARCH(1,1) Parameters}
-Estimating the parameters for the GARCH model requires an optimization routine to maximize the likelihood. The FRM text describes an example of using a spreadsheet and a solver, e.g. the Microsoft Excel Solver. The implementation of GARCH in the GARPFRM(citation) package utilizes the rugarch(citation) package. The rugarch package uses C code for a fast and efficient algorithm for the main part of the likelihood calculation.
+Estimating the parameters for the GARCH model requires an optimization routine to maximize the likelihood. The FRM text describes an example of using a spreadsheet and a solver, e.g. the Microsoft Excel Solver. The implementation of GARCH in the GARPFRM package \citep{GARPFRM} utilizes the rugarch package \citep{rugarch}. The implementation in the rugarch package uses C code for a fast and efficient algorithm for the main part of the likelihood calculation.
 
 Here we demonstrate how to specify and fit a GARCH(1,1) model using weekly returns for Microsoft.
 <<>>=
@@ -340,5 +344,6 @@ Plot the rolling forecast.
 plot(forecast2, which=4)
 @
 
+\bibliography{GARPFRM}
 
 \end{document}
