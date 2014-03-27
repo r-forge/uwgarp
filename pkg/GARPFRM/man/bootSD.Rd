@@ -28,4 +28,7 @@ bootSD(R)
 \author{
   Ross Bennett
 }
+\seealso{
+  \code{\link[stats]{sd}}
+}
 

@@ -28,4 +28,7 @@ bootStdDev(R)
 \author{
   Ross Bennett
 }
+\seealso{
+  \code{\link[PerformanceAnalytics]{StdDev}}
+}
 

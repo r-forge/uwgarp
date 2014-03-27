@@ -24,20 +24,32 @@
 }
 \description{
   Run \code{N} monte carlo simulations to generate asset
-  price paths following a geometric brownian motion
-  process.
+  price paths following a geometric brownian motion process
+  with constrant drift rate and constant volatility.
 }
 \details{
-  TODO: add equations for GBM
+  The Geometric Brownian Motion process to describe small
+  movements in prices is given by \deqn{ d S_t = \mu S_t dt
+  + \sigma dz_t }
+
+  ln S is simulated rather than simulating S directly such
+  that \deqn{ S_t = S_{t-1} exp((\mu - 0.5 \sigma^2) dt +
+  \sigma \sqrt{dt} \epsilon) }
+
+  where: \itemize{ \item S_t is the asset price at time t
+  \item S_{t-1} is the asset price at time t-1 \item mu is
+  the constant drift rate \item sigma is the constant
+  volatility rate \item epsilon is a standard normal random
+  variable }
 }
 \note{
-  This function returns a m x N matrix of simulated price
+  This function returns an m x N matrix of simulated price
   paths where m is the number of steps + 1 and N is the
   number of simulations. This can be very memory and
-  compute intensive with a large number of steps and/or a
-  large number of simulations. More efficient methods in
-  terms of speed and memory should be used, for example, to
-  price options.
+  computatitonally intensive with a large number of steps
+  and/or a large number of simulations. More efficient
+  methods in terms of speed and memory should be used, for
+  example, to price options.
 }
 \examples{
 library(GARPFRM)

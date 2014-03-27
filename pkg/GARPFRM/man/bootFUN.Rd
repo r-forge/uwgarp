@@ -34,9 +34,9 @@
   bootstrap function to each column of data.
 
   To run the bootstrap in parallael, this function uses the
-  \code{foreach} pacakge. From the
+  \code{foreach} pacakge. According to the
   \code{\link[foreach]{foreach}} documentation, the
-  Parallel computation depends upon a parallel backend that
+  parallel computation depends upon a parallel backend that
   must be registered before performing the computation. The
   parallel backends available will be system-specific, but
   include \code{doParallel}, which uses R's built-in
@@ -53,6 +53,7 @@
   \code{\link{bootStdDev}},
   \code{\link{bootSimpleVolatility}},
   \code{\link{bootCor}}, \code{\link{bootCov}},
-  \code{\link{bootVaR}}, \code{\link{bootES}}
+  \code{\link{bootVaR}}, \code{\link{bootES}},
+  \code{\link[foreach]{foreach}}
 }
 

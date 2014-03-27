@@ -7,7 +7,8 @@
     type = "l", pchAssets = 19, cexAssets = 0.8)
 }
 \arguments{
-  \item{x}{object of class \code{efficient.frontier}}
+  \item{x}{object of class \code{efTwoAsset} created via
+  \code{\link{efficientFrontierTwoAsset}}}
 
   \item{y}{not used}
 

@@ -1,8 +1,8 @@
-\name{plot.capm_uv}
-\alias{plot.capm_uv}
+\name{plot.capm_mlm}
+\alias{plot.capm_mlm}
 \title{Plotting method for CAPM}
 \usage{
-  plot.capm_uv(x, y, ..., main = "CAPM")
+  plot.capm_mlm(x, y, ..., main = "CAPM")
 }
 \arguments{
   \item{x}{a capm object created by \code{\link{CAPM}}.}

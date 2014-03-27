@@ -11,8 +11,7 @@
 
   \item{y}{not used}
 
-  \item{\dots}{additional arguments passed to
-  \code{plot.xts}}
+  \item{\dots}{passthrough parameters to \code{plot.xts}}
 
   \item{assets}{character vector or numeric vector of
   assets to extract from the covariance or correlation
@@ -59,5 +58,8 @@ cor_mv <- EWMA(mvR, lambda, initialWindow, type="correlation")
 # These two are equivalent
 plot(cor_mv, assets=c("ORCL", "EMC"))
 plot(cor_mv, assets=c(1, 4))
+}
+\author{
+  Ross Bennett
 }
 

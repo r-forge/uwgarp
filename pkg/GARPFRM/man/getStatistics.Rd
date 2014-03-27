@@ -6,10 +6,10 @@
 }
 \arguments{
   \item{object}{a capm object created by
-  \code{\link{CAPM}}}
+  \code{\link{CAPM}}.}
 }
 \description{
-  Description of CAPM statistics: retrieves standard error,
-  t-values, and p-values
+  Extract the standard error, t-values, and p-values from
+  the CAPM object.
 }
 

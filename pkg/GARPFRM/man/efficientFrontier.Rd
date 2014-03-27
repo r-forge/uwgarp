@@ -30,7 +30,7 @@
   to initialize a portfolio and create an efficint frontier
   in mean - standard deviation space. Box constraints and
   group constraints are supported for constrained
-  optimation to generate portfolios along the efficient
+  optimization to generate portfolios along the efficient
   frontier.
 }
 

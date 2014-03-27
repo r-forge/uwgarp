@@ -5,7 +5,8 @@
   getCov(EWMA, assets)
 }
 \arguments{
-  \item{object}{an EWMA object created by \code{EWMA}}
+  \item{object}{an EWMA object created by
+  \code{\link{EWMA}}}
 
   \item{assets}{character vector or numeric vector. The
   assets can be specified by name or index.}
@@ -22,5 +23,8 @@ initialWindow <- 150
 cov_mv <- EWMA(mvR, lambda, initialWindow, type="covariance")
 # Extract the estimated covariance between ORCL and MSFT
 tail(getCov(cov_mv, assets=c("ORCL", "MSFT")))
+}
+\author{
+  Ross Bennett and Thomas Fillebeen
 }
 

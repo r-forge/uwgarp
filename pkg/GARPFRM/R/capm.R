@@ -22,10 +22,11 @@
 
 #' Capital Asset Pricing Model
 #' 
-#' Description of CAPM
+#' TODO: Need a better description of the CAPM
+#' 
 #' Retrieves alphas, betas, as well as pvalue and tstats. 
-#' The Model is used to determine a theoretically appropriate rate of return
-#' of an asset's non-diversifiable risk.
+#' The CAPM is used to determine a theoretically appropriate rate of return
+#' of the non-diversifiable risk of an asset.
 #' 
 #' @param R asset returns
 #' @param Rmkt market returns
@@ -58,7 +59,7 @@ CAPM <- function(R, Rmkt){
 
 #' CAPM alphas
 #' 
-#' Description of CAPM alphas: retrieves alpha (intercept) from CAPM object.
+#' Extract the computed alphas (intercept) from the fitted CAPM object.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @export
@@ -85,7 +86,7 @@ getAlphas.capm_mlm <- function(object){
 
 #' CAPM betas
 #' 
-#' Description of CAPM betas: retrieves beta (slope) from CAPM object.
+#' Extract the computed alpha (intercept) from the CAPM object.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @export
@@ -112,9 +113,9 @@ getBetas.capm_mlm <- function(object){
 
 #' CAPM statistics
 #' 
-#' Description of CAPM statistics: retrieves standard error, t-values, and p-values
+#' Extract the standard error, t-values, and p-values from the CAPM object.
 #' 
-#' @param object a capm object created by \code{\link{CAPM}}
+#' @param object a capm object created by \code{\link{CAPM}}.
 #' @export
 getStatistics <- function(object){
   UseMethod("getStatistics")
@@ -157,58 +158,78 @@ getStatistics.capm_mlm <- function(object){
   return(tmp_sm)
 }
 
-# CAPM plotting for UV
+#' Plotting method for CAPM
+#' 
+#' Plot a fitted CAPM object
+#' 
+#' @param x a capm object created by \code{\link{CAPM}}.
+#' @param y not used
+#' @param \dots passthrough parameters to \code{\link{plot}}.
+#' @param main a main title for the plot
 #' @export
-plot.capm_uv <- function(object){
-  xlab <- colnames(object$x_data)
-  ylab <- colnames(object$y_data)
-  plot(x=coredata(object$x_data), y=(object$y_data), xlab=xlab, ylab=ylab, main="CAPM")
-  abline(object)
+plot.capm_uv <- function(x, y, ..., main="CAPM"){
+  xlab <- colnames(x$x_data)
+  ylab <- colnames(x$y_data)
+  plot(x=coredata(x$x_data), y=(x$y_data), ...=..., xlab=xlab, ylab=ylab, main=main)
+  abline(x)
   abline(h=0,v=0,lty=3)
-  alpha = coef(summary(object))[1,1]
-  a_tstat = coef(summary(object))[1,2]
-  beta = coef(summary(object))[2,1]
-  b_tstat = coef(summary(object))[2,2]
+  alpha = coef(summary(x))[1,1]
+  a_tstat = coef(summary(x))[1,2]
+  beta = coef(summary(x))[2,1]
+  b_tstat = coef(summary(x))[2,2]
   legend("topleft", legend=c(paste("alpha =", round(alpha,dig=2),"(", round(a_tstat,dig=2),")"),
                              paste("beta =", round(beta,dig=2),"(", round(b_tstat,dig=2),")")), cex=.8, bty="n")
   
 }
 
-# CAPM plotting for mlm
+#' Plotting method for CAPM
+#' 
+#' Plot a fitted CAPM object
+#' 
+#' @param x a capm object created by \code{\link{CAPM}}.
+#' @param y not used
+#' @param \dots passthrough parameters to \code{\link{plot}}.
+#' @param main a main title for the plot
 #' @export
-plot.capm_mlm <- function(object){
-  if(ncol(object$y_data) > 4) warning("Only first 4 assets will be graphically displayed")
-  par(mfrow=c(2,round(ncol(coef(object))/2)))
-  Rmkt = object$x_data
-  nbPlot = min(ncol(coef(object)),4)
+plot.capm_mlm <- function(x, y, ..., main="CAPM"){
+  if(ncol(x$y_data) > 4) warning("Only first 4 assets will be graphically displayed")
+  par(mfrow=c(2,round(ncol(coef(x))/2)))
+  Rmkt = x$x_data
+  nbPlot = min(ncol(coef(x)),4)
   for (i in 1:nbPlot){
-    tmp = CAPM(object$y_data[,i],Rmkt)
-    plot(tmp)
+    tmp = CAPM(x$y_data[,i], Rmkt)
+    plot(tmp, ...=..., main=main)
   }
 }
+
 #' CAPM SML
 #' 
-#' Description of CAPM Security Market Line (SML)
-#' SML is the represesentation of the CAPM. It illustrates the expected rate of return
-#' of an individual secuirty as a function of systematic, non-diversified risk (known as beta).
+#' Security Market Line (SML) of the CAPM.
+#' The SML is a represesentation of the CAPM. It illustrates the expected rate 
+#' of return of an individual security as a function of systematic, 
+#' non-diversified risk (known as beta).
 #' 
-#' @param object a capm object created by \code{\link{CAPM}}
+#' @param object a capm object created by \code{\link{CAPM}}.
+#' @param \dots passthrough parameters to \code{\link{plot}}.
+#' @param main a main title for the plot.
 #' @export
-chartSML <- function(object){
+chartSML <- function(object, ..., main="Estimated SML"){
   if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   #' Plot expected return versus beta
-  mu.hat = colMeans(object$y_data,na.rm=TRUE)
+  mu.hat = colMeans(object$y_data, na.rm=TRUE)
   betas = getBetas(object)
   sml.fit = lm(mu.hat~betas)
   # Plot Fitted SML
-  plot(betas,mu.hat,main="Estimated SML")
+  plot(betas,mu.hat,main=main, ...=...)
   abline(sml.fit)
   legend("topleft",1, "Estimated SML",1)                  
 }
 
-#' CAPM hypTest
+#' CAPM Hypothesis Test
 #' 
 #' Description of CAPM beta/alpha hypothesis test
+#' TODO: We need to clearly define the null hypothesis here
+#' 
 #' Generalization is termed a two-sided or two-tailed test. 
 #' Returns a true (reject) or false (fail to reject).
 #' 

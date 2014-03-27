@@ -27,4 +27,7 @@ R <- largecap_weekly[, 1:2]
 initialWindow <- 150
 lambda <- estimateLambdaCor(R, initialWindow, n=10)
 }
+\author{
+  Ross Bennett
+}
 

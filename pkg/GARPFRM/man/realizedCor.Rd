@@ -10,6 +10,9 @@
   \item{n}{number of periods used to calculate realized
   volatility}
 }
+\value{
+  xts object of realized correlation
+}
 \description{
   Calculate realized correlation
 }
@@ -23,5 +26,8 @@ R <- largecap_weekly[, 1:2]
 # Calculate realized correlation
 realizedCorrelation <- realizedCor(R, 10)
 head(realizedCorrelation)
+}
+\author{
+  Ross Bennett
 }
 

@@ -10,6 +10,9 @@
   \item{n}{number of periods used to calculate realized
   volatility}
 }
+\value{
+  xts object of realized volatility
+}
 \description{
   Calculate realized volatility
 }
@@ -23,5 +26,8 @@ R <- largecap_weekly[, 1]
 # Calculate realized volatility
 realizedVolatility <- realizedVol(R[,1], 10)
 head(realizedVolatility)
+}
+\author{
+  Ross Bennett
 }
 

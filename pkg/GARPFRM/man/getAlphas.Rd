@@ -9,7 +9,7 @@
   \code{\link{CAPM}}}
 }
 \description{
-  Description of CAPM alphas: retrieves alpha (intercept)
-  from CAPM object.
+  Extract the computed alphas (intercept) from the fitted
+  CAPM object.
 }
 

@@ -28,4 +28,7 @@ bootMean(R)
 \author{
   Ross Bennett
 }
+\seealso{
+  \code{\link[base]{mean}}
+}
 

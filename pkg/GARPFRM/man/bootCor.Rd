@@ -29,4 +29,7 @@ bootCor(R)
 \author{
   Ross Bennett
 }
+\seealso{
+  \code{\link[stats]{cor}}
+}
 

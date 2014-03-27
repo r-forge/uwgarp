@@ -7,7 +7,7 @@
 \arguments{
   \item{x}{uvGARCH object create via \code{uvGARCH}}
 
-  \item{y}{}
+  \item{y}{not used}
 
   \item{\dots}{additional parameters passed to plot method
   for uGARCHfit objects}

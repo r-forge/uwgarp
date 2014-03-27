@@ -1,6 +1,6 @@
 \name{hypTest}
 \alias{hypTest}
-\title{CAPM hypTest}
+\title{CAPM Hypothesis Test}
 \usage{
   hypTest(object, CI)
 }
@@ -9,7 +9,10 @@
   \code{\link{CAPM}}}
 }
 \description{
-  Description of CAPM beta/alpha hypothesis test
+  Description of CAPM beta/alpha hypothesis test TODO: We
+  need to clearly define the null hypothesis here
+}
+\details{
   Generalization is termed a two-sided or two-tailed test.
   Returns a true (reject) or false (fail to reject).
 }

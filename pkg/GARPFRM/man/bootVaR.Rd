@@ -29,4 +29,7 @@ bootVaR(R, p=0.9, method="historical", invert=FALSE)
 \author{
   Ross Bennett
 }
+\seealso{
+  \code{\link[PerformanceAnalytics]{VaR}}
+}
 

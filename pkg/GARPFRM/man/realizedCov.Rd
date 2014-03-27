@@ -10,6 +10,9 @@
   \item{n}{number of periods used to calculate realized
   volatility}
 }
+\value{
+  xts object of realized covariance
+}
 \description{
   Calculate realized covariance
 }
@@ -23,5 +26,8 @@ R <- largecap_weekly[, 1:2]
 # Calculate realized covariance
 realizedCovariance <- realizedCov(R, 10)
 head(realizedCovariance)
+}
+\author{
+  Ross Bennett
 }
 

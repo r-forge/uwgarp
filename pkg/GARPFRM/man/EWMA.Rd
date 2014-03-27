@@ -10,8 +10,8 @@
 
   \item{lambda}{smoothing parameter, must be greater than 0
   or less than 1. If NULL, lambda will be estimated by
-  minimizing the sum of squared difference between the
-  estimated value and the realized value.}
+  minimizing the mean squared error between the estimated
+  value and the realized value.}
 
   \item{initialWindow}{initial window of observations used
   in estimating the initial conditions}
@@ -22,6 +22,13 @@
   \item{type}{estimate volatility, covariance, or
   correlation.}
 }
+\value{
+  an EWMA object with the following elements \itemize{
+  \item \code{estimate} EWMA model estimated statistic
+  \item \code{model} list with model parameters \item
+  \code{data} list with original returns data and realized
+  statistic if applicable }
+}
 \description{
   EWMA model to estimate volatility, covariance, and
   correlation
@@ -29,8 +36,8 @@
 \details{
   If lambda=NULL, the lambda value can be estimated for
   univariate estimates of volatility, covariance, and
-  correlation by minimizing the sum of squared differences
-  between the estimated value and realized value.
+  correlation by minimizing the mean squared error between
+  the estimated value and realized value.
 }
 \examples{
 # data and parameters for EWMA estimate
@@ -69,5 +76,8 @@ cov_mv
 # Multivariate EWMA estimate of correlation
 cor_mv <- EWMA(mvR, lambda, initialWindow, type="correlation")
 cor_mv
+}
+\author{
+  Ross Bennett and Thomas Fillebeen
 }
 

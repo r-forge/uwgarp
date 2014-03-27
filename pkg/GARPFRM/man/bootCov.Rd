@@ -28,4 +28,7 @@ bootCov(R)
 \author{
   Ross Bennett
 }
+\seealso{
+  \code{\link[stats]{cov}}
+}
 

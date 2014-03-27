@@ -4,18 +4,23 @@
 #' EWMA model to estimate volatility, covariance, and correlation
 #' 
 #' If lambda=NULL, the lambda value can be estimated for univariate estimates 
-#' of volatility,  covariance, and correlation by minimizing the sum of 
-#' squared differences between the estimated value and realized value. 
+#' of volatility,  covariance, and correlation by minimizing the mean 
+#' squared error between the estimated value and realized value. 
 #' 
 #' @param R xts object of asset returns
 #' @param lambda smoothing parameter, must be greater than 0 or less than 1. If
-#' NULL, lambda will be estimated by minimizing the sum of squared difference
+#' NULL, lambda will be estimated by minimizing the mean squared error
 #' between the estimated value and the realized value.
 #' @param initialWindow initial window of observations used in estimating the 
 #' initial conditions
 #' @param n number of periods used to calculate realized volatility, covariance, or correlation.
 #' @param type estimate volatility, covariance, or correlation.
-#' 
+#' @return an EWMA object with the following elements
+#' \itemize{
+#'   \item \code{estimate} EWMA model estimated statistic
+#'   \item \code{model} list with model parameters
+#'   \item \code{data} list with original returns data and realized statistic if applicable
+#' }
 #' @examples
 #' # data and parameters for EWMA estimate
 #' data(crsp_weekly)
@@ -53,8 +58,11 @@
 #' # Multivariate EWMA estimate of correlation
 #' cor_mv <- EWMA(mvR, lambda, initialWindow, type="correlation")
 #' cor_mv
+#' @author Ross Bennett and Thomas Fillebeen
 #' @export
 EWMA <- function(R, lambda=0.94, initialWindow=10, n=10, type=c("volatility", "covariance", "correlation")){
+  if(!is.xts(R)) stop("R must be an xts object")
+  
   type <- match.arg(type)
   
   # Check for lambda between 0 and 1 & initialWindow must be greater than ncol(R)
@@ -356,13 +364,14 @@ mvEWMAcor <- function(R, lambda, initialWindow){
 #' 
 #' @param R xts object of asset returns
 #' @param n number of periods used to calculate realized volatility
-#' 
+#' @return xts object of realized volatility
 #' @examples
 #' data(crsp_weekly)
 #' R <- largecap_weekly[, 1]
 #' # Calculate realized volatility
 #' realizedVolatility <- realizedVol(R[,1], 10)
 #' head(realizedVolatility)
+#' @author Ross Bennett
 #' @export
 realizedVol <- function(R, n){
   n <- as.integer(n)[1]
@@ -377,13 +386,14 @@ realizedVol <- function(R, n){
 #' 
 #' @param R xts object of asset returns
 #' @param n number of periods used to calculate realized volatility
-#' 
+#' @return xts object of realized covariance
 #' @examples
 #' data(crsp_weekly)
 #' R <- largecap_weekly[, 1:2]
 #' # Calculate realized covariance
 #' realizedCovariance <- realizedCov(R, 10)
 #' head(realizedCovariance)
+#' @author Ross Bennett
 #' @export
 realizedCov <- function(R, n){
   n <- as.integer(n)[1]
@@ -398,12 +408,14 @@ realizedCov <- function(R, n){
 #' 
 #' @param R xts object of asset returns
 #' @param n number of periods used to calculate realized volatility
+#' @return xts object of realized correlation
 #' @examples
 #' data(crsp_weekly)
 #' R <- largecap_weekly[, 1:2]
 #' # Calculate realized correlation
 #' realizedCorrelation <- realizedCor(R, 10)
 #' head(realizedCorrelation)
+#' @author Ross Bennett
 #' @export
 realizedCor <- function(R, n){
   n <- as.integer(n)[1]
@@ -414,6 +426,7 @@ realizedCor <- function(R, n){
 # objective is the mean squared error between estimated volatility and 
 # realized volatility
 objLambdaVol <- function(lambda, R, initialWindow, n){
+  R <- R[,1]
   realized <- realizedVol(R, n)
   est <- uvEWMAvol(R, lambda, initialWindow)
   tmpDat <- na.omit(cbind(est, realized))
@@ -460,9 +473,13 @@ objLambdaCor <- function(lambda, R, initialWindow, n){
 #' R <- largecap_weekly[, 1]
 #' initialWindow <- 150
 #' lambda <- estimateLambdaVol(R, initialWindow, n=10)
+#' @author Ross Bennett
 #' @export
 estimateLambdaVol <- function(R, initialWindow=10, n=10){
-  opt <- optimize(objLambdaVol, interval=c(0,1), R=R, 
+  if(!is.xts(R)) stop("R must be an xts object")
+  if(ncol(R) > 1) warning("lambda to estimate volatility only supported for univariate data (i.e. ncol(R) == 1)")
+  
+  opt <- optimize(objLambdaVol, interval=c(0,1), R=R[,1], 
                   initialWindow=initialWindow, n=n, 
                   tol=.Machine$double.eps)
   lambda <- opt$minimum
@@ -486,9 +503,13 @@ estimateLambdaVol <- function(R, initialWindow=10, n=10){
 #' R <- largecap_weekly[, 1:2]
 #' initialWindow <- 150
 #' lambda <- estimateLambdaCov(R, initialWindow, n=10)
+#' @author Ross Bennett
 #' @export
 estimateLambdaCov <- function(R, initialWindow=10, n=10){
-  opt <- optimize(objLambdaCov, interval=c(0,1), R=R, 
+  if(!is.xts(R)) stop("R must be an xts object")
+  if(ncol(R) > 2) warning("lambda to estimate covariance only supported for bivariate data (i.e. ncol(R) == 2)")
+  
+  opt <- optimize(objLambdaCov, interval=c(0,1), R=R[,1:2], 
                   initialWindow=initialWindow, n=n, 
                   tol=.Machine$double.eps)
   lambda <- opt$minimum
@@ -511,9 +532,13 @@ estimateLambdaCov <- function(R, initialWindow=10, n=10){
 #' R <- largecap_weekly[, 1:2]
 #' initialWindow <- 150
 #' lambda <- estimateLambdaCor(R, initialWindow, n=10)
+#' @author Ross Bennett
 #' @export
 estimateLambdaCor <- function(R, initialWindow=10, n=10){
-  opt <- optimize(objLambdaCor, interval=c(0,1), R=R, 
+  if(!is.xts(R)) stop("R must be an xts object")
+  if(ncol(R) > 2) warning("lambda to estimate covariance only supported for bivariate data (i.e. ncol(R) == 2)")
+  
+  opt <- optimize(objLambdaCor, interval=c(0,1), R=R[,1:2], 
                   initialWindow=initialWindow, n=n, 
                   tol=.Machine$double.eps)
   lambda <- opt$minimum
@@ -544,7 +569,7 @@ print.EWMA <- function(x, ...){
 #' 
 #' Extract the covariance of two assets from an \code{mvEWMAcov} object
 #' 
-#' @param object an EWMA object created by \code{EWMA}
+#' @param object an EWMA object created by \code{\link{EWMA}}
 #' @param assets character vector or numeric vector. The assets can be 
 #' specified by name or index.
 #' @examples
@@ -555,6 +580,7 @@ print.EWMA <- function(x, ...){
 #' cov_mv <- EWMA(mvR, lambda, initialWindow, type="covariance")
 #' # Extract the estimated covariance between ORCL and MSFT
 #' tail(getCov(cov_mv, assets=c("ORCL", "MSFT")))
+#' @author Ross Bennett and Thomas Fillebeen
 #' @export
 getCov <- function(EWMA, assets){
   UseMethod("getCov")
@@ -629,7 +655,7 @@ getCov.mvEWMAcov <- function(EWMA, assets=c(1,2)){
 #' 
 #' Extract the correlation of two assets from an \code{mvEWMAcor} object
 #' 
-#' @param object an EWMA object created by \code{EWMA}
+#' @param object an EWMA object created by \code{\link{EWMA}}
 #' @param assets character vector or numeric vector. The assets can be 
 #' specified by name or index.
 #' @examples
@@ -640,6 +666,7 @@ getCov.mvEWMAcov <- function(EWMA, assets=c(1,2)){
 #' cor_mv <- EWMA(mvR, lambda, initialWindow, type="correlation")
 #' # Extract the estimated correlation between ORCL and MSFT
 #' tail(getCor(cor_mv, assets=c("ORCL", "MSFT")))
+#' @author Ross Bennett and Thomas Fillebeen
 #' @export
 getCor <- function(EWMA, assets){
   UseMethod("getCor")
@@ -682,7 +709,7 @@ getCor.mvEWMAcor <- function(EWMA, assets=c(1,2)){
 #' 
 #' @param x an EWMA object created via \code{\link{EWMA}}
 #' @param y not used
-#' @param \dots additional arguments passed to \code{plot.xts}
+#' @param \dots passthrough parameters to \code{plot.xts}
 #' @param assets character vector or numeric vector of assets to extract from 
 #' the covariance or correlation matrix. The assets can be specified by name or 
 #' index. This argument is only usd for multivariate EWMA estimates of 
@@ -721,6 +748,7 @@ getCor.mvEWMAcor <- function(EWMA, assets=c(1,2)){
 #' # These two are equivalent
 #' plot(cor_mv, assets=c("ORCL", "EMC"))
 #' plot(cor_mv, assets=c(1, 4))
+#' @author Ross Bennett
 #' @method plot EWMA
 #' @S3method plot EWMA
 plot.EWMA <- function(x, y=NULL, ..., assets=c(1,2), legendLoc=NULL, main="EWMA Estimate", cexLegend=0.8){

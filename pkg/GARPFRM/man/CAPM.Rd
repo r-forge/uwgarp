@@ -10,10 +10,12 @@
   \item{Rmkt}{market returns}
 }
 \description{
-  Description of CAPM Retrieves alphas, betas, as well as
-  pvalue and tstats. The Model is used to determine a
-  theoretically appropriate rate of return of an asset's
-  non-diversifiable risk.
+  TODO: Need a better description of the CAPM
+}
+\details{
+  Retrieves alphas, betas, as well as pvalue and tstats.
+  The CAPM is used to determine a theoretically appropriate
+  rate of return of the non-diversifiable risk of an asset.
 }
 \examples{
 data(crsp.short)

@@ -1,6 +1,6 @@
 \name{getSpec}
 \alias{getSpec}
-\title{Get GARCH Specification}
+\title{Get GARCH Model Specification}
 \usage{
   getSpec(garch)
 }
@@ -12,6 +12,6 @@
   an object of class uGARCHspec
 }
 \description{
-  Function to extract the GARCH specification object
+  Function to extract the GARCH model specification object
 }
 

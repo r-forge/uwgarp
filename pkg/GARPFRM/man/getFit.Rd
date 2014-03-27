@@ -1,6 +1,6 @@
 \name{getFit}
 \alias{getFit}
-\title{Get GARCH Model Fit}
+\title{Get Fitted GARCH Model}
 \usage{
   getFit(garch)
 }
@@ -12,6 +12,6 @@
   an object of class uGARCHfit
 }
 \description{
-  Function to extract the GARCH fit object
+  Function to extract the fitted GARCH model object
 }
 

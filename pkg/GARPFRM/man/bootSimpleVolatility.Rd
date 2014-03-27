@@ -9,7 +9,7 @@
   \item{R}{xts object or matrix of asset returns}
 
   \item{\dots}{passthrough parameters to
-  \code{\link{SimpleVolatility}}}
+  \code{\link{simpleVolatility}}}
 
   \item{replications}{number of bootstrap replications.}
 
@@ -28,5 +28,8 @@ bootSimpleVolatility(R)
 }
 \author{
   Ross Bennett
+}
+\seealso{
+  \code{\link{simpleVolatility}}
 }
 

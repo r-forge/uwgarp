@@ -8,6 +8,10 @@
 
 # we need to support GARCH models for both univariate and multivariate data
 
+## The GARP text does not have any discussion on multivariate GARCH models.
+## I think we should omit this for phase 1 and maybe reconsider in phase 2
+## or beyond.
+
 #' GARCH Models
 #' 
 #' This function is a basic wrapper of functions in the rugarch and rmgarch
@@ -79,6 +83,13 @@ fcstGarch11.DCCfit <- function(object, window = 100){
 #' 
 #' Specify and fit a univariate GARCH model
 #' 
+#' @details 
+#' This function is a basic wrapper of functions in the rugarch package
+#' to specify and fit GARCH models. The rugarch package
+#' provides functions to specify and fit a rich set of GARCH models. 
+#' The purpose of this function is to specify and fit a GARCH model while 
+#' abstracting away some complexities.
+#' 
 #' @param R xts object of asset returns.
 #' @param model GARCH Model to specify and fit. Valid GARCH models are
 #' “sGARCH”, “fGARCH”, “eGARCH”, “gjrGARCH”, “apARCH”, “iGARCH” and “csGARCH”.
@@ -100,6 +111,8 @@ fcstGarch11.DCCfit <- function(object, window = 100){
 #' @param fitControl named list of arguments for the fitting routine
 #' @param solverControl named list of arguments for the solver
 #' @return a list of length two containing GARCH specification and GARCH fit objects
+#' @author Ross Bennett
+#' @seealso \code{\link[rugarch]{ugarchspec}}, \code{\link[rugarch]{ugarchfit}}
 #' @export
 uvGARCH <- function(R, model="sGARCH", 
                     garchOrder=c(1, 1), 
@@ -144,9 +157,9 @@ uvGARCH <- function(R, model="sGARCH",
                    class="uvGARCH"))
 }
 
-#' Get GARCH Specification
+#' Get GARCH Model Specification
 #' 
-#' Function to extract the GARCH specification object 
+#' Function to extract the GARCH model specification object 
 #' 
 #' @param garch a GARCH model specification and fit created with \code{uvGARCH}
 #' @return an object of class uGARCHspec
@@ -161,9 +174,9 @@ getSpec.uvGARCH <- function(garch){
   garch$spec
 }
 
-#' Get GARCH Model Fit
+#' Get Fitted GARCH Model
 #' 
-#' Function to extract the GARCH fit object 
+#' Function to extract the fitted GARCH model object 
 #' 
 #' @param garch a GARCH model specification and fit created with \code{uvGARCH}
 #' @return an object of class uGARCHfit
@@ -183,7 +196,7 @@ getFit.uvGARCH <- function(garch){
 #' Plots for fitted GARCH Models
 #' 
 #' @param x uvGARCH object create via \code{uvGARCH}
-#' @param y
+#' @param y not used
 #' @param \dots additional parameters passed to plot method for uGARCHfit objects
 #' @param which plot selection
 plot.uvGARCH <- function(x, y, ..., which){

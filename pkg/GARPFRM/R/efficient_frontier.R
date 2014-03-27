@@ -26,7 +26,6 @@ portReturnTwoAsset <- function(R1, R2, X1){
 #' portfolio of two assets following the equations presented in 
 #' Chapter 3: Delineating Efficient Portfolios.
 #' 
-#' 
 #' @param R1 expected return for asset 1
 #' @param R2 expected return for asset 2
 #' @param X1 fraction of portfolio invested in asset 1
@@ -108,7 +107,8 @@ efficientFrontierTwoAsset <- function(R1, R2, sigma1, sigma2, rho, nPortfolios=2
 #' Note that the values for the minimum variance portfolio are an approximation 
 #' and depend on the number of portfolios used to create the efficient frontier.
 #' 
-#' @param ef efficient frontier object created via \code{efficientFrontierTwoAsset}
+#' @param ef efficient frontier object created via \code{\link{efficientFrontierTwoAsset}}
+#' @seealso \code{\link{efficientFrontierTwoAsset}}
 #' @export
 minVarPortfolio <- function(ef){
   if(!inherits(ef, "efTwoAsset")) stop("ef must be of class 'efTwoAsset'")
@@ -118,13 +118,14 @@ minVarPortfolio <- function(ef){
 
 #' Tangent Portfolio
 #' 
-#' Extract the tangent portfolio from an efficient frontier. The tangent portfolio
-#' is the portfolio which maximizes risk adjusted return.
+#' Extract the tangent portfolio from an efficient frontier. The tangent 
+#' portfolio is the portfolio which maximizes risk adjusted return.
 #' 
 #' Note that the values for the tangent portfolios are an approximation and 
 #' depend on the number of portfolios used to create the efficient frontier.
 #' 
-#' @param ef efficient frontier object created via \code{efficientFrontierTwoAsset}
+#' @param ef efficient frontier object created via \code{\link{efficientFrontierTwoAsset}}
+#' @seealso \code{\link{efficientFrontierTwoAsset}}
 #' @export
 tangentPortfolio <- function(ef){
   if(!inherits(ef, "efTwoAsset")) stop("ef must be of class 'efTwoAsset'")
@@ -138,7 +139,7 @@ tangentPortfolio <- function(ef){
 #' 
 #' Plot the efficient frontier in return - standard deviation space
 #' 
-#' @param x object of class \code{efficient.frontier}
+#' @param x object of class \code{efTwoAsset} created via \code{\link{efficientFrontierTwoAsset}}
 #' @param y not used
 #' @param \dots passthrough parameters
 #' @param chartAssets TRUE/FALSE to include the assets in the plot
@@ -208,10 +209,6 @@ plot.efTwoAsset <- function(x, y, ..., chartAssets=TRUE, main="Efficient Frontie
          pch=c(NA, NA, 15, 17), bty="n", cex=0.75)
 }
 
-
-
-
-
 #' Efficient Frontier
 #' 
 #' Generate portfolios along an efficient frontier.
@@ -219,7 +216,7 @@ plot.efTwoAsset <- function(x, y, ..., chartAssets=TRUE, main="Efficient Frontie
 #' This is a wrapper function for code in PortfolioAnalytics to initialize a 
 #' portfolio and create an efficint frontier in mean - standard deviation space.
 #' Box constraints and group constraints are supported for constrained
-#' optimation to generate portfolios along the efficient frontier.  
+#' optimization to generate portfolios along the efficient frontier.  
 #' 
 #' @param R xts object of asset returns
 #' @param nPortfolios number of portfolios to generate along efficient frontier
@@ -254,19 +251,20 @@ efficientFrontier <- function(R, nPortfolios=25, minBox=0, maxBox=1, groupList=N
 #' 
 #' Plot the efficient frontier in return - standard deviation space
 #' 
-#' @param x object of class \code{efficient.frontier}
+#' @param x object of class \code{efficient.frontier} created via \code{\link{efficientFrontier}}
 #' @param y not used
 #' @param \dots passthrough parameters
 #' @param rf risk free rate
 #' @param chartAssets TRUE/FALSE to include the assets in the plot
 #' @param labelAssets TRUE/FALSE to include the labels of the assets in the plot
 #' @param main a main title for the plot
-#' @param xlim set the x-axis limit, same as in \code{plot}
-#' @param ylim set the x-axis limit, same as in \code{plot}
-#' @param type what type of plot should be drawn, same as in \code{plot}
+#' @param xlim set the x-axis limit, same as in \code{\link{plot}}
+#' @param ylim set the x-axis limit, same as in \code{\link{plot}}
+#' @param type what type of plot should be drawn, same as in \code{\link{plot}}
 #' @param pchAssets plotting character of the assets
 #' @param cexAssets numerical value giving the amount by which the asset points
 #' and labels should be magnified relative to the default.
+#' @seealso \code{\link{efficientFrontier}}
 #' @method plot efficient.frontier
 #' @S3method plot efficient.frontier
 plot.efficient.frontier <- function(x, y, ..., rf=0, chartAssets=TRUE, 

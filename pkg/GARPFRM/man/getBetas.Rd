@@ -9,7 +9,7 @@
   \code{\link{CAPM}}}
 }
 \description{
-  Description of CAPM betas: retrieves beta (slope) from
-  CAPM object.
+  Extract the computed alpha (intercept) from the CAPM
+  object.
 }
 

@@ -2,16 +2,21 @@
 \alias{chartSML}
 \title{CAPM SML}
 \usage{
-  chartSML(object)
+  chartSML(object, ..., main = "Estimated SML")
 }
 \arguments{
   \item{object}{a capm object created by
-  \code{\link{CAPM}}}
+  \code{\link{CAPM}}.}
+
+  \item{\dots}{passthrough parameters to
+  \code{\link{plot}}.}
+
+  \item{main}{a main title for the plot.}
 }
 \description{
-  Description of CAPM Security Market Line (SML) SML is the
+  Security Market Line (SML) of the CAPM. The SML is a
   represesentation of the CAPM. It illustrates the expected
-  rate of return of an individual secuirty as a function of
+  rate of return of an individual security as a function of
   systematic, non-diversified risk (known as beta).
 }
 

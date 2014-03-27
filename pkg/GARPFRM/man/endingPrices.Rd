@@ -9,13 +9,16 @@
   \code{monteCarlo}}
 }
 \value{
-  vector ending prices library(GARPFRM)
-
-  mc <- monteCarlo(0.05, 0.25, 500, 1, 52, 10) ep <-
-  endingPrices(mc)
+  vector ending prices
 }
 \description{
   Get the ending prices, i.e. terminal values, of a monte
   carlo simulation
+}
+\examples{
+library(GARPFRM)
+
+mc <- monteCarlo(0.05, 0.25, 500, 1, 52, 10)
+ep <- endingPrices(mc)
 }
 

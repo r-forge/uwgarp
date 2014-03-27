@@ -8,7 +8,8 @@
     type = "l", pchAssets = 19, cexAssets = 0.8)
 }
 \arguments{
-  \item{x}{object of class \code{efficient.frontier}}
+  \item{x}{object of class \code{efficient.frontier}
+  created via \code{\link{efficientFrontier}}}
 
   \item{y}{not used}
 
@@ -24,12 +25,14 @@
 
   \item{main}{a main title for the plot}
 
-  \item{xlim}{set the x-axis limit, same as in \code{plot}}
+  \item{xlim}{set the x-axis limit, same as in
+  \code{\link{plot}}}
 
-  \item{ylim}{set the x-axis limit, same as in \code{plot}}
+  \item{ylim}{set the x-axis limit, same as in
+  \code{\link{plot}}}
 
   \item{type}{what type of plot should be drawn, same as in
-  \code{plot}}
+  \code{\link{plot}}}
 
   \item{pchAssets}{plotting character of the assets}
 
@@ -40,5 +43,8 @@
 \description{
   Plot the efficient frontier in return - standard
   deviation space
+}
+\seealso{
+  \code{\link{efficientFrontier}}
 }
 

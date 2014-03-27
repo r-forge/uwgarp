@@ -6,7 +6,7 @@
 }
 \arguments{
   \item{ef}{efficient frontier object created via
-  \code{efficientFrontierTwoAsset}}
+  \code{\link{efficientFrontierTwoAsset}}}
 }
 \description{
   Extract the tangent portfolio from an efficient frontier.
@@ -17,5 +17,8 @@
   Note that the values for the tangent portfolios are an
   approximation and depend on the number of portfolios used
   to create the efficient frontier.
+}
+\seealso{
+  \code{\link{efficientFrontierTwoAsset}}
 }
 
