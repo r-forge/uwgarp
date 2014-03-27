@@ -81,6 +81,7 @@ end(stock.df[,1:4])
 # Count the number of rows: sample size.
 nrow(stock.df)
 @
+
 \subsection{Estimate Excess Returns}
 Estimate excess returns: subtracting off risk-free rate.
 <<ex3>>=
@@ -99,6 +100,7 @@ getStatistics(uv)
 # Plot data with regression line
 plot(uv)
 @
+
 \subsection{CAPM Model: Multiple Asset Analysis}
 Run CAPM regression
 <<ex5>>=
@@ -109,6 +111,7 @@ getStatistics(mlm)
 # Plot data with regression line
 plot(mlm)
 @
+
 \section{Testing CAPM}
 \subsection{Retrieve $\alpha$ \& $\beta$ and Estimate Result Significance}
 Retrieve $\alpha$ \& $\beta$ from CAPM object for one or multiple assets and run hypothesis test.
@@ -136,18 +139,23 @@ chartSML(mlm)
 
 \section{Consumption-Oriented CAPM}
 \subsection{Fitting C-CAPM}
+
 Run C-CAPM regression for CONS (Consumption).
 <<ex8>>=
 # Load FED consumption data: CONS
-data(cons)
-cons <- xts(cons[,2], index(largecap.ts))
-colnames(cons)= c("CONS")
+data(consumption)
 
-capm.cons = CAPM(cons, mrkt)
+# Convert to yearmon index and align consumption and mrkt
+consumption <- xts(consumption, as.yearmon(index(consumption)))
+mrkt <- xts(mrkt, as.yearmon(index(mrkt)))
+consumption <- consumption[index(mrkt)]
+
+capm.cons = CAPM(consumption, mrkt)
 coef(summary(capm.cons))
 
 # Plot data with regression line
 plot(capm.cons)
 @
-NOTE: Specific problems with CCAPM is that it suffers from two puzzles: the equity premium puzzle (EPP) and the risk-free rate puzzle (RFRP). EPP implies that investors are extremely risk averse to explain the existence of a market risk premium. While RFRP stipulates that investors save in TBills despite the low rate of return.
+
+NOTE: Specific problems with C-CAPM is that it suffers from two puzzles: the equity premium puzzle (EPP) and the risk-free rate puzzle (RFRP). EPP implies that investors are extremely risk averse to explain the existence of a market risk premium. While RFRP stipulates that investors save in TBills despite the low rate of return.
 \end{document}
