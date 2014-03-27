@@ -6,6 +6,7 @@
 \begin{document}
 
 <<echo=FALSE>>=
+library(knitr)
 opts_chunk$set(cache=TRUE, tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
 @
 
@@ -317,13 +318,6 @@ portfVaR.ewmaCov <- sqrt(t(weights) %*% ewmaCov %*% weights) * qnorm(0.05)
 
 Returning our focus back to the return aggregation approach. We can also compute the portfolio VaR using methods we covered earlier when computing the VaR estimate of Conoco Phillips (COP) returns.
 <<>>=
-# GARCH Model
-garchModel <- uvGARCH(R.portfolio, armaOrder=c(0,0))
-garchForecast <- forecast(garchModel, 1)
-
-# VaR using GARCH Model
-portfVaR.GARCH <- fitted(garchForecast) + sigma(garchForecast) * qnorm(0.05)
-
 # Portfolio VaR estimate with EWMA model
 ewmaModel <- EWMA(R.portfolio, lambda=NULL, initialWindow=10, n, type)
 # One period ahead forecast
@@ -337,11 +331,9 @@ portfVaR.EWMA <- mean(R.portfolio) + as.numeric(ewmaVolForecast) * qnorm(0.05)
 Here we compare each portfolio VaR estimate.
 <<>>=
 dfVaR <- t(data.frame(portfVaR.HS, portfVaR.BootHS[1,], portfVaR.normal, 
-                    portfVaR.cov, portfVaR.ewmaCov, portfVaR.GARCH, 
-                    portfVaR.EWMA))
+                    portfVaR.cov, portfVaR.ewmaCov, portfVaR.EWMA))
 rownames(dfVaR) <- c("portfVaR.HS", "portfVaR.BootHS", "portfVaR.normal", 
-                    "portfVaR.cov", "portfVaR.ewmaCov", "portfVaR.GARCH", 
-                    "portfVaR.EWMA")
+                    "portfVaR.cov", "portfVaR.ewmaCov", "portfVaR.EWMA")
 dfVaR
 @
 

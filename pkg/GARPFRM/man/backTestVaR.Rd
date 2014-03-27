@@ -21,6 +21,8 @@
   \item{bootstrap}{TRUE/FALSE use the bootstrap estimate
   for the VaR calculation, (default FALSE).}
 
+  \item{replications}{number of bootstrap replications.}
+
   \item{bootParallel}{TRUE/FALSE run the bootstrap in
   parallel, (default FALSE).}
 }

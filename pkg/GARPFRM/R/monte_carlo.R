@@ -64,7 +64,7 @@ generateLogMC <- function(mu, sigma, Time=1, steps=52, starting_value=100){
 #' @param mu annualized expected return
 #' @param sigma annualized standard deviation
 #' @param N number of simulations
-#' @param Time length of simulation (in years)
+#' @param time length of simulation (in years)
 #' @param steps number of time steps
 #' @param starting_value asset price starting value
 #' @return matrix of simulated price paths where each column represents a price path
@@ -111,8 +111,11 @@ endingPrices <- function(mc){
 #' 
 #' Plot the kernel density estimate and histogram of the ending prices
 #' from a Monte Carlo simulation.
-#' @param mc monte carlo object created with \code{monteCarlo}
-#' @param \dots additional arguments passed to \code{hist}
+#' @param mc monte carlo object created with \code{monteCarlo}.
+#' @param \dots additional arguments passed to \code{hist}.
+#' @param main a main title for the plot.
+#' @param xlab x-axis label, same as in \code{\link{plot}}.
+#' @param ylab y-axis label, same as in \code{\link{plot}}.
 #' @examples
 #' library(GARPFRM)
 #' 

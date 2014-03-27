@@ -2,7 +2,7 @@
 \alias{plot.capm_uv}
 \title{Plotting method for CAPM}
 \usage{
-  plot.capm_uv(x, y, ..., main = "CAPM")
+  \method{plot}{capm_uv} (x, y, ..., main = "CAPM")
 }
 \arguments{
   \item{x}{a capm object created by \code{\link{CAPM}}.}
@@ -16,5 +16,8 @@
 }
 \description{
   Plot a fitted CAPM object
+}
+\author{
+  Thomas Fillebeen
 }
 

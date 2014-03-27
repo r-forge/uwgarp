@@ -7,6 +7,8 @@
 \arguments{
   \item{object}{a capm object created by
   \code{\link{CAPM}}}
+
+  \item{CI}{confidence level}
 }
 \description{
   Description of CAPM beta/alpha hypothesis test TODO: We

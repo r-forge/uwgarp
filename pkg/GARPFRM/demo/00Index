@@ -1,0 +1,7 @@
+bootstrap demonstrates using bootstrap method to estimate various statistics
+demo_CAPM demonstrate Capital Asset Pricing Model functions
+demo_EWMA_GARCH11 demonstrate exponentially weighted moving average and GARCH models
+EWMA demonstrate exponentially weighted moving average model
+monte_carlo demonstrate monte carlo method to simulate asset price paths
+univariate_GARCH demonstrate fitting a GARCH model to a univariate data set
+backtest_VaR demonstrate Value at Risk backtesting

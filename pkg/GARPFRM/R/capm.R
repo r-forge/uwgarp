@@ -166,7 +166,9 @@ getStatistics.capm_mlm <- function(object){
 #' @param y not used
 #' @param \dots passthrough parameters to \code{\link{plot}}.
 #' @param main a main title for the plot
-#' @export
+#' @author Thomas Fillebeen
+#' @method plot capm_uv
+#' @S3method plot capm_uv
 plot.capm_uv <- function(x, y, ..., main="CAPM"){
   xlab <- colnames(x$x_data)
   ylab <- colnames(x$y_data)
@@ -177,8 +179,8 @@ plot.capm_uv <- function(x, y, ..., main="CAPM"){
   a_tstat = coef(summary(x))[1,2]
   beta = coef(summary(x))[2,1]
   b_tstat = coef(summary(x))[2,2]
-  legend("topleft", legend=c(paste("alpha =", round(alpha,dig=2),"(", round(a_tstat,dig=2),")"),
-                             paste("beta =", round(beta,dig=2),"(", round(b_tstat,dig=2),")")), cex=.8, bty="n")
+  legend("topleft", legend=c(paste("alpha =", round(alpha,digits=2),"(", round(a_tstat,digits=2),")"),
+                             paste("beta =", round(beta,digits=2),"(", round(b_tstat,digits=2),")")), cex=.8, bty="n")
   
 }
 
@@ -190,7 +192,9 @@ plot.capm_uv <- function(x, y, ..., main="CAPM"){
 #' @param y not used
 #' @param \dots passthrough parameters to \code{\link{plot}}.
 #' @param main a main title for the plot
-#' @export
+#' @author Thomas Fillebeen
+#' @method plot capm_mlm
+#' @S3method plot capm_mlm
 plot.capm_mlm <- function(x, y, ..., main="CAPM"){
   if(ncol(x$y_data) > 4) warning("Only first 4 assets will be graphically displayed")
   par(mfrow=c(2,round(ncol(coef(x))/2)))
@@ -234,6 +238,7 @@ chartSML <- function(object, ..., main="Estimated SML"){
 #' Returns a true (reject) or false (fail to reject).
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
+#' @param CI confidence level
 #' @export
 hypTest <- function(object,CI){
   UseMethod("hypTest")

@@ -5,8 +5,7 @@
   getCor(EWMA, assets)
 }
 \arguments{
-  \item{object}{an EWMA object created by
-  \code{\link{EWMA}}}
+  \item{EWMA}{an EWMA object created by \code{\link{EWMA}}}
 
   \item{assets}{character vector or numeric vector. The
   assets can be specified by name or index.}

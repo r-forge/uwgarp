@@ -6,6 +6,7 @@
 \begin{document}
 
 <<echo=FALSE>>=
+library(knitr)
 opts_chunk$set(cache=TRUE, tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
 @
 

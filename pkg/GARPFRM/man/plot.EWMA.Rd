@@ -4,14 +4,14 @@
 \usage{
   \method{plot}{EWMA} (x, y = NULL, ..., assets = c(1, 2),
     legendLoc = NULL, main = "EWMA Estimate",
-    cexLegend = 0.8)
+    legendCex = 0.8)
 }
 \arguments{
-  \item{x}{an EWMA object created via \code{\link{EWMA}}}
+  \item{x}{an EWMA object created via \code{\link{EWMA}}.}
 
-  \item{y}{not used}
+  \item{y}{not used.}
 
-  \item{\dots}{passthrough parameters to \code{plot.xts}}
+  \item{\dots}{passthrough parameters to \code{plot.xts}.}
 
   \item{assets}{character vector or numeric vector of
   assets to extract from the covariance or correlation
@@ -20,9 +20,12 @@
   of a covariance or correlation matrix.}
 
   \item{legendLoc}{location of legend. If NULL, the legend
-  will be omitted from the plot}
+  will be omitted from the plot.}
 
-  \item{main}{main title for the plot}
+  \item{main}{main title for the plot.}
+
+  \item{legendCex}{numerical value giving the amount by
+  which the legend.}
 }
 \description{
   Plot method for EWMA objects.

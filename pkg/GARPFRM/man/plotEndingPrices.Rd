@@ -7,9 +7,15 @@
 }
 \arguments{
   \item{mc}{monte carlo object created with
-  \code{monteCarlo}}
+  \code{monteCarlo}.}
 
-  \item{\dots}{additional arguments passed to \code{hist}}
+  \item{\dots}{additional arguments passed to \code{hist}.}
+
+  \item{main}{a main title for the plot.}
+
+  \item{xlab}{x-axis label, same as in \code{\link{plot}}.}
+
+  \item{ylab}{y-axis label, same as in \code{\link{plot}}.}
 }
 \description{
   Plot the kernel density estimate and histogram of the

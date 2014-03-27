@@ -11,7 +11,7 @@ model0 <- uvGARCH(R, armaOrder=c(0,0))
 
 # The uvGARCH function uses the excellent rugarch package, which has a rich
 # set of functions for analysis of fitted GARCH models. The fitted model can 
-# be extracted with the getFit function. Refer to help("uGARCHfit-class") 
+# be extracted with the getFit function. Refer to help("uGARCHfit-class")
 # for available all methods for the uGARCHfit object that is returned by getFit.
 # Here we can extract the GARCH model specification and fit
 spec <- getSpec(model0)
@@ -34,7 +34,7 @@ head(sigma(fit))
 plot(fit)
 plot(fit, which=1)
 
-# Forecast 10 periods ahead using the standard ARMA(0,0)-GARCH(1,1) model 
+# Forecast 10 periods ahead using the standard ARMA(0,0)-GARCH(1,1) model
 forecast1 <- forecast(model0, nAhead=10)
 forecast1
 plot(forecast1)
@@ -52,27 +52,27 @@ plot(forecast2)
 plot(forecast2, which=2)
 
 # Several distributions are available for the innovations. Distributions include:
-# “norm”: normal distibution
-# “snorm”: skew-normal distribution
-# “std”: student-t distribution
-# “sstd”: skew-student distribution
-# “ged”: generalized error distribution
-# “sged”: skew-generalized error distribution
-# “nig”: normal inverse gaussian distribution
-# “ghyp”: Generalized Hyperbolic distribution
-# “jsu”: Johnson's SU distribution.
+# "norm": normal distibution
+# "snorm": skew-normal distribution
+# "std": student-t distribution
+# "sstd": skew-student distribution
+# "ged": generalized error distribution
+# "sged": skew-generalized error distribution
+# "nig": normal inverse gaussian distribution
+# "ghyp": Generalized Hyperbolic distribution
+# "jsu": Johnson's SU distribution.
 
-# Here we specify and fit the MSFT returns to a standard ARMA(0,0)-GARCH(1,1) 
+# Here we specify and fit the MSFT returns to a standard ARMA(0,0)-GARCH(1,1)
 # model with student-t innovations
 model0.std <- uvGARCH(R, armaOrder=c(0,0), distribution="std")
 
 # The default arguments for uvGARCH are to specify and fit a standard 
-# ARMA(1,1)-GARCH(1,1) model
+# ARMA(1,1)-GARCH(1,1)model
 model11 <- uvGARCH(R)
 
 # In addition to specifyin the model with different ar and ma orders, the 
 # ARCH(q) and GARCH(p) orders can also be specified. Here we fit a standard
-# ARMA(1,1)-GARCH(2,10 model
+# ARMA(1,1)-GARCH(2,1) model
 model21 <- uvGARCH(R, garchOrder=c(2,1))
 getSpec(model21)
 getFit(model21)

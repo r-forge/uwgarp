@@ -45,8 +45,7 @@ PerformanceAnalytics
 xts
 GARP books
 }
-GARP,
-FRM
+
 \keyword{ package }
 \seealso{
 % Optional links to other man pages, e.g.

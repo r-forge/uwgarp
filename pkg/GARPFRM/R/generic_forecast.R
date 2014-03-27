@@ -46,9 +46,6 @@ forecast.uvGARCH <- function(model, nAhead=10, ..., nRoll=0, externalForecasts=N
 #' @param model EWMA model fit via \code{\link{EWMA}}
 #' @param nAhead number of steps ahead to forecast. (nAhead = 1 only supported)
 #' @param \dots additional passthrough parameters
-#' @param nRoll number of rolling forecasts
-#' @param externalForecasts named list of external regressors in the mean and/or
-#' variance equations
 #' @return one period ahead EWMA volatility forecast
 #' @method forecast uvEWMAvol
 #' @S3method forecast uvEWMAvol

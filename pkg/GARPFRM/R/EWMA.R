@@ -569,7 +569,7 @@ print.EWMA <- function(x, ...){
 #' 
 #' Extract the covariance of two assets from an \code{mvEWMAcov} object
 #' 
-#' @param object an EWMA object created by \code{\link{EWMA}}
+#' @param EWMA an EWMA object created by \code{\link{EWMA}}
 #' @param assets character vector or numeric vector. The assets can be 
 #' specified by name or index.
 #' @examples
@@ -655,7 +655,7 @@ getCov.mvEWMAcov <- function(EWMA, assets=c(1,2)){
 #' 
 #' Extract the correlation of two assets from an \code{mvEWMAcor} object
 #' 
-#' @param object an EWMA object created by \code{\link{EWMA}}
+#' @param EWMA an EWMA object created by \code{\link{EWMA}}
 #' @param assets character vector or numeric vector. The assets can be 
 #' specified by name or index.
 #' @examples
@@ -707,16 +707,17 @@ getCor.mvEWMAcor <- function(EWMA, assets=c(1,2)){
 #' 
 #' Plot method for EWMA objects.
 #' 
-#' @param x an EWMA object created via \code{\link{EWMA}}
-#' @param y not used
-#' @param \dots passthrough parameters to \code{plot.xts}
+#' @param x an EWMA object created via \code{\link{EWMA}}.
+#' @param y not used.
+#' @param \dots passthrough parameters to \code{plot.xts}.
 #' @param assets character vector or numeric vector of assets to extract from 
 #' the covariance or correlation matrix. The assets can be specified by name or 
 #' index. This argument is only usd for multivariate EWMA estimates of 
 #' a covariance or correlation matrix.
 #' @param legendLoc location of legend. If NULL, the legend will be omitted 
-#' from the plot
-#' @param main main title for the plot
+#' from the plot.
+#' @param main main title for the plot.
+#' @param legendCex numerical value giving the amount by which the legend.
 #' @examples
 #' # data and parameters for EWMA estimate
 #' data(crsp_weekly)
@@ -751,7 +752,7 @@ getCor.mvEWMAcor <- function(EWMA, assets=c(1,2)){
 #' @author Ross Bennett
 #' @method plot EWMA
 #' @S3method plot EWMA
-plot.EWMA <- function(x, y=NULL, ..., assets=c(1,2), legendLoc=NULL, main="EWMA Estimate", cexLegend=0.8){
+plot.EWMA <- function(x, y=NULL, ..., assets=c(1,2), legendLoc=NULL, main="EWMA Estimate", legendCex=0.8){
   type <- x$model$type
   if(inherits(x, "uvEWMAvol") | inherits(x, "uvEWMAcov") | inherits(x, "uvEWMAcor")){
     # all uvEWMA* objects have same format
@@ -770,6 +771,6 @@ plot.EWMA <- function(x, y=NULL, ..., assets=c(1,2), legendLoc=NULL, main="EWMA 
   plot.xts(x=estValues, ...=..., type="l", ylab=type, main=main)
   if(!is.null(legendLoc)){
     legend(legendLoc, legend=c("EWMA Estimate"), 
-           lty=1, col="black", bty="n", cex=cexLegend)
+           lty=1, col="black", bty="n", cex=legendCex)
   }
 }

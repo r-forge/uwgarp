@@ -12,7 +12,7 @@
 
   \item{N}{number of simulations}
 
-  \item{Time}{length of simulation (in years)}
+  \item{time}{length of simulation (in years)}
 
   \item{steps}{number of time steps}
 

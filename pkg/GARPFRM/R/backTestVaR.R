@@ -69,6 +69,7 @@
 #' @param p confidence level for the VaR estimate.
 #' @param method method for the VaR calculation. Valid choices are "modified", "guassian", "historical", and "kernel"
 #' @param bootstrap TRUE/FALSE use the bootstrap estimate for the VaR calculation, (default FALSE).
+#' @param replications number of bootstrap replications.
 #' @param bootParallel TRUE/FALSE run the bootstrap in parallel, (default FALSE).
 #' @author Ross Bennett
 #' @seealso \code{\link[PerformanceAnalytics]{VaR}}, \code{\link{bootVaR}}
@@ -151,7 +152,7 @@ backtestVaR.GARCH <- function(garch, p=c(0.95, 0.99), nAhead=1, refitEvery=25, w
   # GARCH model VaR Backtesting
   # http://www.unstarched.net/wp-content/uploads/2013/06/an-example-in-rugarch.pdf
   # extract R from the fit object
-  R <- xts(garchModel$fit@model$modeldata$data, garchModel$fit@model$modeldata$index)
+  R <- xts(garch$fit@model$modeldata$data, garch$fit@model$modeldata$index)
   # call ugarchroll
   modelRoll <- ugarchroll(spec=getSpec(garch), data=R, n.ahead=nAhead, 
                           refit.every=refitEvery, refit.window="moving", 

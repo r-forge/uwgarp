@@ -11,11 +11,6 @@
   = 1 only supported)}
 
   \item{\dots}{additional passthrough parameters}
-
-  \item{nRoll}{number of rolling forecasts}
-
-  \item{externalForecasts}{named list of external
-  regressors in the mean and/or variance equations}
 }
 \value{
   one period ahead EWMA volatility forecast
