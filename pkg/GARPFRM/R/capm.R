@@ -30,7 +30,6 @@
 #' 
 #' @param R asset returns
 #' @param Rmkt market returns
-#' @export
 #' @examples
 #' data(crsp.short)
 #' 
@@ -42,6 +41,8 @@
 #'
 #' # Fit the CAPM model
 #' tmp <- CAPM(R=R, Rmkt=MKT)
+#' @author Thomas Fillebeen
+#' @export
 CAPM <- function(R, Rmkt){  
   capm_fit <- lm(R ~ Rmkt)
   capm_fit$x_data <- Rmkt
@@ -62,6 +63,7 @@ CAPM <- function(R, Rmkt){
 #' Extract the computed alphas (intercept) from the fitted CAPM object.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
+#' @author Thomas Fillebeen
 #' @export
 getAlphas <- function(object){
   UseMethod("getAlphas")
@@ -89,6 +91,7 @@ getAlphas.capm_mlm <- function(object){
 #' Extract the computed alpha (intercept) from the CAPM object.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
+#' @author Thomas Fillebeen
 #' @export
 getBetas <- function(object){
   UseMethod("getBetas")
@@ -115,7 +118,25 @@ getBetas.capm_mlm <- function(object){
 #' 
 #' Extract the standard error, t-values, and p-values from the CAPM object.
 #' 
+#' The t-statistic and corresponding two-sided p-value are calculated differently
+#' for the alpha and beta coefficients.
+#' \itemize{
+#'   \item{alpha}{ the t-statistic and corresponding p-value are calculated to
+#'   test if alpha is significantly different from 0.
+#'   \deqn{
+#'     H0: \alpha = 0
+#'   }
+#'   }
+#'   \item{beta}{ the t-statistic and corresponding p-value are calculated to
+#'   test if beta is significantly different from 1.
+#'   \deqn{
+#'     H0: \beta = 1
+#'   }
+#'   }
+#' }
+#' 
 #' @param object a capm object created by \code{\link{CAPM}}.
+#' @author Thomas Fillebeen
 #' @export
 getStatistics <- function(object){
   UseMethod("getStatistics")
@@ -128,6 +149,8 @@ getStatistics.capm_uv <- function(object){
   tmp_sm <- summary.lm(object)
   # Gets t-value, and p-value of model
   result = coef(tmp_sm)[,c(1:4)]
+  # recalculate the tstat for the beta to test if beta is significantly different from 1
+  # (beta - beta0) / se
   tstat = (result[2,1] - 1 )/result[2,2]
   # Two sided t-test
   pvalue= (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2)))
@@ -144,13 +167,15 @@ getStatistics.capm_mlm <- function(object){
   # Multi-Beta CAPM
   x <- coef(summary(object))
   tmp_sm <- do.call(rbind, x)
-  holder = holder<-matrix(0,nrow=1,ncol=ncol(coef(object))*2)
+  holder = matrix(0,nrow=1,ncol=ncol(coef(object))*2)
   n=1
   for (i in 1:ncol(coef(object))){
     holder[,n:(i*2)] = cbind(c(paste("alpha.",colnames(coef(object))[i])) ,c(paste("beta. ",colnames(coef(object))[i])))
     n = i*2 +1
   }
   rownames(tmp_sm) <- c(holder)
+  # recalculate the tstat for the beta to test if beta is significantly different from 1
+  # (beta - beta0) / se
   tstat = (tmp_sm[seq(2,nrow(tmp_sm),2),1] - 1 )/tmp_sm[seq(2,nrow(tmp_sm),2),2]
   #' Two sided t-test
   pvalue = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2)))
@@ -216,6 +241,7 @@ plot.capm_mlm <- function(x, y, ..., main="CAPM"){
 #' @param object a capm object created by \code{\link{CAPM}}.
 #' @param \dots passthrough parameters to \code{\link{plot}}.
 #' @param main a main title for the plot.
+#' @author Thomas Fillebeen
 #' @export
 chartSML <- function(object, ..., main="Estimated SML"){
   if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
@@ -229,28 +255,43 @@ chartSML <- function(object, ..., main="Estimated SML"){
   legend("topleft",1, "Estimated SML",1)                  
 }
 
-# The current CAPM Hypothesis test uses the t-statistic and p-value from the
-# summary.lm() method. This tests if the coefficients are significantly 
-# different from 0. I thought the idea was to write a different hypothesis
-# test that alphas are significantly different from 0 and betas are 
-# significantly different from 1? -RB
 
 #' CAPM Hypothesis Test
 #' 
 #' Test the CAPM coefficients for significance.
 #' 
 #' @details
-#' TODO: We need to clearly define the null hypothesis here.
-#' This test if the coefficients are significantly different from 0. The null
-#' hypothesis is that the coefficients are equal to 0. If the p-value is less
-#' than the specified confidence level, the null hypothesis is rejected meaning
-#' that the coefficients are significantly different from 0. If the p-value is
-#' greater than the specified confidence level, the null hypothesis cannot be
-#' rejected.
+#' This function tests the significance of the coefficients (alpha and beta)
+#' estimated by the CAPM.
+#' 
+#' #' The t-statistic and corresponding two-sided p-value are calculated differently
+#' for the alpha and beta coefficients.
+#' \itemize{
+#'   \item{alpha}{ the t-statistic and corresponding p-value are calculated to
+#'   test if alpha is significantly different from 0.
+#'   \deqn{
+#'     H0: \alpha = 0
+#'   }
+#'   }
+#'   \item{beta}{ the t-statistic and corresponding p-value are calculated to
+#'   test if beta is significantly different from 1.
+#'   \deqn{
+#'     H0: \beta = 1
+#'   }
+#'   }
+#' }
+#' 
+#' If the p-value is less than the specified confidence level, the null 
+#' hypothesis is rejected meaning that the coefficient is significant. If 
+#' the p-value is greater than the specified confidence level, the null 
+#' hypothesis cannot be rejected.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @param CI confidence level
-#' @return TRUE/FALSE if the null hypothesis is rejected
+#' @return TRUE if the null hypothesis is rejected (i.e. the estimated coefficient is significant)
+#' FALSE if the null hypothesis cannot be rejected (i.e. the estimated coefficient is not significant)
+#' @seealso \code{\link{getStatistics}}
+#' @author Thomas Fillebeen
 #' @export
 hypTest <- function(object,CI){
   UseMethod("hypTest")
@@ -258,13 +299,12 @@ hypTest <- function(object,CI){
 
 #' @method hypTest capm_uv
 #' @S3method hypTest capm_uv
-hypTest.capm_uv <- function(object,CI = 0.05){
+hypTest.capm_uv <- function(object, CI = 0.05){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
   tmp_sm = getStatistics(object)
+  # test for alpha p-value < CI
   tmp_A = tmp_sm[1,4] < CI
-  # tstat = (tmp_sm[2,1] - 1 )/tmp_sm[2,2]
-  #' Two sided t-test
-  # tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
+  # test for beta p-value < CI
   tmp_B = tmp_sm[2,4] < CI
   result = list(alpha = tmp_A, beta = tmp_B)
   return(result)
@@ -272,13 +312,12 @@ hypTest.capm_uv <- function(object,CI = 0.05){
 
 #' @method hypTest capm_mlm
 #' @S3method hypTest capm_mlm
-hypTest.capm_mlm <- function(object,CI = 0.05){
+hypTest.capm_mlm <- function(object, CI = 0.05){
   if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   tmp_sm = getStatistics(object)
+  # test for alpha p-value < CI
   tmp_A = tmp_sm[seq(1,nrow(tmp_sm),2),4] < CI
-  # tstat = (tmp_sm[seq(2,nrow(tmp_sm),2),1] - 1 )/tmp_sm[seq(2,nrow(tmp_sm),2),2]
-  #' Two sided t-test
-  # tmp_B = (2*(1 - pt(abs(tstat),df=nrow(object$x_data)-2))) < CI
+  # test for beta p-value < CI
   tmp_B = tmp_sm[seq(2,nrow(tmp_sm),2),4] < CI
   result = list(alpha = tmp_A, beta = tmp_B)  
   return(result)

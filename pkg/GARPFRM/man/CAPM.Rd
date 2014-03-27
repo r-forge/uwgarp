@@ -29,4 +29,7 @@ MKT <- largecap.ts[, "market"] - Rf
 # Fit the CAPM model
 tmp <- CAPM(R=R, Rmkt=MKT)
 }
+\author{
+  Thomas Fillebeen
+}
 

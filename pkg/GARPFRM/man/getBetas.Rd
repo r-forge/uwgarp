@@ -12,4 +12,7 @@
   Extract the computed alpha (intercept) from the CAPM
   object.
 }
+\author{
+  Thomas Fillebeen
+}
 
