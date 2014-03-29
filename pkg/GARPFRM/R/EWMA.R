@@ -96,6 +96,17 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, n=10, type=c("volatility", "c
     class <- "uvEWMAvol"
   }
   
+  # recursive EWMA call for multivariate data set
+  # note that we are returning here
+  if(((data == "mv") | (data == "bv")) & (type == "volatility")){
+    out <- vector("list", ncol(R))
+    for(i in 1:length(out)){
+      out[[i]] <- EWMA(R=R[,i], lambda=lambda, initialWindow=initialWindow, n=n, type=type)
+    }
+    class(out) <- c("mvEWMAvol", "EWMA")
+    return(out)
+  }
+  
   # bivariate covariance estimate
   if((data == "bv") & (type == "covariance")){
     if(is.null(lambda)){
@@ -148,7 +159,7 @@ EWMA <- function(R, lambda=0.94, initialWindow=10, n=10, type=c("volatility", "c
   out <- structure(list(estimate=est,
                         model=parameters,
                         data=data), 
-                   class=c("EWMA", class))
+                   class=c(class, "EWMA"))
   return(out)
 }
 
@@ -563,6 +574,15 @@ print.EWMA <- function(x, ...){
   }
 }
 
+#' @method print mvEWMAvol
+#' @S3method print mvEWMAvol
+print.mvEWMAvol <- function(x, ...){
+  for(i in 1:length(x)){
+    print(x[[i]], ...=...)
+    cat("\n*****\n")
+  }
+}
+
 # extract the covariance between two assets from an mvEWMAcov object
 
 #' EWMA Covariance
@@ -766,11 +786,51 @@ plot.EWMA <- function(x, y=NULL, ..., assets=c(1,2), legendLoc=NULL, main="EWMA 
     if(inherits(x, "mvEWMAcor")){
       estValues <- getCor(x, assets)
     }
+  } else if(inherits(x, "mvEWMAvol")){
+    estValues <- getEstimate(x)
   }
-  # plot the values
-  plot.xts(x=estValues, ...=..., type="l", ylab=type, main=main)
-  if(!is.null(legendLoc)){
-    legend(legendLoc, legend=c("EWMA Estimate"), 
-           lty=1, col="black", bty="n", cex=legendCex)
+  if(inherits(x, "mvEWMAvol")){
+    cnames <- colnames(estValues)
+    ylim <- range(na.omit(estValues))
+    plot.xts(estValues[,1], ...=..., ylim=ylim, type="n", ylab="volatility", main=main)
+    for(i in 1:ncol(estValues)){
+      lines(estValues[,i], col=i)
+    }
+    if(!is.null(legendLoc)){
+      legend(legendLoc, legend=cnames, 
+             lty=rep(1, ncol(estValues)), col=1:ncol(estValues), bty="n", cex=legendCex)
+    }
+  } else {
+    # plot the values
+    plot.xts(x=estValues, ...=..., type="l", ylab=type, main=main)
+    if(!is.null(legendLoc)){
+      legend(legendLoc, legend=c("EWMA Estimate"), 
+             lty=1, col="black", bty="n", cex=legendCex)
+    }
   }
+}
+
+#' Get Estimated Values
+#' 
+#' Get the estimated values from the model
+#' 
+#' @param object fitted model (currently only EWMA)
+#' @param /dots passthrough parameters (not currently used)
+#' @return model estimate
+#' @author Ross Bennett
+#' @export
+getEstimate <- function(model, ...){
+  UseMethod("getEstimate")
+}
+
+#' @method getEstimate EWMA
+#' @S3method getEstimate EWMA
+getEstimate.EWMA <- function(object, ...){
+  object$estimate
+}
+
+#' @method getEstimate mvEWMAvol
+#' @S3method getEstimate mvEWMAvol
+getEstimate.mvEWMAvol <- function(object, ...){
+  do.call(cbind, lapply(object, FUN=function(x) x$estimate))
 }

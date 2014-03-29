@@ -35,4 +35,8 @@ legend("topright", legend=c("returns", "Historical VaR (0.05)",
                             "Boot Historical VaR (0.05)"), 
        lty=rep(1,3), col=c("black", "blue", "red"), bty="n", cex=0.75)
 
+# Backtest GARCH Model VaR
+garchModel <- uvGARCH(R[, "MSFT"], armaOrder=c(0,0))
+btVaR.GARCH <- backtestVaR.GARCH(garchModel, p=0.95, refitEvery=5, window=100)
+btVaR.GARCH
 
