@@ -14,7 +14,6 @@
 
 \makeatletter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
-% \VignetteIndexEntry{An Introduction to knitr}
 % \VignetteEngine{knitr::knitr}
 
 \makeatother
@@ -71,7 +70,7 @@ and oanda
 The following code chunk demonstrates how to download the S\&P 500
 index data from Yahoo Finance, the default data source.
 
-<<results='hide',fig.width=4, fig.height=3>>=
+<<fig.width=4, fig.height=3>>=
 getSymbols('^GSPC')
 chart_Series(GSPC)
 @
@@ -91,7 +90,7 @@ getSymbols('DGS3MO',src='FRED')
 plot(DGS3MO,main="3-Month Treasury Constant Maturity Rate",cex.main=0.75)
 @
 
-\bibliographystyle{jss}
-\bibliography{DataAccess}
+%\bibliographystyle{jss}
+%\bibliography{DataAccess}
 
 \end{document}

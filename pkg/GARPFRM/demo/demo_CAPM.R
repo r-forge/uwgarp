@@ -1,4 +1,4 @@
-library(PerformanceAnalytics)
+library(GARPFRM)
 data(crsp.short)
 R <- largecap.ts[, 1:4]
 

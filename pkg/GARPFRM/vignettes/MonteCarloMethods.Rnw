@@ -166,7 +166,7 @@ nAhead <- 5
 S.p <- 25
 
 # Using a for loop
-bootS <- vector("numeric", h)
+bootS <- vector("numeric", nAhead)
 for(i in 1:nAhead){
   bootS[i] <- S.p * (1 + sample(R.MSFT, 1, TRUE))
   S.p <- bootS[i]
@@ -245,27 +245,27 @@ To improve speed and performance, we can run the bootstrap in parallel. We lever
 # Register multicore parallel backend with 3 cores
 # Note that this example does not work on Windows
 # Windows users should use doSNOW
-library(doMC)
-registerDoMC(3)
+# library(doMC)
+# registerDoMC(3)
 
 # Estimate VaR via bootstrap
-bootVaR(R[,1], p=0.9, method="historical", replications=1000, parallel=TRUE)
+# bootVaR(R[,1], p=0.9, method="historical", replications=1000, parallel=TRUE)
 
 
 # Benchmark the performance of running the bootstrap in parallel
 # Bootstrap VaR with parallel=TRUE
-bootPar <- function(){
-  bootVaR(R[,1], p=0.9, method="historical", replications=5000, parallel=TRUE)
-}
+# bootPar <- function(){
+#   bootVaR(R[,1], p=0.9, method="historical", replications=5000, parallel=TRUE)
+# }
 
 # Bootstrap VaR with parallel=FALSE
-bootSeq <- function(){
-  bootVaR(R[,1], p=0.9, method="historical", replications=5000, parallel=FALSE)
-}
+# bootSeq <- function(){
+#   bootVaR(R[,1], p=0.9, method="historical", replications=5000, parallel=FALSE)
+# }
 
 # Benchmark these functions
-library(rbenchmark)
-benchmark(bootPar(), bootSeq(), replications=1)[,1:4]
+# library(rbenchmark)
+# benchmark(bootPar(), bootSeq(), replications=1)[,1:4]
 @
 
 

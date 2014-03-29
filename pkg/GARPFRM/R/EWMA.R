@@ -804,7 +804,7 @@ plot.EWMA <- function(x, y=NULL, ..., assets=c(1,2), legendLoc=NULL, main="EWMA 
     # plot the values
     plot.xts(x=estValues, ...=..., type="l", ylab=type, main=main)
     if(!is.null(legendLoc)){
-      legend(legendLoc, legend=c("EWMA Estimate"), 
+      legend(legendLoc, legend=colnames(estValues), 
              lty=1, col="black", bty="n", cex=legendCex)
     }
   }
