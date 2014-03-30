@@ -2,7 +2,7 @@
 \alias{bootES}
 \title{Bootstrap Expected Shortfall}
 \usage{
-  bootES(R, ..., replications = 1000, parallel = FALSE)
+bootES(R, ..., replications = 1000, parallel = FALSE)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -16,8 +16,8 @@
   bootstrap in parallel.}
 }
 \description{
-  Bootstrap the Expected Shortfall (ES) of an xts object or
-  matrix of asset returns
+Bootstrap the Expected Shortfall (ES) of an xts object or
+matrix of asset returns
 }
 \examples{
 data(crsp_weekly)
@@ -27,9 +27,9 @@ bootVaR(R[,1], p=0.9, method="gaussian")
 bootVaR(R, p=0.9, method="historical", invert=FALSE)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link[PerformanceAnalytics]{ES}}
+\code{\link[PerformanceAnalytics]{ES}}
 }
 

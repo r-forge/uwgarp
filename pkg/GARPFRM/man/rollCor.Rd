@@ -2,7 +2,7 @@
 \alias{rollCor}
 \title{Rolling Correlation Estimate}
 \usage{
-  rollCor(R, width)
+rollCor(R, width)
 }
 \arguments{
   \item{R}{xts or zoo object of asset returns}
@@ -10,8 +10,8 @@
   \item{width}{width of rolling window}
 }
 \description{
-  This function calculates the correlation estimate between
-  the returns of a pair of assets over a rolling window.
+This function calculates the correlation estimate between
+the returns of a pair of assets over a rolling window.
 }
 \examples{
 data(crsp_weekly)
@@ -19,9 +19,9 @@ R <- largecap_weekly[,1:4]
 tail(rollCor(R, 10))
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link{cor}}
+\code{\link{cor}}
 }
 

@@ -2,8 +2,8 @@
 \alias{EWMA}
 \title{EWMA Model}
 \usage{
-  EWMA(R, lambda = 0.94, initialWindow = 10, n = 10,
-    type = c("volatility", "covariance", "correlation"))
+EWMA(R, lambda = 0.94, initialWindow = 10, n = 10,
+  type = c("volatility", "covariance", "correlation"))
 }
 \arguments{
   \item{R}{xts object of asset returns}
@@ -23,21 +23,21 @@
   correlation.}
 }
 \value{
-  an EWMA object with the following elements \itemize{
-  \item \code{estimate} EWMA model estimated statistic
-  \item \code{model} list with model parameters \item
-  \code{data} list with original returns data and realized
-  statistic if applicable }
+an EWMA object with the following elements \itemize{ \item
+\code{estimate} EWMA model estimated statistic \item
+\code{model} list with model parameters \item \code{data}
+list with original returns data and realized statistic if
+applicable }
 }
 \description{
-  EWMA model to estimate volatility, covariance, and
-  correlation
+EWMA model to estimate volatility, covariance, and
+correlation
 }
 \details{
-  If lambda=NULL, the lambda value can be estimated for
-  univariate estimates of volatility, covariance, and
-  correlation by minimizing the mean squared error between
-  the estimated value and realized value.
+If lambda=NULL, the lambda value can be estimated for
+univariate estimates of volatility, covariance, and
+correlation by minimizing the mean squared error between
+the estimated value and realized value.
 }
 \examples{
 # data and parameters for EWMA estimate
@@ -78,6 +78,6 @@ cor_mv <- EWMA(mvR, lambda, initialWindow, type="correlation")
 cor_mv
 }
 \author{
-  Ross Bennett and Thomas Fillebeen
+Ross Bennett and Thomas Fillebeen
 }
 

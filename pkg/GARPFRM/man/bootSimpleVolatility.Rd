@@ -2,8 +2,7 @@
 \alias{bootSimpleVolatility}
 \title{Bootstrap Simple Volatility}
 \usage{
-  bootSimpleVolatility(R, ..., replications = 1000,
-    parallel = FALSE)
+bootSimpleVolatility(R, ..., replications = 1000, parallel = FALSE)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -17,8 +16,8 @@
   bootstrap in parallel.}
 }
 \description{
-  Bootstrap the simple volatility of an xts object or
-  matrix of asset returns
+Bootstrap the simple volatility of an xts object or matrix
+of asset returns
 }
 \examples{
 data(crsp_weekly)
@@ -27,9 +26,9 @@ bootSimpleVolatility(R[,1])
 bootSimpleVolatility(R)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link{simpleVolatility}}
+\code{\link{simpleVolatility}}
 }
 

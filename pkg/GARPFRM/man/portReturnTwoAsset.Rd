@@ -2,7 +2,7 @@
 \alias{portReturnTwoAsset}
 \title{Portfolio Return for a Portfolio of Two Assets}
 \usage{
-  portReturnTwoAsset(R1, R2, X1)
+portReturnTwoAsset(R1, R2, X1)
 }
 \arguments{
   \item{R1}{expected return for asset 1}
@@ -12,15 +12,15 @@
   \item{X1}{fraction of portfolio invested in asset 1}
 }
 \value{
-  portfolio expected return
+portfolio expected return
 }
 \description{
-  Calculate the portfolio return for a portfolio of two
-  assets
+Calculate the portfolio return for a portfolio of two
+assets
 }
 \details{
-  This is a specialized function to calculate the return of
-  a portfolio of two assets following the equations
-  presented in Chapter 3: Delineating Efficient Portfolios.
+This is a specialized function to calculate the return of a
+portfolio of two assets following the equations presented
+in Chapter 3: Delineating Efficient Portfolios.
 }
 

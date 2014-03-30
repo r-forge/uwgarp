@@ -2,7 +2,7 @@
 \alias{portSDTwoAsset}
 \title{Portfolio Standard Deviation for a Portfolio of Two Assets}
 \usage{
-  portSDTwoAsset(R1, R2, X1, sigma1, sigma2, rho)
+portSDTwoAsset(R1, R2, X1, sigma1, sigma2, rho)
 }
 \arguments{
   \item{R1}{expected return for asset 1}
@@ -19,16 +19,16 @@
   asset 2}
 }
 \value{
-  portfolio expected return
+portfolio expected return
 }
 \description{
-  Calculate the standard deviation for a portfolio of two
-  assets
+Calculate the standard deviation for a portfolio of two
+assets
 }
 \details{
-  This is a specialized function to calculate the standard
-  deviation of a portfolio of two assets following the
-  equations presented in Chapter 3: Delineating Efficient
-  Portfolios.
+This is a specialized function to calculate the standard
+deviation of a portfolio of two assets following the
+equations presented in Chapter 3: Delineating Efficient
+Portfolios.
 }
 

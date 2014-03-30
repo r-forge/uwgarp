@@ -2,7 +2,7 @@
 \alias{chartSML}
 \title{CAPM SML}
 \usage{
-  chartSML(object, ..., main = "Estimated SML")
+chartSML(object, ..., main = "Estimated SML")
 }
 \arguments{
   \item{object}{a capm object created by
@@ -14,12 +14,12 @@
   \item{main}{a main title for the plot.}
 }
 \description{
-  Security Market Line (SML) of the CAPM. The SML is a
-  represesentation of the CAPM. It illustrates the expected
-  rate of return of an individual security as a function of
-  systematic, non-diversified risk (known as beta).
+Security Market Line (SML) of the CAPM. The SML is a
+represesentation of the CAPM. It illustrates the expected
+rate of return of an individual security as a function of
+systematic, non-diversified risk (known as beta).
 }
 \author{
-  Thomas Fillebeen
+Thomas Fillebeen
 }
 

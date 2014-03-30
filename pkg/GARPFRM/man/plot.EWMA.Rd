@@ -2,9 +2,8 @@
 \alias{plot.EWMA}
 \title{Plot EWMA Model Estimates}
 \usage{
-  \method{plot}{EWMA} (x, y = NULL, ..., assets = c(1, 2),
-    legendLoc = NULL, main = "EWMA Estimate",
-    legendCex = 0.8)
+\method{plot}{EWMA}(x, y = NULL, ..., assets = c(1, 2), legendLoc = NULL,
+  main = "EWMA Estimate", legendCex = 0.8)
 }
 \arguments{
   \item{x}{an EWMA object created via \code{\link{EWMA}}.}
@@ -28,7 +27,7 @@
   which the legend.}
 }
 \description{
-  Plot method for EWMA objects.
+Plot method for EWMA objects.
 }
 \examples{
 # data and parameters for EWMA estimate
@@ -63,6 +62,6 @@ plot(cor_mv, assets=c("ORCL", "EMC"))
 plot(cor_mv, assets=c(1, 4))
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 

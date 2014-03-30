@@ -2,23 +2,22 @@
 \alias{simpleVolatility}
 \title{Simple Volatility}
 \usage{
-  simpleVolatility(R)
+simpleVolatility(R)
 }
 \arguments{
   \item{R}{xts or zoo object of asset returns}
 }
 \description{
-  This function calculates the volatility of asset returns
-  using a simplified equation.
+This function calculates the volatility of asset returns
+using a simplified equation.
 }
 \details{
-  This function is different from \code{sd} in two ways.
-  \itemize{ \item \code{simpleVolatility} uses a
-  denominator of \code{n}.  \item \code{simpleVolatility}
-  assumes the mean to be zero. } The simple volatility of x
-  is defined as
+This function is different from \code{sd} in two ways.
+\itemize{ \item \code{simpleVolatility} uses a denominator
+of \code{n}.  \item \code{simpleVolatility} assumes the
+mean to be zero. } The simple volatility of x is defined as
 
-  \deqn{ \sigma = \sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2} }
+\deqn{ \sigma = \sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2} }
 }
 \examples{
 data(crsp_weekly)
@@ -27,9 +26,9 @@ simpleVolatility(R[,1])
 simpleVolatility(R)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link{sd}}
+\code{\link{sd}}
 }
 

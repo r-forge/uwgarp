@@ -2,25 +2,25 @@
 # Description for CAPM
 # @param r risk-free rate
 # @param mkrt market return
-# @return the function returns tstat upon default & pvalue when specified
+# @return the function returns tstat upon default & pvalue when spesignificanceLevelfied
 # @export
 # capm.tstats = function(r,mkrt,type = FALSE) {
-#   # Fiting CAPM and retrieve alpha specific tstats or pvalues
+#   # Fiting CAPM and retrieve alpha spesignificanceLevelfic tstats or pvalues
 #   capm.fit = lm(r~mkrt)    
 #   # Extract summary info
 #   capm.summary = summary(capm.fit) 
 #   if(is.null(type) | type=="pvalue"){
-#     # Retrieve p-value if specified
+#     # Retrieve p-value if spesignificanceLevelfied
 #     p.value = coef(capm.summary)[1,4]  
 #     p.value
 #   }else{
-#     # Otherwise retrieve t-stat if specified or on default
+#     # Otherwise retrieve t-stat if spesignificanceLevelfied or on default
 #     t.stat = coef(capm.summary)[1,3]  
 #     t.stat
 #   }
 # }
 
-#' Capital Asset Pricing Model
+#' Capital Asset PrisignificanceLevelng Model
 #' 
 #' TODO: Need a better description of the CAPM
 #' 
@@ -119,7 +119,7 @@ getBetas.capm_mlm <- function(object){
 #' Extract the standard error, t-values, and p-values from the CAPM object.
 #' 
 #' The t-statistic and corresponding two-sided p-value are calculated differently
-#' for the alpha and beta coefficients.
+#' for the alpha and beta coeffisignificanceLevelents.
 #' \itemize{
 #'   \item{alpha}{ the t-statistic and corresponding p-value are calculated to
 #'   test if alpha is significantly different from 0.
@@ -252,20 +252,20 @@ chartSML <- function(object, ..., main="Estimated SML"){
   # Plot Fitted SML
   plot(betas,mu.hat,main=main, ...=...)
   abline(sml.fit)
-  legend("topleft",1, "Estimated SML",1)                  
+  # legend("topleft",1, "Estimated SML",1)                  
 }
 
 
 #' CAPM Hypothesis Test
 #' 
-#' Test the CAPM coefficients for significance.
+#' Test the CAPM coeffisignificanceLevelents for significance.
 #' 
 #' @details
-#' This function tests the significance of the coefficients (alpha and beta)
+#' This function tests the significance of the coeffisignificanceLevelents (alpha and beta)
 #' estimated by the CAPM.
 #' 
 #' #' The t-statistic and corresponding two-sided p-value are calculated differently
-#' for the alpha and beta coefficients.
+#' for the alpha and beta coeffisignificanceLevelents.
 #' \itemize{
 #'   \item{alpha}{ the t-statistic and corresponding p-value are calculated to
 #'   test if alpha is significantly different from 0.
@@ -281,44 +281,44 @@ chartSML <- function(object, ..., main="Estimated SML"){
 #'   }
 #' }
 #' 
-#' If the p-value is less than the specified confidence level, the null 
-#' hypothesis is rejected meaning that the coefficient is significant. If 
-#' the p-value is greater than the specified confidence level, the null 
+#' If the p-value is less than the spesignificanceLevelfied confidence level, the null 
+#' hypothesis is rejected meaning that the coeffisignificanceLevelent is significant. If 
+#' the p-value is greater than the spesignificanceLevelfied confidence level, the null 
 #' hypothesis cannot be rejected.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
-#' @param CI confidence level
-#' @return TRUE if the null hypothesis is rejected (i.e. the estimated coefficient is significant)
-#' FALSE if the null hypothesis cannot be rejected (i.e. the estimated coefficient is not significant)
+#' @param significanceLevel confidence level
+#' @return TRUE if the null hypothesis is rejected (i.e. the estimated coeffisignificanceLevelent is significant)
+#' FALSE if the null hypothesis cannot be rejected (i.e. the estimated coeffisignificanceLevelent is not significant)
 #' @seealso \code{\link{getStatistics}}
 #' @author Thomas Fillebeen
 #' @export
-hypTest <- function(object,CI){
+hypTest <- function(object,significanceLevel){
   UseMethod("hypTest")
 }
 
 #' @method hypTest capm_uv
 #' @S3method hypTest capm_uv
-hypTest.capm_uv <- function(object, CI = 0.05){
+hypTest.capm_uv <- function(object, significanceLevel = 0.05){
   if(!inherits(object, "capm_uv")) stop("object must be of class capm_uv")
   tmp_sm = getStatistics(object)
-  # test for alpha p-value < CI
-  tmp_A = tmp_sm[1,4] < CI
-  # test for beta p-value < CI
-  tmp_B = tmp_sm[2,4] < CI
+  # test for alpha p-value < significanceLevel
+  tmp_A = tmp_sm[1,4] < significanceLevel
+  # test for beta p-value < significanceLevel
+  tmp_B = tmp_sm[2,4] < significanceLevel
   result = list(alpha = tmp_A, beta = tmp_B)
   return(result)
 }
 
 #' @method hypTest capm_mlm
 #' @S3method hypTest capm_mlm
-hypTest.capm_mlm <- function(object, CI = 0.05){
+hypTest.capm_mlm <- function(object, significanceLevel = 0.05){
   if(!inherits(object, "capm_mlm")) stop("object must be of class capm_mlm")
   tmp_sm = getStatistics(object)
-  # test for alpha p-value < CI
-  tmp_A = tmp_sm[seq(1,nrow(tmp_sm),2),4] < CI
-  # test for beta p-value < CI
-  tmp_B = tmp_sm[seq(2,nrow(tmp_sm),2),4] < CI
+  # test for alpha p-value < significanceLevel
+  tmp_A = tmp_sm[seq(1,nrow(tmp_sm),2),4] < significanceLevel
+  # test for beta p-value < significanceLevel
+  tmp_B = tmp_sm[seq(2,nrow(tmp_sm),2),4] < significanceLevel
   result = list(alpha = tmp_A, beta = tmp_B)  
   return(result)
 }

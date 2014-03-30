@@ -2,7 +2,7 @@
 \alias{realizedVol}
 \title{Realized Volatility}
 \usage{
-  realizedVol(R, n)
+realizedVol(R, n)
 }
 \arguments{
   \item{R}{xts object of asset returns}
@@ -11,14 +11,14 @@
   volatility}
 }
 \value{
-  xts object of realized volatility
+xts object of realized volatility
 }
 \description{
-  Calculate realized volatility
+Calculate realized volatility
 }
 \details{
-  Realized volatility is defined as the standard deviation
-  of using the previous \code{n} periods.
+Realized volatility is defined as the standard deviation of
+using the previous \code{n} periods.
 }
 \examples{
 data(crsp_weekly)
@@ -28,6 +28,6 @@ realizedVolatility <- realizedVol(R[,1], 10)
 head(realizedVolatility)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 

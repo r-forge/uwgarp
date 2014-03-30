@@ -2,7 +2,7 @@
 \alias{estimateLambdaVol}
 \title{Estimated Lambda}
 \usage{
-  estimateLambdaVol(R, initialWindow = 10, n = 10)
+estimateLambdaVol(R, initialWindow = 10, n = 10)
 }
 \arguments{
   \item{R}{xts object of asset returns}
@@ -14,12 +14,12 @@
   volatility}
 }
 \description{
-  Estimate lambda for EWMA volatility estimate
+Estimate lambda for EWMA volatility estimate
 }
 \details{
-  The optimal value for lambda is calcualted by minimizing
-  the mean squared error between the estimated volatility
-  and realized volatility.
+The optimal value for lambda is calcualted by minimizing
+the mean squared error between the estimated volatility and
+realized volatility.
 }
 \examples{
 data(crsp_weekly)
@@ -28,6 +28,6 @@ initialWindow <- 150
 lambda <- estimateLambdaVol(R, initialWindow, n=10)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 

@@ -2,7 +2,7 @@
 \alias{bootMean}
 \title{Bootstrap Mean}
 \usage{
-  bootMean(R, ..., replications = 1000, parallel = FALSE)
+bootMean(R, ..., replications = 1000, parallel = FALSE)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -16,8 +16,8 @@
   bootstrap in parallel.}
 }
 \description{
-  Bootstrap the mean of an xts object or matrix of asset
-  returns
+Bootstrap the mean of an xts object or matrix of asset
+returns
 }
 \examples{
 data(crsp_weekly)
@@ -26,9 +26,9 @@ bootMean(R[,1])
 bootMean(R)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link[base]{mean}}
+\code{\link[base]{mean}}
 }
 
