@@ -46,7 +46,7 @@ This vignette focuses on computing the following performance measures:
 \subsection{Loading the Package and Preparing Data}
 Here we load the \verb"GARPFRM" package \citep{GARPFRM} and set up the data. For our portfolio, we will construct an equal weight portfolio of the first 10 assets in \code{largecap.ts}. We will consider the market returns in the dataset as our benchmark portfolio for all examples unless otherwise noted.
 <<ex2>>=
-# Load the GARPFRM package and the CAPM dataset.
+# Load the GARPFRM package and the CRSP dataset.
 suppressPackageStartupMessages(library(GARPFRM))
 data(crsp.short)
 
