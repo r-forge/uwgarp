@@ -7,6 +7,10 @@
 \usepackage[round]{natbib}
 \bibliographystyle{abbrvnat}
 
+%\VignetteIndexEntry{Monte Carlo Methods}
+%\VignetteDepends{GARPFRM}
+%\VignettePackage{GARPFRM}
+
 \begin{document}
 
 <<echo=FALSE>>=

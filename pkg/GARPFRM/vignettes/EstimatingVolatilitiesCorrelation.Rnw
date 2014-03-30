@@ -7,6 +7,10 @@
 \usepackage[round]{natbib}
 \bibliographystyle{abbrvnat}
 
+%\VignetteIndexEntry{Estimating Volatility and Correlation}
+%\VignetteDepends{GARPFRM}
+%\VignettePackage{GARPFRM}
+
 \begin{document}
 
 <<echo=FALSE>>=

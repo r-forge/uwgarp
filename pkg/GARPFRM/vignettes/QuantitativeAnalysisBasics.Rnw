@@ -4,6 +4,10 @@
 \usepackage{Rd}
 \usepackage{verbatim}
 
+%\VignetteIndexEntry{Quantitative Analysis Basics}
+%\VignetteDepends{GARPFRM}
+%\VignettePackage{GARPFRM}
+
 \usepackage[round]{natbib}
 \bibliographystyle{abbrvnat}
 

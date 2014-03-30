@@ -7,6 +7,10 @@
 \usepackage[round]{natbib}
 \bibliographystyle{abbrvnat}
 
+%\VignetteIndexEntry{Delineating Efficient Portfolios}
+%\VignetteDepends{GARPFRM}
+%\VignettePackage{GARPFRM}
+
 \begin{document}
 
 <<echo=FALSE>>=

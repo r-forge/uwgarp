@@ -3,6 +3,10 @@
 \usepackage{amsmath}
 \usepackage{Rd}
 
+%\VignetteIndexEntry{Quantifying Volatility in VaR Models}
+%\VignetteDepends{GARPFRM}
+%\VignettePackage{GARPFRM}
+
 \begin{document}
 
 <<echo=FALSE>>=

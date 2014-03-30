@@ -15,6 +15,9 @@
 \makeatletter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 % \VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Data Access Basics}
+%\VignetteDepends{GARPFRM}
+%\VignettePackage{GARPFRM}
 
 \makeatother
 
