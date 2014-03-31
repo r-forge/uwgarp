@@ -91,7 +91,7 @@ where:
 \begin{description}
   \item[$R_{i,t}$] is the return on the capital asset
   \item[$R_f$] is the risk-free rate of interest (e.g. government treasuries)
-  \item[$\alpha_i$] is the sensitivity of the excess asset returns to the excess market returns
+  \item[$\alpha_i$] is the intercept of the security characteristics line
   \item[$\beta_i$] is the sensitivity of the excess asset returns to the excess market returns
   \item[$R_{M,t}$] is the return of the market
   \item[$\epsilon_{i,t}$] is the error term of the regression
