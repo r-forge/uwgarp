@@ -2,25 +2,25 @@
 # Description for CAPM
 # @param r risk-free rate
 # @param mkrt market return
-# @return the function returns tstat upon default & pvalue when spesignificanceLevelfied
+# @return the function returns tstat upon default & pvalue when specified
 # @export
 # capm.tstats = function(r,mkrt,type = FALSE) {
-#   # Fiting CAPM and retrieve alpha spesignificanceLevelfic tstats or pvalues
+#   # Fiting CAPM and retrieve alpha specific tstats or pvalues
 #   capm.fit = lm(r~mkrt)    
 #   # Extract summary info
 #   capm.summary = summary(capm.fit) 
 #   if(is.null(type) | type=="pvalue"){
-#     # Retrieve p-value if spesignificanceLevelfied
+#     # Retrieve p-value if specified
 #     p.value = coef(capm.summary)[1,4]  
 #     p.value
 #   }else{
-#     # Otherwise retrieve t-stat if spesignificanceLevelfied or on default
+#     # Otherwise retrieve t-stat if specified or on default
 #     t.stat = coef(capm.summary)[1,3]  
 #     t.stat
 #   }
 # }
 
-#' Capital Asset PrisignificanceLevelng Model
+#' Capital Asset Pricing Model
 #' 
 #' TODO: Need a better description of the CAPM
 #' 
@@ -119,7 +119,7 @@ getBetas.capm_mlm <- function(object){
 #' Extract the standard error, t-values, and p-values from the CAPM object.
 #' 
 #' The t-statistic and corresponding two-sided p-value are calculated differently
-#' for the alpha and beta coeffisignificanceLevelents.
+#' for the alpha and beta coefficients.
 #' \itemize{
 #'   \item{alpha}{ the t-statistic and corresponding p-value are calculated to
 #'   test if alpha is significantly different from 0.
@@ -258,14 +258,14 @@ chartSML <- function(object, ..., main="Estimated SML"){
 
 #' CAPM Hypothesis Test
 #' 
-#' Test the CAPM coeffisignificanceLevelents for significance.
+#' Test the CAPM coefficients for significance.
 #' 
 #' @details
-#' This function tests the significance of the coeffisignificanceLevelents (alpha and beta)
+#' This function tests the significance of the coefficients (alpha and beta)
 #' estimated by the CAPM.
 #' 
 #' #' The t-statistic and corresponding two-sided p-value are calculated differently
-#' for the alpha and beta coeffisignificanceLevelents.
+#' for the alpha and beta coefficients
 #' \itemize{
 #'   \item{alpha}{ the t-statistic and corresponding p-value are calculated to
 #'   test if alpha is significantly different from 0.
@@ -281,15 +281,15 @@ chartSML <- function(object, ..., main="Estimated SML"){
 #'   }
 #' }
 #' 
-#' If the p-value is less than the spesignificanceLevelfied confidence level, the null 
-#' hypothesis is rejected meaning that the coeffisignificanceLevelent is significant. If 
-#' the p-value is greater than the spesignificanceLevelfied confidence level, the null 
+#' If the p-value is less than the coefficients confidence level, the null 
+#' hypothesis is rejected meaning that the coefficients is significant. If 
+#' the p-value is greater than the specified confidence level, the null 
 #' hypothesis cannot be rejected.
 #' 
 #' @param object a capm object created by \code{\link{CAPM}}
 #' @param significanceLevel confidence level
-#' @return TRUE if the null hypothesis is rejected (i.e. the estimated coeffisignificanceLevelent is significant)
-#' FALSE if the null hypothesis cannot be rejected (i.e. the estimated coeffisignificanceLevelent is not significant)
+#' @return TRUE if the null hypothesis is rejected (i.e. the estimated coefficient is significant)
+#' FALSE if the null hypothesis cannot be rejected (i.e. the estimated coefficient is not significant)
 #' @seealso \code{\link{getStatistics}}
 #' @author Thomas Fillebeen
 #' @export

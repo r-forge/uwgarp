@@ -33,7 +33,7 @@
 \maketitle
 
 \begin{abstract}
-Standard Capital Asset PrisignificanceLevelng Model (CAPM) fitting and testing using CRSP data.
+Standard Capital Asset Pricing Model (CAPM) fitting and testing using CRSP data. Where CAPM describes the relationship between risk and expected return.
 
 CAPM Assumptions
 1. Identical investors who are price takers;
@@ -87,7 +87,16 @@ The CAPM formula: for individual security apply the security market line (SML) a
 \begin{equation}
 R_{i,t} - R_f = \alpha_i + \beta_i (R_{M,t} - R_f) + \epsilon_{i,t}
 \end{equation}
-Test:
+where:
+\begin{description}
+  \item[$R_{i,t}$] is the return on the capital asset
+  \item[$R_f$] is the risk-free rate of interest (e.g. government treasuries)
+  \item[$\alpha_i$] is the sensitivity of the excess asset returns to the excess market returns
+  \item[$\beta_i$] is the sensitivity of the excess asset returns to the excess market returns
+  \item[$R_{M,t}$] is the return of the market
+  \item[$\epsilon_{i,t}$] is the error term of the regression
+\end{description}
+What is tested with the getStatistics method:
 \begin{equation}
 H_0: \alpha = 0 ;
 H_1: \alpha \neq 0
@@ -97,7 +106,7 @@ H_0: \beta = 1 ;
 H_1: \beta \neq 1
 \end{equation}
 
-That is run CAPM regression for AMAT and estimate CAPM with $\alpha=0$ \& $\beta=1$ for asset. The getStatistics method will reflect these alternative hypothesis tests. Finally, when plotting the asset the legend shows the coefficient values and their standard error.
+That is run CAPM regression for AMAT and estimate CAPM with $\alpha=0$ \& $\beta=1$ for asset. The getStatistics method will reflect these alternative hypothesis tests. Finally, when plotting the asset the legend shows the coefficient values and their standard errors.
 <<ex4>>=
 # Univariate CAPM
 uv <- CAPM(exReturns[,1], mrkt)
