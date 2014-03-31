@@ -2,7 +2,7 @@
 \alias{rollCov}
 \title{Rolling Covariance Estimate}
 \usage{
-rollCov(R, width)
+  rollCov(R, width)
 }
 \arguments{
   \item{R}{xts or zoo object of asset returns}
@@ -10,8 +10,8 @@ rollCov(R, width)
   \item{width}{width of rolling window}
 }
 \description{
-This function calculates the covariance estimate between
-the returns of a pair of assets over a rolling window.
+  This function calculates the covariance estimate between
+  the returns of a pair of assets over a rolling window.
 }
 \examples{
 data(crsp_weekly)
@@ -19,9 +19,9 @@ R <- largecap_weekly[,1:4]
 tail(rollCov(R, 10))
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 \seealso{
-\code{\link{cov}}
+  \code{\link{cov}}
 }
 

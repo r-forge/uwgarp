@@ -2,8 +2,9 @@
 \alias{efficientFrontier}
 \title{Efficient Frontier}
 \usage{
-efficientFrontier(R, nPortfolios = 25, minBox = 0, maxBox = 1,
-  groupList = NULL, groupMin = NULL, groupMax = NULL)
+  efficientFrontier(R, nPortfolios = 25, minBox = 0,
+    maxBox = 1, groupList = NULL, groupMin = NULL,
+    groupMax = NULL)
 }
 \arguments{
   \item{R}{xts object of asset returns}
@@ -22,14 +23,14 @@ efficientFrontier(R, nPortfolios = 25, minBox = 0, maxBox = 1,
   \item{groupMax}{group constraint maximum}
 }
 \description{
-Generate portfolios along an efficient frontier.
+  Generate portfolios along an efficient frontier.
 }
 \details{
-This is a wrapper function for code in PortfolioAnalytics
-to initialize a portfolio and create an efficint frontier
-in mean - standard deviation space. Box constraints and
-group constraints are supported for constrained
-optimization to generate portfolios along the efficient
-frontier.
+  This is a wrapper function for code in PortfolioAnalytics
+  to initialize a portfolio and create an efficint frontier
+  in mean - standard deviation space. Box constraints and
+  group constraints are supported for constrained
+  optimization to generate portfolios along the efficient
+  frontier.
 }
 

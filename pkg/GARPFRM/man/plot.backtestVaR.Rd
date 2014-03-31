@@ -2,8 +2,9 @@
 \alias{plot.backtestVaR}
 \title{Plotting for VaR Backtest}
 \usage{
-\method{plot}{backtestVaR}(x, y, ..., pch = NULL, main = "VaR Backtest",
-  ylim = NULL, colorset = NULL, legendLoc = NULL, legendCex = 0.8)
+  \method{plot}{backtestVaR} (x, y, ..., pch = NULL,
+    main = "VaR Backtest", ylim = NULL, colorset = NULL,
+    legendLoc = NULL, legendCex = 0.8)
 }
 \arguments{
   \item{x}{backtestVaR object created with
@@ -35,7 +36,7 @@
   the default.}
 }
 \description{
-Plotting method for VaR Backtest
+  Plotting method for VaR Backtest
 }
 \examples{
 data(crsp_weekly)

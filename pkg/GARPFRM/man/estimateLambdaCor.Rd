@@ -2,7 +2,7 @@
 \alias{estimateLambdaCor}
 \title{Estimated Lambda}
 \usage{
-estimateLambdaCor(R, initialWindow = 10, n = 10)
+  estimateLambdaCor(R, initialWindow = 10, n = 10)
 }
 \arguments{
   \item{R}{xts object of asset returns}
@@ -14,12 +14,12 @@ estimateLambdaCor(R, initialWindow = 10, n = 10)
   correlation}
 }
 \description{
-Estimate lambda for EWMA correlation estimate
+  Estimate lambda for EWMA correlation estimate
 }
 \details{
-The optimal value for lambda is calcualted by minimizing
-the mean squared error between the estimated correlation
-and realized correlation.
+  The optimal value for lambda is calcualted by minimizing
+  the mean squared error between the estimated correlation
+  and realized correlation.
 }
 \examples{
 data(crsp_weekly)
@@ -28,6 +28,6 @@ initialWindow <- 150
 lambda <- estimateLambdaCor(R, initialWindow, n=10)
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 

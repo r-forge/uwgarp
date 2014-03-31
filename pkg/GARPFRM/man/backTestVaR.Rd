@@ -2,8 +2,9 @@
 \alias{backtestVaR}
 \title{Backtest Value-at-Risk (VaR)}
 \usage{
-backtestVaR(R, window = 100, p = 0.95, method = "historical",
-  bootstrap = FALSE, replications = 1000, bootParallel = FALSE)
+  backtestVaR(R, window = 100, p = 0.95,
+    method = "historical", bootstrap = FALSE,
+    replications = 1000, bootParallel = FALSE)
 }
 \arguments{
   \item{R}{xts or zoo object of asset returns}
@@ -26,12 +27,13 @@ backtestVaR(R, window = 100, p = 0.95, method = "historical",
   parallel, (default FALSE).}
 }
 \description{
-Backtesting Value-at-Risk estimate over a moving window.
+  Backtesting Value-at-Risk estimate over a moving window.
 }
 \details{
-The size of the moving window is set with the \code{window}
-argument. For example, if the window size is 100, periods
-1:100 are used to estimate the VaR level for period 101.
+  The size of the moving window is set with the
+  \code{window} argument. For example, if the window size
+  is 100, periods 1:100 are used to estimate the VaR level
+  for period 101.
 }
 \examples{
 data(crsp_weekly)
@@ -43,10 +45,10 @@ head(getVaREstimates(backtest))
 head(getVaRViolations(backtest))
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 \seealso{
-\code{\link[PerformanceAnalytics]{VaR}},
-\code{\link{bootVaR}}
+  \code{\link[PerformanceAnalytics]{VaR}},
+  \code{\link{bootVaR}}
 }
 

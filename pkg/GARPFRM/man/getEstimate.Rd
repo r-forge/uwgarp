@@ -2,7 +2,7 @@
 \alias{getEstimate}
 \title{Get Estimated Values}
 \usage{
-getEstimate(model, ...)
+  getEstimate(model, ...)
 }
 \arguments{
   \item{object}{fitted model (currently only EWMA)}
@@ -10,12 +10,12 @@ getEstimate(model, ...)
   \item{/dots}{passthrough parameters (not currently used)}
 }
 \value{
-model estimate
+  model estimate
 }
 \description{
-Get the estimated values from the model
+  Get the estimated values from the model
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 

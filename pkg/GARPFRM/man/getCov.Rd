@@ -2,7 +2,7 @@
 \alias{getCov}
 \title{EWMA Covariance}
 \usage{
-getCov(EWMA, assets)
+  getCov(EWMA, assets)
 }
 \arguments{
   \item{EWMA}{an EWMA object created by \code{\link{EWMA}}}
@@ -11,8 +11,8 @@ getCov(EWMA, assets)
   assets can be specified by name or index.}
 }
 \description{
-Extract the covariance of two assets from an
-\code{mvEWMAcov} object
+  Extract the covariance of two assets from an
+  \code{mvEWMAcov} object
 }
 \examples{
 data(crsp_weekly)
@@ -24,6 +24,6 @@ cov_mv <- EWMA(mvR, lambda, initialWindow, type="covariance")
 tail(getCov(cov_mv, assets=c("ORCL", "MSFT")))
 }
 \author{
-Ross Bennett and Thomas Fillebeen
+  Ross Bennett and Thomas Fillebeen
 }
 

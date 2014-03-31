@@ -2,7 +2,7 @@
 \alias{forecast}
 \title{Model Forecasting}
 \usage{
-forecast(model, nAhead, ...)
+  forecast(model, nAhead, ...)
 }
 \arguments{
   \item{model}{a model object}
@@ -12,12 +12,12 @@ forecast(model, nAhead, ...)
   \item{\dots}{any other passthrough parameters}
 }
 \value{
-forecasted value from model
+  forecasted value from model
 }
 \description{
-Generic method for forecasting from EWMA and GARCH models
+  Generic method for forecasting from EWMA and GARCH models
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 

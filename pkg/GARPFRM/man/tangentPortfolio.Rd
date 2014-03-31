@@ -2,23 +2,23 @@
 \alias{tangentPortfolio}
 \title{Tangent Portfolio}
 \usage{
-tangentPortfolio(ef)
+  tangentPortfolio(ef)
 }
 \arguments{
   \item{ef}{efficient frontier object created via
   \code{\link{efficientFrontierTwoAsset}}}
 }
 \description{
-Extract the tangent portfolio from an efficient frontier.
-The tangent portfolio is the portfolio which maximizes risk
-adjusted return.
+  Extract the tangent portfolio from an efficient frontier.
+  The tangent portfolio is the portfolio which maximizes
+  risk adjusted return.
 }
 \details{
-Note that the values for the tangent portfolios are an
-approximation and depend on the number of portfolios used
-to create the efficient frontier.
+  Note that the values for the tangent portfolios are an
+  approximation and depend on the number of portfolios used
+  to create the efficient frontier.
 }
 \seealso{
-\code{\link{efficientFrontierTwoAsset}}
+  \code{\link{efficientFrontierTwoAsset}}
 }
 

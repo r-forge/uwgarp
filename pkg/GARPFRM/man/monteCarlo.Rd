@@ -2,8 +2,8 @@
 \alias{monteCarlo}
 \title{Monte Carlo Price Path Simulation}
 \usage{
-monteCarlo(mu, sigma, N = 100, time = 1, steps = 52,
-  starting_value = 100)
+  monteCarlo(mu, sigma, N = 100, time = 1, steps = 52,
+    starting_value = 100)
 }
 \arguments{
   \item{mu}{annualized expected return}
@@ -19,37 +19,37 @@ monteCarlo(mu, sigma, N = 100, time = 1, steps = 52,
   \item{starting_value}{asset price starting value}
 }
 \value{
-matrix of simulated price paths where each column
-represents a price path
+  matrix of simulated price paths where each column
+  represents a price path
 }
 \description{
-Run \code{N} monte carlo simulations to generate asset
-price paths following a geometric brownian motion process
-with constrant drift rate and constant volatility.
+  Run \code{N} monte carlo simulations to generate asset
+  price paths following a geometric brownian motion process
+  with constrant drift rate and constant volatility.
 }
 \details{
-The Geometric Brownian Motion process to describe small
-movements in prices is given by \deqn{ d S_t = \mu S_t dt +
-\sigma dz_t }
+  The Geometric Brownian Motion process to describe small
+  movements in prices is given by \deqn{ d S_t = \mu S_t dt
+  + \sigma dz_t }
 
-ln S is simulated rather than simulating S directly such
-that \deqn{ S_t = S_{t-1} exp((\mu - 0.5 \sigma^2) dt +
-\sigma \sqrt{dt} \epsilon) }
+  ln S is simulated rather than simulating S directly such
+  that \deqn{ S_t = S_{t-1} exp((\mu - 0.5 \sigma^2) dt +
+  \sigma \sqrt{dt} \epsilon) }
 
-where: \itemize{ \item S_t is the asset price at time t
-\item S_{t-1} is the asset price at time t-1 \item mu is
-the constant drift rate \item sigma is the constant
-volatility rate \item epsilon is a standard normal random
-variable }
+  where: \itemize{ \item S_t is the asset price at time t
+  \item S_{t-1} is the asset price at time t-1 \item mu is
+  the constant drift rate \item sigma is the constant
+  volatility rate \item epsilon is a standard normal random
+  variable }
 }
 \note{
-This function returns an m x N matrix of simulated price
-paths where m is the number of steps + 1 and N is the
-number of simulations. This can be very memory and
-computatitonally intensive with a large number of steps
-and/or a large number of simulations. More efficient
-methods in terms of speed and memory should be used, for
-example, to price options.
+  This function returns an m x N matrix of simulated price
+  paths where m is the number of steps + 1 and N is the
+  number of simulations. This can be very memory and
+  computatitonally intensive with a large number of steps
+  and/or a large number of simulations. More efficient
+  methods in terms of speed and memory should be used, for
+  example, to price options.
 }
 \examples{
 library(GARPFRM)

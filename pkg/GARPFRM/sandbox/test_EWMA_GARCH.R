@@ -41,8 +41,8 @@ abline(h=cor(cAssets)[1,2], lwd=3, col="red")
 par(mfrow=c(1,1))
 
 # Calculate EWMA cov and cor, applying default lambda - 0.96
-cAssetsEWMACov <- EWMA(cAssets,lambda=0.94, initialWindow=60, cor=FALSE)
-cAssetsEWMACor <- EWMA(cAssets,lambda=0.94, initialWindow=60, cor=TRUE)
+cAssetsEWMACov <- EWMA(cAssets,lambda=0.94, initialWindow=30, cor=FALSE)
+cAssetsEWMACor <- EWMA(cAssets,lambda=0.94, initialWindow=30, cor=TRUE)
 
 # Plots
 par(mfrow=c(2,1))

@@ -2,8 +2,9 @@
 \alias{efficientFrontierTwoAsset}
 \title{Efficient Frontier for Portfolio of Two Assets}
 \usage{
-efficientFrontierTwoAsset(R1, R2, sigma1, sigma2, rho, nPortfolios = 25,
-  rf = 0, allowShorting = FALSE, weights = NULL)
+  efficientFrontierTwoAsset(R1, R2, sigma1, sigma2, rho,
+    nPortfolios = 25, rf = 0, allowShorting = FALSE,
+    weights = NULL)
 }
 \arguments{
   \item{R1}{expected return for asset 1}
@@ -31,13 +32,13 @@ efficientFrontierTwoAsset(R1, R2, sigma1, sigma2, rho, nPortfolios = 25,
   ignored.}
 }
 \description{
-Create an efficient frontier for a portfolio of two risky
-assets
+  Create an efficient frontier for a portfolio of two risky
+  assets
 }
 \details{
-This is a specialized function to generate points along the
-efficient frontier for a portfolio of two assets following
-the equations presented in Chapter 3: Delineating Efficient
-Portfolios.
+  This is a specialized function to generate points along
+  the efficient frontier for a portfolio of two assets
+  following the equations presented in Chapter 3:
+  Delineating Efficient Portfolios.
 }
 

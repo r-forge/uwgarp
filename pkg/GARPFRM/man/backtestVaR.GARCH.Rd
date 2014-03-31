@@ -2,8 +2,8 @@
 \alias{backtestVaR.GARCH}
 \title{GARCH Model VaR Backtest}
 \usage{
-backtestVaR.GARCH(garch, p = c(0.95, 0.99), nAhead = 1, refitEvery = 25,
-  window = 100)
+  backtestVaR.GARCH(garch, p = c(0.95, 0.99), nAhead = 1,
+    refitEvery = 25, window = 100)
 }
 \arguments{
   \item{garch}{uvGARCH object create via
@@ -20,13 +20,13 @@ backtestVaR.GARCH(garch, p = c(0.95, 0.99), nAhead = 1, refitEvery = 25,
   VaR estimate.}
 }
 \description{
-Function for rolling estimate of GARCH model and VaR
-backtest
+  Function for rolling estimate of GARCH model and VaR
+  backtest
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 \seealso{
-\code{\link[rugarch]{ugarchroll}}
+  \code{\link[rugarch]{ugarchroll}}
 }
 

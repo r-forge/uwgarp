@@ -2,7 +2,7 @@
 \alias{bootCov}
 \title{Bootstrap Covariance}
 \usage{
-bootCov(R, ..., replications = 1000, parallel = FALSE)
+  bootCov(R, ..., replications = 1000, parallel = FALSE)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -16,8 +16,8 @@ bootCov(R, ..., replications = 1000, parallel = FALSE)
   bootstrap in parallel.}
 }
 \description{
-Bootstrap the covariance of an xts object or matrix of
-asset returns
+  Bootstrap the covariance of an xts object or matrix of
+  asset returns
 }
 \examples{
 data(crsp_weekly)
@@ -26,9 +26,9 @@ bootCov(R[,1:2])
 bootCov(R)
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 \seealso{
-\code{\link[stats]{cov}}
+  \code{\link[stats]{cov}}
 }
 

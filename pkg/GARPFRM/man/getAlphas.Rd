@@ -2,17 +2,17 @@
 \alias{getAlphas}
 \title{CAPM alphas}
 \usage{
-getAlphas(object)
+  getAlphas(object)
 }
 \arguments{
   \item{object}{a capm object created by
   \code{\link{CAPM}}}
 }
 \description{
-Extract the computed alphas (intercept) from the fitted
-CAPM object.
+  Extract the computed alphas (intercept) from the fitted
+  CAPM object.
 }
 \author{
-Thomas Fillebeen
+  Thomas Fillebeen
 }
 

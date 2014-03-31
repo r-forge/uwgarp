@@ -2,7 +2,7 @@
 \alias{rollSD}
 \title{Rolling Standard Deviation Estimate}
 \usage{
-rollSD(R, width)
+  rollSD(R, width)
 }
 \arguments{
   \item{R}{xts or zoo object of asset returns}
@@ -10,8 +10,8 @@ rollSD(R, width)
   \item{width}{width of rolling window}
 }
 \description{
-This function calculates the standard deviation estimate of
-asset returns over a rolling window
+  This function calculates the standard deviation estimate
+  of asset returns over a rolling window
 }
 \examples{
 data(crsp_weekly)
@@ -19,9 +19,9 @@ R <- largecap_weekly[,1:4]
 tail(rollSD(R, 10))
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 \seealso{
-\code{\link{sd}}
+  \code{\link{sd}}
 }
 

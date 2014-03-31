@@ -2,7 +2,7 @@
 \alias{estimateLambdaCov}
 \title{Estimated Lambda}
 \usage{
-estimateLambdaCov(R, initialWindow = 10, n = 10)
+  estimateLambdaCov(R, initialWindow = 10, n = 10)
 }
 \arguments{
   \item{R}{xts object of asset returns}
@@ -14,12 +14,12 @@ estimateLambdaCov(R, initialWindow = 10, n = 10)
   covariance}
 }
 \description{
-Estimate lambda for EWMA covariance estimate
+  Estimate lambda for EWMA covariance estimate
 }
 \details{
-The optimal value for lambda is calcualted by minimizing
-the mean squared error between the estimated covariance and
-realized covariance.
+  The optimal value for lambda is calcualted by minimizing
+  the mean squared error between the estimated covariance
+  and realized covariance.
 }
 \examples{
 data(crsp_weekly)
@@ -28,6 +28,6 @@ initialWindow <- 150
 lambda <- estimateLambdaCov(R, initialWindow, n=10)
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 

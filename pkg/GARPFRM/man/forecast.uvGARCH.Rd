@@ -2,8 +2,8 @@
 \alias{forecast.uvGARCH}
 \title{Forecast Univariate GARCH Models}
 \usage{
-\method{forecast}{uvGARCH}(model, nAhead = 10, ..., nRoll = 0,
-  externalForecasts = NULL)
+  \method{forecast}{uvGARCH} (model, nAhead = 10, ...,
+    nRoll = 0, externalForecasts = NULL)
 }
 \arguments{
   \item{model}{GARCH model fit via \code{\link{uvGARCH}}}
@@ -19,14 +19,16 @@
   regressors in the mean and/or variance equations}
 }
 \value{
-a uGARCHforecast object with the GARCH forecast data
+  a uGARCHforecast object with the GARCH forecast data
 }
 \description{
-Forecasting for GARCH models fit via \code{\link{uvGARCH}}
+  Forecasting for GARCH models fit via
+  \code{\link{uvGARCH}}
 }
 \note{
-For rolling forecasts specified with the \code{nRoll}
-argument, the GARCH model must be fit with \code{outSample}
-argument greater than or equal to \code{nRoll}.
+  For rolling forecasts specified with the \code{nRoll}
+  argument, the GARCH model must be fit with
+  \code{outSample} argument greater than or equal to
+  \code{nRoll}.
 }
 

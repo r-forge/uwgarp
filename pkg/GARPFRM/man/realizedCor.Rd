@@ -2,7 +2,7 @@
 \alias{realizedCor}
 \title{Realized Correlation}
 \usage{
-realizedCor(R, n)
+  realizedCor(R, n)
 }
 \arguments{
   \item{R}{xts object of asset returns}
@@ -11,14 +11,14 @@ realizedCor(R, n)
   volatility}
 }
 \value{
-xts object of realized correlation
+  xts object of realized correlation
 }
 \description{
-Calculate realized correlation
+  Calculate realized correlation
 }
 \details{
-Realized correlation is calculated using the previous
-\code{n} periods.
+  Realized correlation is calculated using the previous
+  \code{n} periods.
 }
 \examples{
 data(crsp_weekly)
@@ -28,6 +28,6 @@ realizedCorrelation <- realizedCor(R, 10)
 head(realizedCorrelation)
 }
 \author{
-Ross Bennett
+  Ross Bennett
 }
 
