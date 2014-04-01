@@ -22,7 +22,7 @@
 
 #' Capital Asset Pricing Model
 #' 
-#' TODO: Need a better description of the CAPM
+#' CAPM describes the relationship between risk and (expected) return
 #' 
 #' Retrieves alphas, betas, as well as pvalue and tstats. 
 #' The CAPM is used to determine a theoretically appropriate rate of return
