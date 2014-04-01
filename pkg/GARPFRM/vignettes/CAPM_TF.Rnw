@@ -25,6 +25,8 @@
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
 
+%\VignetteIndexEntry{Capital Asset Pricing Model}
+
 \begin{document}
 
 \title{CAPM Fitting and Testing}

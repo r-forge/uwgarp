@@ -814,8 +814,8 @@ plot.EWMA <- function(x, y=NULL, ..., assets=c(1,2), legendLoc=NULL, main="EWMA 
 #' 
 #' Get the estimated values from the model
 #' 
-#' @param object fitted model (currently only EWMA)
-#' @param /dots passthrough parameters (not currently used)
+#' @param model fitted model (currently only EWMA)
+#' @param \dots passthrough parameters (not currently used)
 #' @return model estimate
 #' @author Ross Bennett
 #' @export
@@ -825,12 +825,12 @@ getEstimate <- function(model, ...){
 
 #' @method getEstimate EWMA
 #' @S3method getEstimate EWMA
-getEstimate.EWMA <- function(object, ...){
-  object$estimate
+getEstimate.EWMA <- function(model, ...){
+  model$estimate
 }
 
 #' @method getEstimate mvEWMAvol
 #' @S3method getEstimate mvEWMAvol
-getEstimate.mvEWMAvol <- function(object, ...){
-  do.call(cbind, lapply(object, FUN=function(x) x$estimate))
+getEstimate.mvEWMAvol <- function(model, ...){
+  do.call(cbind, lapply(model, FUN=function(x) x$estimate))
 }

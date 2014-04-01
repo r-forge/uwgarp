@@ -6,7 +6,7 @@
 Functions to implement the topics presented in 'Financial Risk Manager (FRM) Part 1' (2012) series of books.
 }
 \description{
-This package provides a framework to implement the topics and ideas presented in 'Financial Risk Manager (FRM) Part 1: Quantitative Analysis' (2012) and 'Financial Risk Manager (FRM) Part 1: Foundations of Risk Management' (2012)
+This package provides a framework to implement the topics and ideas presented in 'Financial Risk Manager (FRM) Part 1: Quantitative Analysis' (2012) and 'Financial Risk Manager (FRM) Part 1: Foundations of Risk Management' (2012).
 }
 
 \details{
@@ -18,9 +18,13 @@ Date: \tab 2013-11-17\cr
 License: \tab What license is it under?\cr
 }
 
-The \code{GARPFRM} package provides a framework to implement the topics presented in the Financial Risk Manager (FRM) Part 1 books. The user should be able to follow along in the books and using the \code{GARPFRM} package and supporting packages.
+The purpose of this package is to implement the concepts and methods presented in the Global Association of Risk Professionals (GARP) Financial Risk Manager (FRM) Part I series of books. Developing the \code{GARPFRM} package is a collaborative project between the University of Washington Computational Finance & Risk Management Program and the Global Association of Risk Professionals to develop R packages that facilitate the learning of risk management concepts. The \code{GARPFRM} package provides a framework to implement the topics presented in the Financial Risk Manager (FRM) Part 1 books. The user should be able to follow along in the books and using the \code{GARPFRM} package and supporting packages.
 
-The current version of the package covers the majority of chapters in 'Financial Risk Manager (FRM) Part 1: Quantitative Analysis' (2012) and 'Financial Risk Manager (FRM) Part 1: Foundations of Risk Management' (2012). Due to the nature of econometrics involcing time series data, nearly all functions in this package require data as an \code{xts} object and \verb{GARPFRM} uses the \code{\link[xts]{xts}} package for working with time series data.
+TODO: Add stuff about GARP
+
+TODO: Add stuff about UW-CF&RM
+
+The current version of the package covers the majority of chapters in 'Financial Risk Manager (FRM) Part 1: Quantitative Analysis' (2012) and 'Financial Risk Manager (FRM) Part 1: Foundations of Risk Management' (2012). Due to the nature of econometrics involving time series data, nearly all functions in this package require data as an \code{xts} object and \verb{GARPFRM} uses the \code{\link[xts]{xts}} package for working with time series data.
 \itemize{
   \item Delineating Efficient Portfolios
   

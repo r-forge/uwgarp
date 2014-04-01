@@ -5,9 +5,9 @@
   getEstimate(model, ...)
 }
 \arguments{
-  \item{object}{fitted model (currently only EWMA)}
+  \item{model}{fitted model (currently only EWMA)}
 
-  \item{/dots}{passthrough parameters (not currently used)}
+  \item{\dots}{passthrough parameters (not currently used)}
 }
 \value{
   model estimate
