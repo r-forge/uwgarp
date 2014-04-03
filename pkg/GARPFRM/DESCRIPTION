@@ -4,6 +4,7 @@ Title: Global Association of Risk Professionals: Financial Risk Manager
 Version: 0.1.0
 Date: 2013-11-17
 Author: Ross Bennett and Thomas Fillebeen
+Contributor: Mark L. Labovitz, Kirk Li, Doug Martin, Guy Yollin
 Maintainer: Thomas Fillebeen <tdf17@uw.edu>
 Description: R package for Global Association of Risk Professionals: Financial
     Risk Manager
@@ -12,9 +13,8 @@ Depends:
     xts (>= 0.8),
     PerformanceAnalytics (>= 1.0.0)
 Suggests:
-    quadprog,
     rugarch (>= 1.3.1),
-    PortfolioAnalytics,
+    PortfolioAnalytics (>= 0.9.0),
     foreach (>= 1.4.1)
 License: GPL
 Collate:

@@ -10,7 +10,8 @@
   \item{Rmkt}{market returns}
 }
 \description{
-  TODO: Need a better description of the CAPM
+  CAPM describes the relationship between risk and
+  (expected) return
 }
 \details{
   Retrieves alphas, betas, as well as pvalue and tstats.

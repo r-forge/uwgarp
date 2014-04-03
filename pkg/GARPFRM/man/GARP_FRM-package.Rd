@@ -14,8 +14,8 @@ This package provides a framework to implement the topics and ideas presented in
 Package: \tab GARPFRM\cr
 Type: \tab Package\cr
 Version: \tab 0.1.0\cr
-Date: \tab 2013-11-17\cr
-License: \tab What license is it under?\cr
+Date: \tab 2014-04-03\cr
+License: \tab GPL\cr
 }
 
 The purpose of this package is to implement the concepts and methods presented in the Global Association of Risk Professionals (GARP) Financial Risk Manager (FRM) Part I series of books. Developing the \code{GARPFRM} package is a collaborative project between the University of Washington Computational Finance & Risk Management Program and the Global Association of Risk Professionals to develop R packages that facilitate the learning of risk management concepts. The \code{GARPFRM} package provides a framework to implement the topics presented in the Financial Risk Manager (FRM) Part 1 books. The user should be able to follow along in the books and using the \code{GARPFRM} package and supporting packages.
@@ -61,10 +61,12 @@ The current version of the package covers the majority of chapters in 'Financial
 Ross Bennett and Thomas Fillebeen
 
 Maintainer: Thomas Fillebeen <tdf17@uw.edu>
+
+Contributors: Mark L. Labovitz, Kirk Li, Doug Martin, Guy Yollin
 }
+
 \references{
-TODO: Add references
-GARP books
+TODO: Add references for GARP books
 }
 
 \keyword{ package }
