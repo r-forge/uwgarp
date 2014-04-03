@@ -27,12 +27,10 @@ The purpose of this vignette is to demonstrate methods for estimating and backte
 \tableofcontents
 
 \section{Stochastic Behavior of Returns}
-TODO: Add content on returns
+Computing the Value-at-Risk (VaR) measure requires quantifying the tail of the distribution of returns. One approach is to assume the asset returns follow a specific distribution, for example a normal distribution. This requires assumptions about the parameters needed to characterize the distribution. A common distribution considered is the normal distribution. However, it is often seen that asset returns tend to depart from the normal distribution. Asset returns tend to be fat-tailed, skewed, and unstable.
 
 \subsection{The Distribution of Conoco Phillips Weekly Returns}
-TODO: Add content on returns
-
-Here we consider the weekly returns of Conoco Phillips (COP).
+Here we consider the weekly returns of Conoco Phillips (COP). We compare the empirical distribution to a normal distribution to better understand the characteristics of COP weekly returns. 
 <<>>=
 # Load the package and data
 library(GARPFRM)
