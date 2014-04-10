@@ -2,7 +2,7 @@
 \alias{bootVaR}
 \title{Bootstrap Value at Risk}
 \usage{
-  bootVaR(R, ..., replications = 1000, parallel = FALSE)
+  bootVaR(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -11,9 +11,6 @@
   \code{\link[PerformanceAnalytics]{VaR}}}
 
   \item{replications}{number of bootstrap replications.}
-
-  \item{parallel}{TRUE/FALSE (default FALSE) to compute the
-  bootstrap in parallel.}
 }
 \description{
   Bootstrap the Value at Risk (VaR) of an xts object or

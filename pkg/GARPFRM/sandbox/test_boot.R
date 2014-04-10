@@ -3,13 +3,13 @@ library(GARPFRM)
 data(crsp_weekly)
 R <- largecap_weekly[,1:4]
 
-set.seed(123)
-bootFUN(R[,1], FUN="mean", replications=500, parallel=FALSE)
-
+# set.seed(123)
+# bootFUN(R[,1], FUN="mean", replications=10000, parallel=FALSE)
+# 
 # library(doMC)
 # registerDoMC(2)
-set.seed(123)
-bootFUN(R[,1], FUN="mean", replications=500, parallel=TRUE)
+# set.seed(123)
+# bootFUN(R[,1], FUN="mean", replications=10000, parallel=TRUE)
 
 # function to calculate the annualized return using the most recent n periods
 foo <- function(R, n){
@@ -59,6 +59,16 @@ bootES(R[,1], p=0.9, method="gaussian")
 bootES(R[,1], p=0.92, method="historical", invert=FALSE)
 bootES(R, p=0.9, method="historical")
 
+# bootPar <- function(){
+#   bootES(R[,1], p=0.92, method="historical", replications=20000, parallel=TRUE)
+# }
+# bootSeq <- function(){
+#   bootES(R[,1], p=0.92, method="historical", replications=20000, parallel=FALSE)
+# }
+# 
+# rbenchmark::benchmark(bootPar(), 
+#                       bootSeq(), 
+#                       replications=1)
 
 # foo1 <- function(x){
 #   # Use sample.int and subset

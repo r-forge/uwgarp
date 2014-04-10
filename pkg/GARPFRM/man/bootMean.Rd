@@ -2,7 +2,7 @@
 \alias{bootMean}
 \title{Bootstrap Mean}
 \usage{
-  bootMean(R, ..., replications = 1000, parallel = FALSE)
+  bootMean(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -11,9 +11,6 @@
   \code{\link[base]{mean}}}
 
   \item{replications}{number of bootstrap replications.}
-
-  \item{parallel}{TRUE/FALSE (default FALSE) to compute the
-  bootstrap in parallel.}
 }
 \description{
   Bootstrap the mean of an xts object or matrix of asset

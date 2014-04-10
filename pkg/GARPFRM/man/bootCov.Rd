@@ -2,7 +2,7 @@
 \alias{bootCov}
 \title{Bootstrap Covariance}
 \usage{
-  bootCov(R, ..., replications = 1000, parallel = FALSE)
+  bootCov(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -11,9 +11,6 @@
   \code{\link[stats]{cov}}}
 
   \item{replications}{number of bootstrap replications.}
-
-  \item{parallel}{TRUE/FALSE (default FALSE) to compute the
-  bootstrap in parallel.}
 }
 \description{
   Bootstrap the covariance of an xts object or matrix of

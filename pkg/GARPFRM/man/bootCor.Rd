@@ -2,7 +2,7 @@
 \alias{bootCor}
 \title{Bootstrap Correlation}
 \usage{
-  bootCor(R, ..., replications = 1000, parallel = FALSE)
+  bootCor(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -11,9 +11,6 @@
   \code{\link[stats]{cor}}}
 
   \item{replications}{number of bootstrap replications.}
-
-  \item{parallel}{TRUE/FALSE (default FALSE) to compute the
-  bootstrap in parallel.}
 }
 \description{
   Bootstrap the correlation of an xts object or matrix of

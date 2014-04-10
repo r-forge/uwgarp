@@ -2,8 +2,7 @@
 \alias{bootSimpleVolatility}
 \title{Bootstrap Simple Volatility}
 \usage{
-  bootSimpleVolatility(R, ..., replications = 1000,
-    parallel = FALSE)
+  bootSimpleVolatility(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -12,9 +11,6 @@
   \code{\link{simpleVolatility}}}
 
   \item{replications}{number of bootstrap replications.}
-
-  \item{parallel}{TRUE/FALSE (default FALSE) to compute the
-  bootstrap in parallel.}
 }
 \description{
   Bootstrap the simple volatility of an xts object or
