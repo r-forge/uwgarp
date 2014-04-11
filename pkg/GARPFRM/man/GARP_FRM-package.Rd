@@ -32,7 +32,7 @@ The current version of the package covers the majority of chapters in 'Financial
   
   \item Capital Asset Pricing Model
   
-  TODO
+  The CAPM section discusses estimating alpha and beta as well as their statistical significance. Visually interest functions are chartSML and plot. Of primary applicability are the functions getStatistics and hypTest used to retrieve alpha, beta and their relevant statistic as well as estimating their significance. \code{\link{getStatistics}}, \code{\link{getAlphas}}, \code{\link{getBetas}}, \code{\link{plot}}, \code{\link{hypTest}}, and \code{\link{chartSML}}. See \code{vignette("CAPM_TF")} for an implementation and explanation of these functions.
   
   \item Performance Measures
   
