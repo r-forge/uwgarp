@@ -39,4 +39,3 @@ legend("topright", legend=c("returns", "Historical VaR (0.05)",
 garchModel <- uvGARCH(R[, "MSFT"], armaOrder=c(0,0))
 btVaR.GARCH <- backtestVaR.GARCH(garchModel, p=0.95, refitEvery=5, window=100)
 btVaR.GARCH
-

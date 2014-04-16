@@ -1,3 +1,5 @@
+# Bootstrapping is a statistical method for estimating the sampling 
+# distribution of an estimator by sampling with replacement from the original sample.
 # bootstrap
 library(GARPFRM)
 data(crsp_weekly)
@@ -38,6 +40,7 @@ bootCor(R)
 bootCov(R[,1:2])
 bootCov(R)
 
+# Here is an example of how to calculate historical Value-at-Risk with bootstrapped returns.
 # Bootstrap Value-at-Risk (VaR) estimate using the VaR function from
 # PerformanceAnalytics.
 bootVaR(R[,1], p=0.9, method="historical")
@@ -50,4 +53,3 @@ bootVaR(R, p=0.9, method="historical", invert=FALSE)
 bootES(R[,1], p=0.9, method="gaussian")
 bootES(R[,1], p=0.92, method="historical", invert=FALSE)
 bootES(R, p=0.9, method="historical")
-

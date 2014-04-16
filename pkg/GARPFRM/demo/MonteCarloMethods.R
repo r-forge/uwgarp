@@ -1,11 +1,9 @@
-
-
 library(knitr)
 opts_chunk$set(tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
 
-
-
 suppressPackageStartupMessages(library(GARPFRM))
+
+# Monte Carlo: Geometric Brownian Motion (GBM) mode
 # drift rate
 mu <- 0
 
@@ -36,9 +34,9 @@ for(i in 2:length(S)){
   S[i] <- S[i-1] + S[i-1] * (mu_dt + sig_dt * eps[i-1])
 }
 head(S)
+
+# Plot Simulated Price Path
 plot(S, main="Simulated Price Path", type="l")
-
-
 
 # Allocate a vector to hold the prices
 S1 <- vector("numeric", N+1)
@@ -54,8 +52,6 @@ for(i in 2:length(S1)){
 head(S1)
 plot(S1, main="Simulated Price Path", type="l")
 
-
-
 mu <- 0.05
 sigma <- 0.15
 N <- 10000
@@ -67,14 +63,10 @@ startingValue <- 100
 mcSim <- monteCarlo(mu, sigma, N, time, steps, startingValue)
 summary(endingPrices(mcSim))
 
-
-
 par(mfrow=c(2,1))
 plot(mcSim)
 plotEndingPrices(mcSim)
 par(mfrow=c(1,1))
-
-
 
 data(crsp_weekly)
 R.MSFT <- largecap_weekly[, "MSFT"]
@@ -98,8 +90,6 @@ S.p <- 25
 bootS1 <- S.p * cumprod(1 + sample(coredata(R.MSFT), nAhead, TRUE))
 bootS1
 
-
-
 # Number of boostrap replications
 rep <- 10000
 
@@ -115,8 +105,6 @@ mean(out)
 
 # Standard error of Bootstrapped VaR
 sd(out)
-
-
 
 R <- largecap_weekly[,1:4]
 
@@ -183,5 +171,3 @@ bootES(R, p=0.9, method="gaussian")
 # Benchmark these functions
 # library(rbenchmark)
 # benchmark(bootPar(), bootSeq(), replications=1)[,1:4]
-
-

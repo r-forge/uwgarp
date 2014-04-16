@@ -1,9 +1,5 @@
-
-
 library(knitr)
 opts_chunk$set(tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
-
-
 
 suppressPackageStartupMessages(library(GARPFRM))
 
@@ -25,10 +21,10 @@ rho <- 1
 # Create a vector of portfolio weights
 X_C <- seq(from=0, to=1, by=0.2)
 
-# Calculate the portfolio expected return
+# Calculate the portfolio expected return (ρ = −1)
 R_P <- portReturnTwoAsset(R_C, R_S, X_C)
 
-# Calculate the portfolio standard deviation
+# Calculate the portfolio standard deviation (ρ = 0)
 sigma_P <- portSDTwoAsset(R_C, R_S, X_C, sigma_C, sigma_S, rho)
 
 # Combine the portfolio returns and standard deviations in a data.frame object.
@@ -38,13 +34,11 @@ df <- t(data.frame(R_P=R_P, sigma_P=sigma_P))
 colnames(df) <- X_C
 df
 
-
-
+# Plot the portfolio return and standard deviation to 
+# understand the risk and return of the portfolio
 # Create and plot the efficient frontier object
 ef <- efficientFrontierTwoAsset(R_C, R_S, sigma_C, sigma_S, rho)
 plot(ef)
-
-
 
 # Correlation coefficient
 rho <- -1
@@ -62,13 +56,9 @@ df <- t(data.frame(R_P=R_P, sigma_P=sigma_P))
 colnames(df) <- X_C
 df
 
-
-
 # Create and plot the efficient frontier object
 ef <- efficientFrontierTwoAsset(R_C, R_S, sigma_C, sigma_S, rho)
 plot(ef)
-
-
 
 # Correlation coefficient
 rho <- 0
@@ -86,14 +76,9 @@ df <- t(data.frame(R_P=R_P, sigma_P=sigma_P))
 colnames(df) <- X_C
 df
 
-
-
 # Create and plot the efficient frontier object
 ef <- efficientFrontierTwoAsset(R_C, R_S, sigma_C, sigma_S, rho)
 plot(ef)
-
-
-
 
 minRisk <- function(R_A, R_B, sigma_A, sigma_B, rho){
   top_term <- sigma_B^2 - sigma_A * sigma_B * rho
@@ -112,13 +97,9 @@ minRisk <- function(R_A, R_B, sigma_A, sigma_B, rho){
               portfolio_sd=port_sd))
 }
 
-
-
 minRisk(R_C, R_S, sigma_C, sigma_S, rho)
 
-
-
-# Correlation coefficient
+# Correlation coefficient (ρ = 0.5)
 rho <- 0.5
 
 # Calculate the portfolio expected return
@@ -134,17 +115,11 @@ df <- t(data.frame(R_P=R_P, sigma_P=sigma_P))
 colnames(df) <- X_C
 df
 
-
-
 # Create and plot the efficient frontier object
 ef <- efficientFrontierTwoAsset(R_C, R_S, sigma_C, sigma_S, rho)
 plot(ef)
 
-
-
 minRisk(R_C, R_S, sigma_C, sigma_S, rho)
-
-
 
 X_C <- seq(from=0, to=1, by=0.01)
 R_P <- portReturnTwoAsset(R_C, R_S, X_C)
@@ -168,7 +143,7 @@ legend("topleft", legend=c(legend=expression(paste(rho, " = 1")),
        lty=rep(1, 4), bty="n")
 
 
-
+# The Efficient Frontier with Short Sales Allowed
 # correlation coefficient
 rho <- 0.5
 
@@ -187,8 +162,6 @@ sigma_P <- portSDTwoAsset(R_C, R_S, X_C, sigma_C, sigma_S, rho)
 df <- t(data.frame(R_P=R_P, sigma_P=sigma_P))
 colnames(df) <- X_C
 print(df, digits=4)
-
-
 
 # Create and plot the efficient frontier object
 ef_short <- efficientFrontierTwoAsset(R_C, R_S, sigma_C, sigma_S, rho, 
@@ -240,25 +213,18 @@ rho <- 0.33
 # Calculate the allocation and values for the minimum variance portfolio
 minRisk(R_SP, R_int, sigma_SP, sigma_int, rho)
 
-
-
 ef <- efficientFrontierTwoAsset(R_SP, R_int, sigma_SP, sigma_int, rho, rf=0.05)
 plot(ef)
 
-
-
+# Extended Examples for Portfolios with Multiple Assets
 data(crsp_weekly)
 R_large <- largecap_weekly[,1:5]
 R_mid <- midcap_weekly[,1:5]
 R_small <- smallcap_weekly[,1:5]
 
-
-
 # Create and plot an efficient frontier of large cap stocks
 ef_large <- efficientFrontier(R_large)
 plot(ef_large, main="Large Cap Efficient Frontier", cexAssets=0.6)
-
-
 
 # Create an efficient frontier object with box constraints
 # Add box constraints such that each asset must have a weight greater than 15%
@@ -287,5 +253,3 @@ efGroup <- efficientFrontier(R, groupList=groups,
                              groupMin=groupMin, 
                              groupMax=groupMax)
 plot(efGroup, labelAssets=FALSE)
-
-
