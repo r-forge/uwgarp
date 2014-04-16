@@ -1,9 +1,5 @@
-
-
 library(knitr)
 opts_chunk$set(cache=TRUE, tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
-
-
 
 # Load the GARPFRM package and the CRSP dataset.
 suppressPackageStartupMessages(library(GARPFRM))
@@ -23,8 +19,6 @@ R.portfolio <- Return.portfolio(largecap.ts[,1:10])
 R.Ex.portfolio <- R.portfolio - rf
 R.Ex.market <- R.market - rf
 
-
-
 # Compute portfolio beta using the covariance of the portfolio and benchmark 
 # portfolio returns divided by the variance of the market portfolio returns
 cov(R.Ex.portfolio, R.Ex.market) / var(R.Ex.market)
@@ -36,8 +30,6 @@ getBetas(fit)
 # We can also directly use the CAPM.beta function from PerformanceAnalytics
 CAPM.beta(R.portfolio, R.market, rf)
 
-
-
 # Treynor ratio for portfolio and market
 
 # Treynor Ratio for portfolio
@@ -46,8 +38,6 @@ TreynorRatio(R.portfolio, R.market, rf)
 # Treynor Ratio for market
 TreynorRatio(R.market, R.market, rf)
 
-
-
 # Compute Sharpe and annualized Sharpe Ratio
 # Sub-period Sharpe Ratio
 SharpeRatio(R.portfolio, rf, FUN="StdDev")
@@ -55,11 +45,7 @@ SharpeRatio(R.portfolio, rf, FUN="StdDev")
 # Annualized Sharpe Ratio
 SharpeRatio.annualized(R.portfolio, rf)
 
-
-
 SharpeRatio(R.portfolio, rf, p=0.95, FUN=c("VaR", "ES"))
-
-
 
 # Compute Jensen's alpha by carrying out a linear regression
 fit <- lm(R.Ex.portfolio ~ R.Ex.market)
@@ -80,15 +66,11 @@ beta <- CAPM.beta(R.portfolio, R.market, mean(rf))
 # Jensen's alpha
 R.P - mean(rf) - beta * (R.M - mean(rf))
 
-
-
 # Compute Tracking Error
 TrackingError(R.portfolio, R.market)
 
 # Replicate TrackingError
 sd(R.portfolio - R.market) * sqrt(12)
-
-
 
 # Compute Information Ratio
 # InformationRatio = ActivePremium / TrackingError
@@ -100,17 +82,10 @@ activePremium <- Return.annualized(R.portfolio) - Return.annualized(R.market)
 trackingError <- TrackingError(R.portfolio, R.market)
 activePremium / trackingError
 
-
-
-
 # Compute Downside Deviation
 MAR <- 0
 # PA computation of Downside Deviation
 DownsideDeviation(R.portfolio, MAR)
 
-
-
 # Compute Sortino Ratio 
 SortinoRatio(R.portfolio, MAR)
-
-
