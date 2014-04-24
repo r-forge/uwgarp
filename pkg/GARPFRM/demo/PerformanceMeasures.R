@@ -1,8 +1,6 @@
-library(knitr)
-opts_chunk$set(cache=TRUE, tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
 
 # Load the GARPFRM package and the CRSP dataset.
-suppressPackageStartupMessages(library(GARPFRM))
+library(GARPFRM)
 data(crsp.short)
 
 # Market returns
