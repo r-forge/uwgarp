@@ -16,7 +16,7 @@
 #' @return a \code{bond} object with the bond data used for pricing
 #' @author TF
 #' @export
-bondSpec = function(time, face=100, m=2, couponRate=0.01){
+bondSpec = function(time=seq(from=0.5,to=2,by=0.5), face=100, m=2, couponRate=0.01){
   if(!all(diff(time) == (1/m))) stop("misspecification of sequence of time and compounding frequency")
   bond = list()
   bond$m = m
@@ -79,18 +79,19 @@ discountFactor = function(price, cashFlow){
 #' 
 #' This function calculates the price of a fixed rate coupon bond given coupon rate, yield, 
 #' compoundPd, cashFlowPd, face value, previous coupon date, next coupon date.
-#' @param couponRate is the coupon rate
+#' @param bond is a bondSpec object
 #' @param yield is the yield on the bond
-#' @param compoundPd coumpounding period
 #' @param cashFlowPd cash flow period
-#' @param face face value
 #' @param t0 previous coupon date
 #' @param t1 next coupon period
 #' @param currentDate current date
 #' @return price of the bond: clean, dirty and accrued interest
 #' @author TF
 #' @export
-bondFullPrice = function(couponRate, yield, compoundPd, cashFlowPd, face=100, t0, t1, currentDate){
+bondFullPrice = function(bond, yield, cashFlowPd, t0, t1, currentDate){
+  compoundPd = bond$m
+  face = bond$face
+  couponRate = bond$couponRate
   # Apply a general dayCount (weekend included)
   d1 = as.numeric(t1-currentDate)
   d2 = as.numeric(t1-t0)
@@ -120,7 +121,7 @@ bondFullPrice = function(couponRate, yield, compoundPd, cashFlowPd, face=100, t0
 #' @return continuously compounding rates
 #' @author TF
 #' @export
-compoundingRate = function(dat, initialDate=as.Date("2000-05-15"), m, face=100){
+compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
   # Convert the dates to a date class
   dat[, "IssueDate"] = as.Date(dat[, "IssueDate"], format="%m/%d/%Y")
   dat[, "MaturityDate"] = as.Date(dat[, "MaturityDate"], format="%m/%d/%Y")

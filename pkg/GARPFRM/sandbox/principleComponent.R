@@ -2,6 +2,7 @@ library(GARPFRM)
 library(psych)
 library(GPArotation)
 
+data(crsp.short)
 data = largecap.ts[,2:6]
 head(data)
 
