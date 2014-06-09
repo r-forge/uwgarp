@@ -2,16 +2,16 @@
 \alias{getFit}
 \title{Get Fitted GARCH Model}
 \usage{
-  getFit(garch)
+getFit(garch)
 }
 \arguments{
   \item{garch}{a GARCH model specification and fit created
   with \code{uvGARCH}}
 }
 \value{
-  an object of class uGARCHfit
+an object of class uGARCHfit
 }
 \description{
-  Function to extract the fitted GARCH model object
+Function to extract the fitted GARCH model object
 }
 

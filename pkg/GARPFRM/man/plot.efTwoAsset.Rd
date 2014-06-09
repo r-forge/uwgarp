@@ -2,9 +2,9 @@
 \alias{plot.efTwoAsset}
 \title{Efficient Frontier Plot}
 \usage{
-  \method{plot}{efTwoAsset} (x, y, ..., chartAssets = TRUE,
-    main = "Efficient Frontier", xlim = NULL, ylim = NULL,
-    type = "l", pchAssets = 19, cexAssets = 0.8)
+\method{plot}{efTwoAsset}(x, y, ..., chartAssets = TRUE,
+  main = "Efficient Frontier", xlim = NULL, ylim = NULL, type = "l",
+  pchAssets = 19, cexAssets = 0.8)
 }
 \arguments{
   \item{x}{object of class \code{efTwoAsset} created via
@@ -33,7 +33,7 @@
   relative to the default.}
 }
 \description{
-  Plot the efficient frontier in return - standard
-  deviation space
+Plot the efficient frontier in return - standard deviation
+space
 }
 

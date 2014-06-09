@@ -2,17 +2,17 @@
 \alias{getBetas}
 \title{CAPM betas}
 \usage{
-  getBetas(object)
+getBetas(object)
 }
 \arguments{
   \item{object}{a capm object created by
   \code{\link{CAPM}}}
 }
 \description{
-  Extract the computed alpha (intercept) from the CAPM
-  object.
+Extract the computed alpha (intercept) from the CAPM
+object.
 }
 \author{
-  Thomas Fillebeen
+Thomas Fillebeen
 }
 

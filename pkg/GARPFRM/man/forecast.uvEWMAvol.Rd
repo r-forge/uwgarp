@@ -2,7 +2,7 @@
 \alias{forecast.uvEWMAvol}
 \title{Forecast Univariate EWMA Volatility Model}
 \usage{
-  \method{forecast}{uvEWMAvol} (model, nAhead = 1, ...)
+\method{forecast}{uvEWMAvol}(model, nAhead = 1, ...)
 }
 \arguments{
   \item{model}{EWMA model fit via \code{\link{EWMA}}}
@@ -13,10 +13,10 @@
   \item{\dots}{additional passthrough parameters}
 }
 \value{
-  one period ahead EWMA volatility forecast
+one period ahead EWMA volatility forecast
 }
 \description{
-  Forecasting for EWMA Volatility models fit via
-  \code{\link{EWMA}}
+Forecasting for EWMA Volatility models fit via
+\code{\link{EWMA}}
 }
 

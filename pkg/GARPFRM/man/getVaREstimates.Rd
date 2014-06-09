@@ -3,7 +3,7 @@
 \title{VaR Estimates
 Extract VaR Estimates from a VaR Backtest}
 \usage{
-  getVaREstimates(object, ...)
+getVaREstimates(object, ...)
 }
 \arguments{
   \item{object}{an object created by
@@ -12,15 +12,15 @@ Extract VaR Estimates from a VaR Backtest}
   \item{\dots}{not currently used}
 }
 \value{
-  xts object of unconditional VaR estimates
+xts object of unconditional VaR estimates
 }
 \description{
-  VaR Estimates Extract VaR Estimates from a VaR Backtest
+VaR Estimates Extract VaR Estimates from a VaR Backtest
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link{backtestVaR}}
+\code{\link{backtestVaR}}
 }
 

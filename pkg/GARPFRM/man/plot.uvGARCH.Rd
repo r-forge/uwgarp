@@ -2,7 +2,7 @@
 \alias{plot.uvGARCH}
 \title{Plot GARCH Model}
 \usage{
-  plot.uvGARCH(x, y, ..., which)
+\method{plot}{uvGARCH}(x, y, ..., which)
 }
 \arguments{
   \item{x}{uvGARCH object create via \code{uvGARCH}}
@@ -15,6 +15,6 @@
   \item{which}{plot selection}
 }
 \description{
-  Plots for fitted GARCH Models
+Plots for fitted GARCH Models
 }
 

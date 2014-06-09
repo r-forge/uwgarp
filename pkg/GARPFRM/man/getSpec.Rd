@@ -2,16 +2,16 @@
 \alias{getSpec}
 \title{Get GARCH Model Specification}
 \usage{
-  getSpec(garch)
+getSpec(garch)
 }
 \arguments{
   \item{garch}{a GARCH model specification and fit created
   with \code{uvGARCH}}
 }
 \value{
-  an object of class uGARCHspec
+an object of class uGARCHspec
 }
 \description{
-  Function to extract the GARCH model specification object
+Function to extract the GARCH model specification object
 }
 

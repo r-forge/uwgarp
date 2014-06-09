@@ -2,8 +2,8 @@
 \alias{plotEndingPrices}
 \title{Plot Ending Prices}
 \usage{
-  plotEndingPrices(mc, ..., main = "Ending Prices",
-    xlab = "Price", ylab = "Density")
+plotEndingPrices(mc, ..., main = "Ending Prices", xlab = "Price",
+  ylab = "Density")
 }
 \arguments{
   \item{mc}{monte carlo object created with
@@ -18,8 +18,8 @@
   \item{ylab}{y-axis label, same as in \code{\link{plot}}.}
 }
 \description{
-  Plot the kernel density estimate and histogram of the
-  ending prices from a Monte Carlo simulation.
+Plot the kernel density estimate and histogram of the
+ending prices from a Monte Carlo simulation.
 }
 \examples{
 library(GARPFRM)

@@ -2,10 +2,9 @@
 \alias{plot.efficient.frontier}
 \title{Efficient Frontier Plot}
 \usage{
-  \method{plot}{efficient.frontier} (x, y, ..., rf = 0,
-    chartAssets = TRUE, labelAssets = TRUE,
-    main = "Efficient Frontier", xlim = NULL, ylim = NULL,
-    type = "l", pchAssets = 19, cexAssets = 0.8)
+\method{plot}{efficient.frontier}(x, y, ..., rf = 0, chartAssets = TRUE,
+  labelAssets = TRUE, main = "Efficient Frontier", xlim = NULL,
+  ylim = NULL, type = "l", pchAssets = 19, cexAssets = 0.8)
 }
 \arguments{
   \item{x}{object of class \code{efficient.frontier}
@@ -41,10 +40,10 @@
   relative to the default.}
 }
 \description{
-  Plot the efficient frontier in return - standard
-  deviation space
+Plot the efficient frontier in return - standard deviation
+space
 }
 \seealso{
-  \code{\link{efficientFrontier}}
+\code{\link{efficientFrontier}}
 }
 

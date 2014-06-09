@@ -2,7 +2,7 @@
 \alias{getCor}
 \title{EWMA Correlation}
 \usage{
-  getCor(EWMA, assets)
+getCor(EWMA, assets)
 }
 \arguments{
   \item{EWMA}{an EWMA object created by \code{\link{EWMA}}}
@@ -11,8 +11,8 @@
   assets can be specified by name or index.}
 }
 \description{
-  Extract the correlation of two assets from an
-  \code{mvEWMAcor} object
+Extract the correlation of two assets from an
+\code{mvEWMAcor} object
 }
 \examples{
 data(crsp_weekly)
@@ -24,6 +24,6 @@ cor_mv <- EWMA(mvR, lambda, initialWindow, type="correlation")
 tail(getCor(cor_mv, assets=c("ORCL", "MSFT")))
 }
 \author{
-  Ross Bennett and Thomas Fillebeen
+Ross Bennett and Thomas Fillebeen
 }
 

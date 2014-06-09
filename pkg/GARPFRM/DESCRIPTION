@@ -17,15 +17,3 @@ Suggests:
     PortfolioAnalytics (>= 0.9.0)
 License: GPL
 BuildVignettes: false
-Collate:
-    'backTestVaR.R'
-    'capm.R'
-    'EWMA.R'
-    'garch11.R'
-    'monte_carlo.R'
-    'efficient_frontier.R'
-    'rollFUN.R'
-    'volatility.R'
-    'boot.R'
-    'utils.R'
-    'generic_forecast.R'

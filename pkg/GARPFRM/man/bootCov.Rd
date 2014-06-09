@@ -2,7 +2,7 @@
 \alias{bootCov}
 \title{Bootstrap Covariance}
 \usage{
-  bootCov(R, ..., replications = 1000)
+bootCov(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -13,8 +13,8 @@
   \item{replications}{number of bootstrap replications.}
 }
 \description{
-  Bootstrap the covariance of an xts object or matrix of
-  asset returns
+Bootstrap the covariance of an xts object or matrix of
+asset returns
 }
 \examples{
 data(crsp_weekly)
@@ -23,9 +23,9 @@ bootCov(R[,1:2])
 bootCov(R)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link[stats]{cov}}
+\code{\link[stats]{cov}}
 }
 

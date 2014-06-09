@@ -2,10 +2,9 @@
 \alias{uvGARCH}
 \title{Univariate GARCH Model}
 \usage{
-  uvGARCH(R, model = "sGARCH", garchOrder = c(1, 1),
-    armaOrder = c(1, 1), distribution = "norm",
-    fixedParams = NULL, solver = "hybrid", outSample = 0,
-    fitControl = NULL, solverControl = NULL)
+uvGARCH(R, model = "sGARCH", garchOrder = c(1, 1), armaOrder = c(1, 1),
+  distribution = "norm", fixedParams = NULL, solver = "hybrid",
+  outSample = 0, fitControl = NULL, solverControl = NULL)
 }
 \arguments{
   \item{R}{xts object of asset returns.}
@@ -47,25 +46,25 @@
   solver}
 }
 \value{
-  a list of length two containing GARCH specification and
-  GARCH fit objects
+a list of length two containing GARCH specification and
+GARCH fit objects
 }
 \description{
-  Specify and fit a univariate GARCH model
+Specify and fit a univariate GARCH model
 }
 \details{
-  This function is a basic wrapper of functions in the
-  rugarch package to specify and fit GARCH models. The
-  rugarch package provides functions to specify and fit a
-  rich set of GARCH models. The purpose of this function is
-  to specify and fit a GARCH model while abstracting away
-  some complexities.
+This function is a basic wrapper of functions in the
+rugarch package to specify and fit GARCH models. The
+rugarch package provides functions to specify and fit a
+rich set of GARCH models. The purpose of this function is
+to specify and fit a GARCH model while abstracting away
+some complexities.
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link[rugarch]{ugarchspec}},
-  \code{\link[rugarch]{ugarchfit}}
+\code{\link[rugarch]{ugarchspec}},
+\code{\link[rugarch]{ugarchfit}}
 }
 

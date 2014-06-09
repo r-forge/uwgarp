@@ -2,7 +2,7 @@
 \alias{rollSimpleVolatility}
 \title{Rolling Simple Volatility Estimate}
 \usage{
-  rollSimpleVolatility(R, width)
+rollSimpleVolatility(R, width)
 }
 \arguments{
   \item{R}{xts or zoo object of asset returns}
@@ -10,13 +10,13 @@
   \item{width}{width of rolling window}
 }
 \description{
-  This function calculates the simple volatility estimate
-  of asset returns over a rolling window.
+This function calculates the simple volatility estimate of
+asset returns over a rolling window.
 }
 \details{
-  The simple volatility of x is defined as
+The simple volatility of x is defined as
 
-  \deqn{ \sigma = \sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2} }
+\deqn{ \sigma = \sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2} }
 }
 \examples{
 data(crsp_weekly)
@@ -24,9 +24,9 @@ R <- largecap_weekly[,1:2]
 tail(rollSimpleVolatility(R, 10))
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link{sd}}, \code{\link{simpleVolatility}}
+\code{\link{sd}}, \code{\link{simpleVolatility}}
 }
 

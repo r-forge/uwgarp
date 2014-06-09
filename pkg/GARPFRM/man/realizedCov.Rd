@@ -2,7 +2,7 @@
 \alias{realizedCov}
 \title{Realized Covariance}
 \usage{
-  realizedCov(R, n)
+realizedCov(R, n)
 }
 \arguments{
   \item{R}{xts object of asset returns}
@@ -11,14 +11,14 @@
   volatility}
 }
 \value{
-  xts object of realized covariance
+xts object of realized covariance
 }
 \description{
-  Calculate realized covariance
+Calculate realized covariance
 }
 \details{
-  Realized covariance is calculated using the previous
-  \code{n} periods.
+Realized covariance is calculated using the previous
+\code{n} periods.
 }
 \examples{
 data(crsp_weekly)
@@ -28,6 +28,6 @@ realizedCovariance <- realizedCov(R, 10)
 head(realizedCovariance)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 

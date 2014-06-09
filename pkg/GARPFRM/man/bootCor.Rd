@@ -2,7 +2,7 @@
 \alias{bootCor}
 \title{Bootstrap Correlation}
 \usage{
-  bootCor(R, ..., replications = 1000)
+bootCor(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -13,8 +13,8 @@
   \item{replications}{number of bootstrap replications.}
 }
 \description{
-  Bootstrap the correlation of an xts object or matrix of
-  asset returns
+Bootstrap the correlation of an xts object or matrix of
+asset returns
 }
 \examples{
 data(crsp_weekly)
@@ -24,9 +24,9 @@ bootCor(R[,1:2], method="kendall")
 bootCor(R)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link[stats]{cor}}
+\code{\link[stats]{cor}}
 }
 

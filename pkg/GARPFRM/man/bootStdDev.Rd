@@ -2,7 +2,7 @@
 \alias{bootStdDev}
 \title{Bootstrap StdDev}
 \usage{
-  bootStdDev(R, ..., replications = 1000)
+bootStdDev(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -13,8 +13,8 @@
   \item{replications}{number of bootstrap replications.}
 }
 \description{
-  Bootstrap the StdDev of an xts object or matrix of asset
-  returns
+Bootstrap the StdDev of an xts object or matrix of asset
+returns
 }
 \examples{
 data(crsp_weekly)
@@ -23,9 +23,9 @@ bootStdDev(R[,1])
 bootStdDev(R)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link[PerformanceAnalytics]{StdDev}}
+\code{\link[PerformanceAnalytics]{StdDev}}
 }
 

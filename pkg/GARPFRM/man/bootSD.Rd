@@ -2,7 +2,7 @@
 \alias{bootSD}
 \title{Bootstrap Standard Deviation}
 \usage{
-  bootSD(R, ..., replications = 1000)
+bootSD(R, ..., replications = 1000)
 }
 \arguments{
   \item{R}{xts object or matrix of asset returns}
@@ -13,8 +13,8 @@
   \item{replications}{number of bootstrap replications.}
 }
 \description{
-  Bootstrap the standard deviation of an xts object or
-  matrix of asset returns
+Bootstrap the standard deviation of an xts object or matrix
+of asset returns
 }
 \examples{
 data(crsp_weekly)
@@ -23,9 +23,9 @@ bootSD(R[,1])
 bootSD(R)
 }
 \author{
-  Ross Bennett
+Ross Bennett
 }
 \seealso{
-  \code{\link[stats]{sd}}
+\code{\link[stats]{sd}}
 }
 
