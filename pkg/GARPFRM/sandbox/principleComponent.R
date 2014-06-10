@@ -7,9 +7,16 @@ data = largecap.ts[,2:6]
 head(data)
 
 # Retain components that combined account for x% of the cumulative variance
-pca = principal(r = data, nfactors=5, rotate="none")
+pca = PCA(data, nfactors = 3, rotate="none")
 summary(pca)
 
+# Retrieve Loadings and if loading is insignificant then omit
+getLoadings(pca)
+
+# Retrieve Weights
+getWeights(pca)
+
+## Structural Equation Modelling
 # Determining the appropriate number of factors
 # A graphic representation of the 3 oblique factors
 fa.diagram(pca)

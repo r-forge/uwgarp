@@ -108,7 +108,10 @@ ytmSolve <- function(ytm, couponRate, m, nPayments, face, targetPrice){
   return(abs(tmpPrice - targetPrice))
 }
 
-#' Calculate the convexity of a fixed rate coupon bond
+
+############Hedge section
+
+#' Estimate the delta hedge of for a bond
 #' 
 #' This function estimates the delta for hedging a particular bond 
 #' given bond data
@@ -130,29 +133,35 @@ linearHedge <- function(bond){
 #' given bond data
 #' 
 #' @param data time series data
+#' @param nfactors number of components to extract
+#' @param rotate "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution.
 #' @return pca object loadings
 #' @export
-PCA <- function(data){
-  ### Write body####
-  
-  
-  
-  return(delta)
+PCA <- function(data, nfactors, rotate = "none"){
+  pca = principal(data, nfactors, rotate="none")
+  class(pca) <- c("psych", "principal","PCA")
+  return(pca)
 }
 
-#' PCA loadings
+#' Retrieve PCA loadings
 #' 
 #' @param object is a pca object
 #' @author TF
 #' @export 
-getthreeLoadings <- function(object){
-  ### Write body####
-  
-  return(threeLoadings)
+getLoadings <- function(object){
+loadings = object$loadings
+  return(loadings)
 }
 
-
-
+#' Retrieve PCA weights
+#' 
+#' @param object is a pca object
+#' @author TF
+#' @export 
+getWeights <- function(object){
+  weights = object$weight
+  return(weights)
+}
 
 #' Plotting method for PCA
 #' 
@@ -163,21 +172,16 @@ getthreeLoadings <- function(object){
 #' @param number specify the nunber of loadings
 #' @param \dots passthrough parameters to \code{\link{plot}}.
 #' @param main a main title for the plot
-#' @author Thomas Fillebeen
-#' @method plot pca loadings
-#' @S3method plot capm_uv
-plot.capm_uv <- function(x, y, number, ..., main="CAPM"){
-  ### Write body####
-  
-  
-  
-  
+#' @author TF
+#' @method plot PCA
+#' @S3method plot PCA
+plot.PCA <- function(x, y, ..., main="Beta from PCA regression"){
+  if(ncol(x$loading)> 3) warning("Only first 3 loadings will be graphically displayed")
   # Plot the first three factors
-  plot(pca$loading[,1], type="l", main="Beta from PCA regression", 
+  plot(pca$loading[,1], type="l", main, 
        xlab="maturity", ylab="beta")
   lines(pca$loading[,2], col="blue",lty=2)
   lines(pca$loading[,3], col="red",lty=2)
   legend("topleft",legend=c("PCA1","PCA2","PCA3"),bty="n",lty=c(1,2,2),col=c("black","blue","red"), cex=0.8)
   
 }
-
