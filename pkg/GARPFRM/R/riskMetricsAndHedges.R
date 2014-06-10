@@ -142,23 +142,17 @@ PCA <- function(data){
 
 #' PCA loadings
 #' 
-#' Extract the computed loadings.
-#' 
-#' @param object a capm object created by loadings PCA
+#' @param object is a pca object
 #' @author TF
-#' @export
-getthreeLoadings <- function(object){
-  UseMethod("getthreeLoadings")
-}
-
-#' @method getthreeLoadings
-#' @S3method getthreeLoadings
+#' @export 
 getthreeLoadings <- function(object){
   ### Write body####
   
-  
   return(threeLoadings)
 }
+
+
+
 
 #' Plotting method for PCA
 #' 
