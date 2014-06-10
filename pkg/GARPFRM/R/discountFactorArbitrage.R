@@ -178,9 +178,3 @@ compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
   rate$ccRate = ccRate 
   return(rate)
 }
-
-
-## Plot of continuously compounded spot rates
-#plot(x=years, y=ccRate, type="l", ylab="rate", xlab="Time to Maturity",
-#     main="Term Structure of Spot Rates")
-#dev.off()

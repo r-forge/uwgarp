@@ -14,12 +14,24 @@ price <- matrix(c(96.8, 99.56, 100.86, 101.22), ncol=1)
 DF = discountFactor(price , cashFlow)
 
 
+
 # Estimate bondPrice
-# Choose a 2 year bond with semiannual payments
+# Choose a 2 year bond with semiannual payments to match number of bond prices and CFs
 time = seq(from=0.5, to=2, by=0.5)
 # First define a bond object to be used throughout the analysis
 bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+# Estimate price, yield, convexity and duration
 price = bondPrice(bond,DF)
+bondYTM(bond,DF)
+# Duration measures the effect of a small parallel shift in the yield curve
+mDuration = bondDuration(bond,DF)
+# Duration plus convexity measure the effect of a larger parallel shift in the yield curve
+# Note however, they do not measure the effect of non-parallel shifts
+convexity = bondConvexity(bond,DF)
+
+# Measure a 10% increase in yield on duration
+newmDuration = bondDuration(bond,DF, 0.1)
+
 
 
 # Appliation: Idiosyncratic Pricing of US Treasury Notes and Bonds
@@ -33,6 +45,10 @@ y1 = 0.00961
 bondFullPrice(bond, y1, 8, t0, t1, tn)$clean
 bondFullPrice(bond, y1, 8, t0, t1, tn)$dirty
 bondFullPrice(bond, y1, 8, t0, t1, tn)$accruedInterest
+
+
+
+
 
 # Estimating the term structure: compounded rates from discount factors
 # Ulitzing data in the following format: Cusip,	IssueDate,	MaturityDate,	Name,	Coupon,	Bid/Ask
