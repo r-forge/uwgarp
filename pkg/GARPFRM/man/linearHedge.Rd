@@ -1,0 +1,20 @@
+\name{linearHedge}
+\alias{linearHedge}
+\title{Estimate the delta hedge of for a bond}
+\usage{
+linearHedge(regressand, regressor)
+}
+\arguments{
+  \item{regressand}{a \code{bond} object in
+  discountFactorArbitrage}
+
+  \item{regressor}{the right hand side}
+}
+\value{
+delta of the hedge
+}
+\description{
+This function estimates the delta for hedging a particular
+bond given bond data
+}
+

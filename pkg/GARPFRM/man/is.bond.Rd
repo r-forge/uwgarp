@@ -1,0 +1,18 @@
+\name{is.bond}
+\alias{is.bond}
+\title{To determine if user is specifying bond parameters correctly}
+\usage{
+is.bond(object)
+}
+\arguments{
+  \item{object}{a capm object created by
+  \code{\link{bond.spec}}}
+}
+\description{
+To determine if user is specifying bond parameters
+correctly
+}
+\author{
+TF
+}
+

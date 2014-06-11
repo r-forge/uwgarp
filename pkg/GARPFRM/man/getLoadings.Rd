@@ -1,0 +1,16 @@
+\name{getLoadings}
+\alias{getLoadings}
+\title{Retrieve PCA loadings}
+\usage{
+getLoadings(object)
+}
+\arguments{
+  \item{object}{is a pca object}
+}
+\description{
+Retrieve PCA loadings
+}
+\author{
+TF
+}
+

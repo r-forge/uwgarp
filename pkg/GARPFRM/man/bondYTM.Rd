@@ -1,0 +1,19 @@
+\name{bondYTM}
+\alias{bondYTM}
+\title{Calculate the yield to maturity of a bond}
+\usage{
+bondYTM(bond, discountCurve)
+}
+\arguments{
+  \item{bond}{a \code{bond} object}
+
+  \item{discountCurve}{vector of discount rates}
+}
+\value{
+yield to maturity of the bond
+}
+\description{
+This function calculates the yield to maturity of a fixed
+rate coupon bond given the discount curve and bond data.
+}
+
