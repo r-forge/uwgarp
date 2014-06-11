@@ -6,15 +6,23 @@ data(crsp.short)
 data = largecap.ts[,2:6]
 head(data)
 
-# Linear hedge estimation
+# Empirical application: Linear hedge estimation 
+# OLS Level-on-Level regression 
 deltas = linearHedge(data[,1],data[,2:5])
-# Insert the hedgeable contract value
+# Insert the normalized hedged contract versus hedgeable contract value
 deltas = c(1,deltas)
 
-# In sample illustration: random noise
+# In sample illustration: random, mean reverting spreads
 hedgedInstruments = data%*%deltas
 plot(hedgedInstruments, type="l", main = "Hedged Price Difference", xlab="Time",ylab="Difference")
 
+
+######### Applying duration as a hedge######## TO-DO
+
+
+
+# Have a single, empirical description of the behavior of the term structure that can be applied across all
+# assets. Principal Compnents (PCs) provide such an emperical description 
 # Retain components that combined account for x% of the cumulative variance
 pca = PCA(data, nfactors = 3, rotate="none")
 summary(pca)

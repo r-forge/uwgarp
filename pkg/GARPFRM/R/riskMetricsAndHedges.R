@@ -1,4 +1,4 @@
-########## Convexity and Duration##########
+########## Hedge Section-Convexity and Duration##########
 #' Calculate the modified duration of a bond
 #' 
 #' The function estimates modified duration of a fixed rate coupon bond 
@@ -108,7 +108,7 @@ ytmSolve <- function(ytm, couponRate, m, nPayments, face, targetPrice){
 }
 
 
-############ Hedge section###############
+############ Hedge section-Empirical###############
 
 #' Estimate the delta hedge of for a bond
 #' 
@@ -122,7 +122,7 @@ ytmSolve <- function(ytm, couponRate, m, nPayments, face, targetPrice){
 linearHedge <- function(regressand, regressor){
     deltas = matrix(0,nrow=1,ncol= ncol(regressor))
     reg = lm(regressand ~ regressor)
-    deltas = coef(reg)[seq(2,ncol(data),1)]
+    deltas = -coef(reg)[seq(2,ncol(data),1)]
   return(deltas)
 }
 

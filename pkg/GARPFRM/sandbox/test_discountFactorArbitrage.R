@@ -18,11 +18,14 @@ DF = discountFactor(price , cashFlow)
 # Estimate bondPrice
 # Choose a 2 year bond with semiannual payments to match number of bond prices and CFs
 time = seq(from=0.5, to=2, by=0.5)
-# First define a bond object to be used throughout the analysis
+# First define a bond object to be used throughout the analysis, where m is the compound frequency
 bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
 # Estimate price, yield, convexity and duration
 price = bondPrice(bond,DF)
+# Yield-to-maturity is often quoted when describing a security in terms of arates rather than price.
+# Estimate yied to maturity
 bondYTM(bond,DF)
+
 # Duration measures the effect of a small parallel shift in the yield curve
 mDuration = bondDuration(bond,DF)
 # Duration plus convexity measure the effect of a larger parallel shift in the yield curve
@@ -32,6 +35,15 @@ convexity = bondConvexity(bond,DF)
 # Measure a 10% increase in yield on duration
 newmDuration = bondDuration(bond,DF, 0.1)
 
+
+# Yields of bond with varying coupons over  Estimation and Plot
+# Utilizing a discount factor trable rewrite DF 10 years semiannually
+DF = rbind( 0.9615, 0.94305, 0.9246, 0.90591, 0.889, 0.87019, 0.8548, 0.8358825, 0.8219, 0.80294,
+            0.7903, 0.7713, 0.7599, 0.74092, 0.7307, 0.7117325, 0.7026, 0.70059, 0.6756)
+time = seq(0.5,10,0.5)
+# estimate bond specs using a 4% coupon rate
+bond = bondSpec(time, face=100, m=2, couponRate = 0.04)
+bondYTM(bond,DF)
 
 
 # Appliation: Idiosyncratic Pricing of US Treasury Notes and Bonds
