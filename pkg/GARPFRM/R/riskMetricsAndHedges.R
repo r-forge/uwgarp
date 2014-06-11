@@ -1,5 +1,4 @@
-# Convexity and Duration
-
+########## Convexity and Duration##########
 #' Calculate the modified duration of a bond
 #' 
 #' The function estimates modified duration of a fixed rate coupon bond 
@@ -109,22 +108,22 @@ ytmSolve <- function(ytm, couponRate, m, nPayments, face, targetPrice){
 }
 
 
-############Hedge section
+############ Hedge section###############
 
 #' Estimate the delta hedge of for a bond
 #' 
 #' This function estimates the delta for hedging a particular bond 
 #' given bond data
 #' 
-#' @param bond a \code{bond} object in discountFactorArbitrage
+#' @param regressand a \code{bond} object in discountFactorArbitrage
+#' @param regressor the right hand side
 #' @return delta of the hedge
 #' @export
-linearHedge <- function(bond){
-  ### Write body####
-  
-  
-  
-  return(delta)
+linearHedge <- function(regressand, regressor){
+    deltas = matrix(0,nrow=1,ncol= ncol(regressor))
+    reg = lm(regressand ~ regressor)
+    deltas = coef(reg)[seq(2,ncol(data),1)]
+  return(deltas)
 }
 
 #' Estimate PCA loadings and creat PCA object
@@ -139,7 +138,7 @@ linearHedge <- function(bond){
 #' @export
 PCA <- function(data, nfactors, rotate = "none"){
   pca = principal(data, nfactors, rotate="none")
-  class(pca) <- c("psych", "principal","PCA")
+  class(pca) <- c("PCA","psych", "principal")
   return(pca)
 }
 

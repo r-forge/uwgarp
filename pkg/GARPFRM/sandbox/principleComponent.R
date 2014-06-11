@@ -6,6 +6,15 @@ data(crsp.short)
 data = largecap.ts[,2:6]
 head(data)
 
+# Linear hedge estimation
+deltas = linearHedge(data[,1],data[,2:5])
+# Insert the hedgeable contract value
+deltas = c(1,deltas)
+
+# In sample illustration: random noise
+hedgedInstruments = data%*%deltas
+plot(hedgedInstruments, type="l", main = "Hedged Price Difference", xlab="Time",ylab="Difference")
+
 # Retain components that combined account for x% of the cumulative variance
 pca = PCA(data, nfactors = 3, rotate="none")
 summary(pca)
