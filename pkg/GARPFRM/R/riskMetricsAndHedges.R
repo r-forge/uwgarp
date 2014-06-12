@@ -18,7 +18,7 @@ bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
   face = bond$face
   time = bond$time
   # Calculate the ytm
-  ytm = bondYTM(bond=bond, discountCurve=discountCurve) + percentChangeYield
+  ytm = bondYTM(bond=bond, discountCurve=discountCurve + percentChangeYield)
   # Convert to continuously compounded rate
   y_c = m * log(1 + ytm / m)
   # Get the cashflows of coupon amounts and face value
@@ -175,11 +175,22 @@ getWeights <- function(object){
 #' @method plot PCA
 #' @S3method plot PCA
 plot.PCA <- function(x, y, ..., main="Beta from PCA regression"){
-  if(ncol(x$loading)> 3) warning("Only first 3 loadings will be graphically displayed")
+ if(ncol(x$loading)> 3) warning("Only first 3 loadings will be graphically displayed")
   # Plot the first three factors
-  plot(pca$loading[,1], type="l", main, 
-       xlab="maturity", ylab="beta")
-  lines(pca$loading[,2], col="blue",lty=2)
-  lines(pca$loading[,3], col="red",lty=2)
-  legend("topleft",legend=c("PCA1","PCA2","PCA3"),bty="n",lty=c(1,2,2),col=c("black","blue","red"), cex=0.8)
+ if (ncol(x$loading) >= 3){
+   plot(x$loading[,1], type="l", main = main, 
+        xlab="Maturity/Items", ylab="Loadings")
+   lines(x$loading[,2], col="blue",lty=2)
+   lines(x$loading[,3], col="red",lty=2)
+   legend("topleft",legend=c("PCA1","PCA2","PCA3"),bty="n",lty=c(1,2,2),col=c("black","blue","red"), cex=0.8)
+ }else if(ncol(x$loading) == 2){
+   plot(x$loading[,1], type="l", main = main, 
+        xlab="Maturity/Items", ylab="Loadings")
+   lines(x$loading[,2], col="blue",lty=2)
+   legend("topleft",legend=c("PCA1","PCA2"),bty="n",lty=c(1,2),col=c("black","blue"), cex=0.8)
+ }else{
+   plot(x$loading[,1], type="l", main = main, 
+        xlab="Maturity/Items", ylab="Loadings")
+   legend("topleft",legend=c("PCA1"),bty="n",lty=c(1),col=c("black"), cex=0.8)
+ }
 }

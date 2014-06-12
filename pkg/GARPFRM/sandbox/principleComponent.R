@@ -42,12 +42,10 @@ fa.diagram(pca)
 # to random data with the same properties as the real data set.
 fa.parallel(data)
 
-# Plot the first three factors
-plot(pca$loading[,1], type="l", main="Beta from PCA regression", 
-     xlab="maturity", ylab="beta")
-lines(pca$loading[,2], col="blue",lty=2)
-lines(pca$loading[,3], col="red",lty=2)
-legend("topleft",legend=c("PCA1","PCA2","PCA3"),bty="n",lty=c(1,2,2),col=c("black","blue","red"), cex=0.8)
+# Plot up to the first three factors
+plot(pca)
+pca = PCA(data, nfactors = 2, rotate="none")
+plot(pca)
 
 # Creating factor scores: Linear composite of the weighted observed variables
   # Determine weights
@@ -55,3 +53,4 @@ legend("topleft",legend=c("PCA1","PCA2","PCA3"),bty="n",lty=c(1,2,2),col=c("blac
   # Sum the products
 pca.r = principal(data, nfactors=2, rotate="varimax", scores=T)
 scores = pca.r$scores
+plot(pca$scores[,1],pca$scores[,2], xlab="PCA1", ylab="PCA2", main = "Scores: Observable Pattern")

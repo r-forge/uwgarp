@@ -3,6 +3,7 @@ suppressMessages(library(GARPFRM))
 options(digits=3)
 data(bonds)
 
+
 # The Cash Flows from Fixed-Rate Government Coupon Bonds
 # Discount Factors and the Law of One Price
 # Initialize: The Cash Flows from Fixed-Rate: treasury bonds ticking in quarters
@@ -12,7 +13,8 @@ price <- matrix(c(96.8, 99.56, 100.86, 101.22), ncol=1)
 
 # Estimate the Discount Factors (DF)
 DF = discountFactor(price , cashFlow)
-
+# To confirm solution check that price is replicable
+(cashFlow%*%price)/100
 
 
 # Estimate bondPrice
@@ -35,7 +37,7 @@ convexity = bondConvexity(bond,DF)
 # Measure a 10% increase in yield on duration
 newmDuration = bondDuration(bond,DF, 0.1)
 
-
+## Example with a longer compounding time sequence:
 # Yields of bond with varying coupons over  Estimation and Plot
 # Utilizing a discount factor trable rewrite DF 10 years semiannually
 DF = rbind( 0.9615, 0.94305, 0.9246, 0.90591, 0.889, 0.87019, 0.8548, 0.8358825, 0.8219, 0.80294,
@@ -44,6 +46,34 @@ time = seq(0.5,10,0.5)
 # estimate bond specs using a 4% coupon rate
 bond = bondSpec(time, face=100, m=2, couponRate = 0.04)
 bondYTM(bond,DF)
+
+
+### Valuation and Risk Model Section- Yield Curve Shapes
+# Vasicek Modeling to illustrate different yield curve calibrations
+# Initialize Model
+theta = 0.10
+k = 0.8
+sigma = 0.08
+# Seven Yield Curves to estimate
+r = seq(0, 0.15, 0.025)
+length(r)
+maturity = 10
+# Illustraton #1 for standard theta and initial r estimate yield path
+yieldCurves = yieldCurveVasicek(r, k, theta, sigma, maturity)
+# Plot using matplot-plot the columns of one matrix against the columns of another
+maturity = seq(1,maturity,1)
+matplot(maturity, yieldCurves, type="l", lty=1, main="Yield Curves")
+# choose h = theta for y horizontal line
+abline(h = theta, col="red", lty=2)
+
+# Illustration #2 for high theta and low initial r estimate yield path
+theta = 0.45
+yieldCurves = yieldCurveVasicek(r, k, theta, sigma, maturity)
+# Plot using matplot-plot the columns of one matrix against the columns of another
+maturity = seq(1,maturity,1)
+matplot(maturity, yieldCurves, type="l", lty=1, main="Yield Curves")
+# choose h = theta for y horizontal line
+abline(h = theta, col="red", lty=2)
 
 
 # Appliation: Idiosyncratic Pricing of US Treasury Notes and Bonds
@@ -59,15 +89,12 @@ bondFullPrice(bond, y1, 8, t0, t1, tn)$dirty
 bondFullPrice(bond, y1, 8, t0, t1, tn)$accruedInterest
 
 
-
-
-
 # Estimating the term structure: compounded rates from discount factors
 # Ulitzing data in the following format: Cusip,	IssueDate,	MaturityDate,	Name,	Coupon,	Bid/Ask
 head(dat)
-ccRate = compoundingRate(dat, initialDate=as.Date("1995-05-15"), m=4, face=100)
+ccRate = compoundingRate(dat, initialDate=as.Date("2000-05-15"), m=4, face=100)
 
 years = ccRate$years
 rate = ccRate$ccRate
 # Plot of continuously compounded spot rates
-plot(x=years, y=rate, type="l", ylab="rate", xlab="Time to Maturity", main="Term Structure of Spot Rates")
+plot(x=years, y=rate, type="l", ylab="Rate", xlab="Time to Maturity", main="Term Structure: Spot Rates")

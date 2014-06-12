@@ -126,7 +126,6 @@ compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
   dat[, "IssueDate"] = as.Date(dat[, "IssueDate"], format="%m/%d/%Y")
   dat[, "MaturityDate"] = as.Date(dat[, "MaturityDate"], format="%m/%d/%Y")
   # Convert the coupon column to a numeric
-  dat[, "Coupon"] = as.numeric(gsub("%", "", dat[, "Coupon"])) / 100
   # Vector of prices
   price = (dat[, "Bid"] + dat[, "Ask"]) / 2
   
@@ -177,4 +176,46 @@ compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
   rate$years = years
   rate$ccRate = ccRate 
   return(rate)
+}
+
+
+### Modelling a Zero-Coupon Bond (ZCB)
+#' There are three main types of yield curve shapes: normal, inverted and flat (or humped)
+#' Estimate Vasicek zero-coupon bond to be used in term structure
+#' 
+#' This function calculates the Vasicek Price given an initial data calibration 
+#' The function is a subfunction for yieldCurveVasicek
+#' @param r initial short rate
+#' @param k speed of reversion parameter
+#' @param theta long-term reversion yield
+#' @param sigma randomness parameter. Modelled after Brownan Motion
+#' @return t length of time modelled for
+#' @author TF
+#' @export
+vasicekPrice = function(r, k, theta, sigma, maturity){
+    mean = (1/k)*(1 - exp(-maturity*k)) 
+    variance = (theta - sigma^2/(2*k^2))*(maturity - mean) + (sigma^2)/(4*k)*mean^2
+    price = exp(-variance - mean*r)
+    return(price)
+  }
+
+#' Estimate Vasicek zero-coupon yield
+#' 
+#' This function calculates the Vasicek yield given an initial data calibration 
+#' @param r initial short rate
+#' @param k speed of reversion parameter
+#' @param theta long-term reversion yield
+#' @param sigma randomness parameter. Modelled after Brownan Motion
+#' @return t length of time modelled for
+#' @author TF
+#' @export
+yieldCurveVasicek = function(r, k, theta, sigma, maturity){
+  n = length(r)
+  yield = matrix(0, maturity, n)
+  for(i in 1:n){
+    for(t in 1:maturity){
+      yield[t,i] = -log(vasicekPrice(r[i], k, theta, sigma, t))/t
+    }
+  }
+  return(yield)
 }
