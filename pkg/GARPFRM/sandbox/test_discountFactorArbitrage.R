@@ -4,7 +4,7 @@ options(digits=3)
 data(bonds)
 
 
-# The Cash Flows from Fixed-Rate Government Coupon Bonds
+## The Cash Flows from Fixed-Rate Government Coupon Bonds
 # Discount Factors and the Law of One Price
 # Initialize: The Cash Flows from Fixed-Rate: treasury bonds ticking in quarters
 cashFlow = rbind(c(100, 0, 0, 0), c(2 + 7/8, 102 + 7/8, 0, 0), c(3 + 3/4, 3 + 3/4, 103 + 3/4, 0), c(3 + 3/4, 3 + 3/4, 3 + 3/4, 103 + 3/4))
@@ -17,7 +17,7 @@ DF = discountFactor(price , cashFlow)
 (cashFlow%*%price)/100
 
 
-# Estimate bondPrice
+## Estimate bondPrice
 # Choose a 2 year bond with semiannual payments to match number of bond prices and CFs
 time = seq(from=0.5, to=2, by=0.5)
 # First define a bond object to be used throughout the analysis, where m is the compound frequency
@@ -29,6 +29,7 @@ price = bondPrice(bond,DF)
 bondYTM(bond,DF)
 
 # Duration measures the effect of a small parallel shift in the yield curve
+# if rate goes up 10 basis points the relative P&L will change by mDuration*0.1%
 mDuration = bondDuration(bond,DF)
 # Duration plus convexity measure the effect of a larger parallel shift in the yield curve
 # Note however, they do not measure the effect of non-parallel shifts
@@ -76,7 +77,7 @@ matplot(maturity, yieldCurves, type="l", lty=1, main="Yield Curves")
 abline(h = theta, col="red", lty=2)
 
 
-# Appliation: Idiosyncratic Pricing of US Treasury Notes and Bonds
+## Appliation: Idiosyncratic Pricing of US Treasury Notes and Bonds
 t0 = as.Date("2013-08-15")
 t1 = as.Date("2014-02-15")
 tn = as.Date("2013-10-04")
@@ -89,7 +90,7 @@ bondFullPrice(bond, y1, 8, t0, t1, tn)$dirty
 bondFullPrice(bond, y1, 8, t0, t1, tn)$accruedInterest
 
 
-# Estimating the term structure: compounded rates from discount factors
+## Estimating the term structure: compounded rates from discount factors
 # Ulitzing data in the following format: Cusip,	IssueDate,	MaturityDate,	Name,	Coupon,	Bid/Ask
 head(dat)
 ccRate = compoundingRate(dat, initialDate=as.Date("2000-05-15"), m=4, face=100)
