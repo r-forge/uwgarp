@@ -35,9 +35,6 @@ mDuration = bondDuration(bond,DF)
 # Note however, they do not measure the effect of non-parallel shifts
 convexity = bondConvexity(bond,DF)
 
-# Measure a 10% increase in yield on duration
-newmDuration = bondDuration(bond,DF, 0.1)
-
 ## Example with a longer compounding time sequence:
 # Yields of bond with varying coupons over  Estimation and Plot
 # Utilizing a discount factor trable rewrite DF 10 years semiannually
@@ -47,6 +44,17 @@ time = seq(0.5,10,0.5)
 # estimate bond specs using a 4% coupon rate
 bond = bondSpec(time, face=100, m=2, couponRate = 0.04)
 bondYTM(bond,DF)
+
+# Illustrating elasticity of YTM: measure 1% and 10% increase in yield on duration
+DF = rbind(0.95434,0.9434,0.917232,0.89,0.85678,0.8396,0.81242,0.7921,0.7693,0.7473,0.7298,0.7050)
+# Choose a 2 year bond with semiannual payments to match number of bond prices and CFs
+time = seq(from=0.5, to=6, by=0.5)
+# First define a bond object to be used throughout the analysis, where m is the compound frequency
+bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+# Duration measures the effect of a small parallel shift in the yield curve
+mDuration = bondDuration(bond,DF)
+mDuration = bondDuration(bond,DF,0.01)
+mDuration = bondDuration(bond,DF,0.1)
 
 
 ### Valuation and Risk Model Section- Yield Curve Shapes

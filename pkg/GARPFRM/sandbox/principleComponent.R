@@ -2,7 +2,7 @@ library(GARPFRM)
 library(psych)
 library(GPArotation)
 
-######### Applying duration as a hedge
+# Applying duration as a hedge
 # #1: Initialize the Discount Factors (DF)
 DF_1 = rbind(0.968,0.9407242,0.9031545,0.8739803)
 # Choose a 2 year bond with semiannual payments to match number of bond prices and CFs
@@ -20,7 +20,8 @@ bond_2 = bondSpec(time, face=100, m=2, couponRate = 0.0475)
 # Duration measures the effect of a small parallel shift in the yield curve
 mDuration_2 = bondDuration(bond_2,DF_2)
 # Hedging Ratio: for every bond_2 used there needs to be hedgeRatio amount of bond_1s
-hedgeRatio = mDuration_2/mDuration_1
+# If you hold the portfolio bond_2, you want to sell hedgeRatio units of bonds
+hedgeRatio = - mDuration_2/mDuration_1
 
 
 # Load Data for historcal analysis tools

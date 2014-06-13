@@ -18,7 +18,7 @@ bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
   face = bond$face
   time = bond$time
   # Calculate the ytm
-  ytm = bondYTM(bond=bond, discountCurve=discountCurve + percentChangeYield)
+  ytm = bondYTM(bond=bond, discountCurve=discountCurve) + percentChangeYield
   # Convert to continuously compounded rate
   y_c = m * log(1 + ytm / m)
   # Get the cashflows of coupon amounts and face value
