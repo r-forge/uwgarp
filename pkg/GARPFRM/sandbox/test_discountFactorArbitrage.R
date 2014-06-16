@@ -67,7 +67,7 @@ sigma = 0.08
 r = seq(0, 0.15, 0.025)
 length(r)
 maturity = 10
-# Illustraton #1 for standard theta and initial r estimate yield path
+# Illustration #1 for standard theta and initial r estimate yield path
 yieldCurves = yieldCurveVasicek(r, k, theta, sigma, maturity)
 # Plot using matplot-plot the columns of one matrix against the columns of another
 maturity = seq(1,maturity,1)
@@ -77,6 +77,7 @@ abline(h = theta, col="red", lty=2)
 
 # Illustration #2 for high theta and low initial r estimate yield path
 theta = 0.45
+maturity = 10
 yieldCurves = yieldCurveVasicek(r, k, theta, sigma, maturity)
 # Plot using matplot-plot the columns of one matrix against the columns of another
 maturity = seq(1,maturity,1)

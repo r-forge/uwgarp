@@ -38,7 +38,17 @@ deltas = c(1,deltas)
 
 # In sample illustration: random, mean reverting spreads
 hedgedInstruments = data%*%deltas
-plot(hedgedInstruments, type="l", main = "Hedged Price Difference", xlab="Time",ylab="Difference")
+plot(hedgedInstruments, type="l", main = "Hedged Price Difference: Level", xlab="Time",ylab="Difference")
+
+# OLS Change-on-Change regression 
+deltas = linearHedge(diff(data[,1]),diff(data[,2:5]))
+# Insert the normalized hedged contract versus hedgeable contract value
+deltas = c(1,deltas)
+
+# In sample illustration: random, mean reverting spreads
+hedgedInstruments = data%*%deltas
+plot(hedgedInstruments, type="l", main = "Hedged Price Difference: Change", xlab="Time",ylab="Difference")
+
 
 # Have a single, empirical description of the behavior of the term structure that can be applied across all
 # assets. Principal Compnents (PCs) provide such an emperical description 
