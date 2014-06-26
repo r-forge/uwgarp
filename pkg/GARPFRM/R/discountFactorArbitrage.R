@@ -178,6 +178,30 @@ compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
   return(rate)
 }
 
+#' Estimate spot and forward rates
+#' 
+#' This function calculates the forward or forward rates given an discount factors 
+#' and time increments
+#' @param time increments of time when discount factors are estimated
+#' @param DF discount factor for during time increments
+#' @author TF
+#' @export
+spotForwardRates = function(time, DF){
+  if(length(time) != length(DF)) stop("both time and DF parameter need to be of the same length")
+spotRates = matrix(0,length(time),1)
+for(i in 1:(length(time))){
+  spotRates[i] = (2-2*DF[i]^(1/(2*time[i]))) / DF[i]^(1/(2*time[i]))
+}
+
+forwardRates = matrix(0,length(time),1)
+forwardRates[1] = spotRates[1]
+for(j in 1:(length(time)-1)){
+  forwardRates[j+1] = (DF[j]/DF[j+1] - 1) *2
+}
+rates = cbind(spotRates, forwardRates)
+colnames(rates)= cbind("Spot","Forward")
+return(rates)
+}
 
 ### Modelling a Zero-Coupon Bond (ZCB)
 #' There are three main types of yield curve shapes: normal, inverted and flat (or humped)

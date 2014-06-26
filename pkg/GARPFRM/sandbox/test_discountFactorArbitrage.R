@@ -108,3 +108,8 @@ years = ccRate$years
 rate = ccRate$ccRate
 # Plot of continuously compounded spot rates
 plot(x=years, y=rate, type="l", ylab="Rate", xlab="Time to Maturity", main="Term Structure: Spot Rates")
+
+# Spot, Forward, and Par Rates
+DF = c(0.996489, 0.991306, 0.984484, 0.975616, 0.964519)
+time = seq(from=0.5, to=2.5, by=0.5)
+
