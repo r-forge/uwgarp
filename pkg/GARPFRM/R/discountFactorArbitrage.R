@@ -75,7 +75,15 @@ discountFactor = function(price, cashFlow){
   return(DF)
 }
 
+#' bondFullPrice
+#' 
 #' Estimate price of bond w/ acrrued interest
+#' The present value of a bond's cash flows should be equated or 
+#' compared with its full price, with the amount a pruchaser actually 
+#' pays to purchase those cash flows. The flat price is p, accrued 
+#' interest is AI, the present value of the cash flows by PV, and the 
+#' full price by P: 
+#' P=p+AI=PV
 #' 
 #' This function calculates the price of a fixed rate coupon bond given coupon rate, yield, 
 #' compoundPd, cashFlowPd, face value, previous coupon date, next coupon date.
@@ -85,6 +93,16 @@ discountFactor = function(price, cashFlow){
 #' @param t0 previous coupon date
 #' @param t1 next coupon period
 #' @param currentDate current date
+#' @examples
+#' t0 = as.Date("2013-08-15")
+#' t1 = as.Date("2014-02-15")
+#' tn = as.Date("2013-10-04")
+#' currentDate = tn
+#' bond = bondSpec(face=100, m=2, couponRate = 0.0475)
+#' y1 = 0.00961
+#' bondFullPrice(bond, y1, 8, t0, t1, tn)$clean
+#' bondFullPrice(bond, y1, 8, t0, t1, tn)$dirty
+#' bondFullPrice(bond, y1, 8, t0, t1, tn)$accruedInterest
 #' @return price of the bond: clean, dirty and accrued interest
 #' @author TF
 #' @export

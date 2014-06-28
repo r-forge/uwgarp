@@ -7,6 +7,13 @@ data(bonds)
 ## The Cash Flows from Fixed-Rate Government Coupon Bonds
 # Discount Factors and the Law of One Price
 # Initialize: The Cash Flows from Fixed-Rate: treasury bonds ticking in quarters
+## Example from Tuckman
+cashFlow = rbind(c(100+(1+1/4)/2,0,0),c((4 +7/8)/2,100+(4+7/8)/2,0),c((4+1/2)/2,(4+1/2)/2,100+(4+1/2)/2))
+# Initialize: Price of the bond
+price = matrix(c(100.550, 104.513, 105.856), ncol=1)
+DF = discountFactor(price, cashFlow)
+
+## Additional Example
 cashFlow = rbind(c(100, 0, 0, 0), c(2 + 7/8, 102 + 7/8, 0, 0), c(3 + 3/4, 3 + 3/4, 103 + 3/4, 0), c(3 + 3/4, 3 + 3/4, 3 + 3/4, 103 + 3/4))
 # Initialize: Price of the bond
 price <- matrix(c(96.8, 99.56, 100.86, 101.22), ncol=1)
@@ -109,7 +116,8 @@ rate = ccRate$ccRate
 # Plot of continuously compounded spot rates
 plot(x=years, y=rate, type="l", ylab="Rate", xlab="Time to Maturity", main="Term Structure: Spot Rates")
 
-# Spot, Forward, and Par Rates
+# Spot, Forward Rates
 DF = c(0.996489, 0.991306, 0.984484, 0.975616, 0.964519)
 time = seq(from=0.5, to=2.5, by=0.5)
-
+rates = spotForwardRates(time,DF)
+rates
