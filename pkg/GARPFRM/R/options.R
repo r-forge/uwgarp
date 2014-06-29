@@ -208,7 +208,7 @@ americanBinomial <- function(option, N){
     #  option_value[[j]] <- V.new
     #}
     V[1:(j+1)] <- V.new[1:(j+1)]
-    print(V)
+    #print(V)
   }
   # calculate the greeks
   # delta <- (f_02 - f_00) / (u^2 * S0 - d^2 * S0)
@@ -283,6 +283,100 @@ putEuropeanBS <- function(S0, K, r, q, vol, ttm){
 # vega
 # rho
 
+#' Option Greeks
+#' 
+#' Compute the greeks of an option using the Black-Scholes-Merton framework
+#' 
+#' @param option an \code{option} object created with \code{\link{optionSpec}}
+#' @param greek one of "delta", "theta", "gamma", "rho", or "vega"
+#' @param prices vector of values to compute the greeks as time
+#' to maturity varies
+#' @param maturities vector of values to compute the greeks as time
+#' to maturity varies
+#' @param plot TRUE/FALSE to plot the greek value as the underlying price and/ time to maturity vary
+#' @param \dots passthrough parameters to \code{\link{plot}}
+#' @author Ross Bennett
+#' @export
+computeGreeks <- function(option, 
+                          greek=c("delta", "theta", "gamma", "rho", "vega"), 
+                          prices=NULL, 
+                          maturities=NULL, 
+                          plot=FALSE, ...){
+  
+  greek <- match.arg(greek)
+  switch(greek,
+         delta = {FUN <- match.fun(deltaBS)},
+         theta = {FUN <- match.fun(thetaBS)},
+         gamma = {FUN <- match.fun(gammaBS)},
+         rho = {FUN <- match.fun(rhoBS)},
+         vega = {FUN <- match.fun(vegaBS)})
+  
+  if(!is.null(prices) & !is.null(maturities)){
+    out <- vector("list", 2)
+    # First compute the greek value as we vary the underlying price, holding ttm constant
+    out[[1]] <- FUN(S0 = prices, 
+                    K = option$K, 
+                    r = option$r, 
+                    q = option$q, 
+                    vol = option$volatility, 
+                    ttm = option$maturity, 
+                    type = option$type)
+    # Next compute the greek value as we vary time to maturity, holding S0 constant
+    out[[2]] <- FUN(S0 = option$S0, 
+                    K = option$K, 
+                    r = option$r, 
+                    q = option$q, 
+                    vol = option$volatility, 
+                    ttm = maturities, 
+                    type = option$type)
+    if(plot){
+      par(mfrow=c(2,1))
+      plot(x = prices, y = out[[1]], type="l", ylab=greek, xlab="price", ...=...)
+      plot(x = maturities, y = out[[2]], type="l", xaxt="n", ylab=greek, xlab="time to maturity", ...=...)
+      axis(side = 1, at=maturities, labels = as.character(rev(maturities)))
+      layout(matrix(1,1,1), widths = 1, heights = 1)
+      par(mfrow=c(1,1))
+    }
+    # return the list
+    return(out)
+  }
+  
+  if(!is.null(prices)){
+    S0 <- prices
+    xs <- S0
+  } else {
+    S0 <- option$S0
+  }
+  
+  if(!is.null(maturities)){
+    ttm <- maturities
+    xs <- ttm
+  } else {
+    ttm <- option$maturity
+  }
+  
+  out <- FUN(S0 = S0, 
+             K = option$K, 
+             r = option$r, 
+             q = option$q, 
+             vol = option$volatility, 
+             ttm = ttm, 
+             type = option$type)
+  if(plot){
+    if(!is.null(maturities)){
+      xlabels <- as.character(rev(xs))
+      xlab <- "time to maturity"
+    } else {
+      xlabels <- xs
+      xlab <- "price"
+    }
+    plot(x = xs, y = out, type="l", ylab=greek, xaxt="n", xlab=xlab, ...=...)
+    axis(side = 1, at=xs, labels = xlabels)
+  }
+  return(out)
+}
+
+#' @export
 deltaBS <- function(S0, K, r, q, vol, ttm, type){
   d1 <- (log(S0 / K) + (r - q + (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
   if(type == "call"){
@@ -308,6 +402,7 @@ deltaBS <- function(S0, K, r, q, vol, ttm, type){
 #   return(delta)
 # }
 
+#' @export
 thetaBS <- function(S0, K, r, q, vol, ttm, type){
   d1 <- (log(S0 / K) + (r - q + (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
   d2 <- (log(S0 / K) + (r - q - (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
@@ -336,7 +431,8 @@ thetaBS <- function(S0, K, r, q, vol, ttm, type){
 #   return(theta)
 # }
 
-gammaBS <- function(S0, K, r, q, vol, ttm){
+#' @export
+gammaBS <- function(S0, K, r, q, vol, ttm, type){
   d1 <- (log(S0 / K) + (r - q + (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
   out <- dnorm(d1) / (S0 * vol * sqrt(ttm))
   return(out)
@@ -350,7 +446,8 @@ gammaBS <- function(S0, K, r, q, vol, ttm){
 # 
 # gamma.put <- gamma.call
 
-vegaBS <- function(S0, K, r, q, vol, ttm){
+#' @export
+vegaBS <- function(S0, K, r, q, vol, ttm, type){
   d1 <- (log(S0 / K) + (r - q + (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
   out <- S0 * sqrt(ttm) * dnorm(d1)
   return(out)
@@ -364,6 +461,7 @@ vegaBS <- function(S0, K, r, q, vol, ttm){
 # 
 # vega.put <- vega.call
 
+#' @export
 rhoBS <- function(S0, K, r, q, vol, ttm, type){
   d2 <- (log(S0 / K) + (r - q - (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
   if(type == "call"){
