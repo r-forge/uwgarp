@@ -18,3 +18,5 @@ euro.call.val.bin <- optionValue(euro.call, method="Binomial", N=100)
 euro.put <- optionSpec(style="european", type="put")
 euro.put.val.bs <- optionValue(euro.put, method="Black-Scholes") 
 euro.put.val.bin <- optionValue(euro.put, method="Binomial") 
+
+

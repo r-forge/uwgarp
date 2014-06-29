@@ -5,15 +5,15 @@
 #' Specify parameters of an option
 #' 
 #' @param style style of the option, e.g. european, american, etc.
-#' @param type type of the option. Only calls and puts are supported currently.
+#' @param type type of the option; "call" or "put"
 #' @param S0 underlying asset price
 #' @param K strike price
-#' @param maturity the life of the option, measured in years.
+#' @param maturity the life of the option, measured in years
 #' @param r risk free rate
 #' @param volatility volatility of the underlying asset price
 #' @param q continuous dividend yield rate for options on stocks or stock 
 #' indices paying a dividend. Also the foreign risk free rate for options on 
-#' currencies.
+#' currencies
 #' @return an object of class "option" with the parameters that specify the option
 #' @author Ross Bennett
 #' @export
@@ -387,4 +387,96 @@ rhoBS <- function(S0, K, r, q, vol, ttm, type){
 #   rho <- -K * ttm * exp(-r * ttm) * pnorm(-d2)
 #   return(rho)
 # }
+
+##### Implied Volatility #####
+
+#' Implied Volatility
+#' 
+#' Compute the implied volatility of a european option using the 
+#' Black-Scholes-Merton model.
+#' 
+#' @details A bisection algorithm is used to compute the implied volatility
+#' of a European option priced with the Black-Scholes-Merton model
+#' 
+#' @param option an \code{option} object created with \code{\link{optionSpec}}
+#' @param price market price of the option
+#' @param lower the lower bound of implied volatility to search
+#' @param upper the upper bound of implied volatility to search
+#' @param \dots any passthrough parameters to \code{\link{impliedVolBS}}
+#' 
+#' @return implied volatility estimate
+#' @author Ross Bennett
+#' @export
+impliedVolatility <- function(option, price, lower=0, upper=0.5, ...){
+  if(!is.option(option)) stop("option must be of class 'option'")
+  
+  if(hasArg(tol)) tol = match.call(expand.dots=TRUE)$tol else tol = sqrt(.Machine$double.eps)
+  if(hasArg(max_it)) max_it = match.call(expand.dots=TRUE)$max_it else max_it = 200
+  
+  out <- try(impliedVolBS(vol_range = c(lower[1], upper[1]), 
+                          S0 = option$S0, 
+                          K = option$K, 
+                          r = option$r, 
+                          q = option$q, 
+                          ttm = option$maturity, 
+                          P_mkt = price, 
+                          type = option$type,
+                          tol = tol, 
+                          max_it = max_it), silent=TRUE)
+  if(inherits(out, what = "try-error")){
+    print("Bisection algorithm did not converge on implied volatility estimate")
+    return(NULL)
+  } else {
+    return(out)
+  }
+}
+
+impliedVolBS <- function(vol_range, S0, K, r, q, ttm, P_mkt, type, tol=.Machine$double.eps, max_it=200){
+  # use bisection to compute the implied volatility
+  # http://en.wikipedia.org/wiki/Bisection_method
+  tmp_vol_lower <- vol_range[1]
+  tmp_vol_upper <- vol_range[2]
+  i <- 1
+  while(i <= max_it){
+    vol_mid <- (tmp_vol_lower + tmp_vol_upper) / 2
+    obj_mid <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = vol_mid, ttm = ttm, P_mkt = P_mkt, type = type)
+    if(abs(obj_mid) <= tol){
+      out <- vol_mid
+    } else{
+      tmp_obj_lower <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = tmp_vol_lower, ttm = ttm, P_mkt = P_mkt, type = type)
+      if(sign(obj_mid) == sign(tmp_obj_lower)){
+        tmp_vol_lower <- vol_mid
+      } else{
+        tmp_vol_upper <- vol_mid
+      }
+    }
+    i <- i + 1
+  }
+  if(i == max_it) warning("maximum iteratations reached")
+  # out is the volatility that sets the Black-Scholes model price equal to the 
+  # market price
+  out <- vol_mid
+  
+  out_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = out, ttm = ttm, P_mkt = P_mkt, type = type)^2
+  # check the boundary conditions
+  lb_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = vol_lower, ttm = ttm, P_mkt = P_mkt, type = type)^2
+  if(lb_obj <= out_obj) warning("Objective function at lower boundary")
+  
+  ub_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = vol_upper, ttm = ttm, P_mkt = P_mkt, type = type)^2
+  if(ub_obj <= out_obj) warning("Objective function at upper boundary")
+  
+  return(out)
+}
+
+# Objective function for use in europeanImpliedVolatility
+obj_fun <- function(S0, K, r, q, sigma, ttm, P_mkt, type){
+  if(type == "call"){
+    out <- callEuropeanBS(S0=S0, K=K, r=r, q=q, vol=sigma, ttm=ttm)
+  } else if(type == "put"){
+    out <- putEuropeanBS(S0=S0, K=K, r=r, q=q, vol=sigma, ttm=ttm)
+  } else {
+    stop("A type must be specified")
+  }
+  return(out - P_mkt)
+}
 

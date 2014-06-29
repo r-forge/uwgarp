@@ -10,13 +10,13 @@ optionSpec(style = c("european", "american"), type = c("call", "put"),
 \arguments{
 \item{style}{style of the option, e.g. european, american, etc.}
 
-\item{type}{type of the option. Only calls and puts are supported currently.}
+\item{type}{type of the option; "call" or "put"}
 
 \item{S0}{underlying asset price}
 
 \item{K}{strike price}
 
-\item{maturity}{the life of the option, measured in years.}
+\item{maturity}{the life of the option, measured in years}
 
 \item{r}{risk free rate}
 
@@ -24,7 +24,7 @@ optionSpec(style = c("european", "american"), type = c("call", "put"),
 
 \item{q}{continuous dividend yield rate for options on stocks or stock
 indices paying a dividend. Also the foreign risk free rate for options on
-currencies.}
+currencies}
 }
 \value{
 an object of class "option" with the parameters that specify the option
