@@ -20,6 +20,12 @@ the estimated value of the option
 \description{
 Estimate the value of an option
 }
+\examples{
+am.call <- optionSpec(style="american", type="call")
+am.call.val <- optionValue(am.call, N=4)
+euro.call <- optionSpec(style="european", type="call", S0=30, K=30, maturity=1, r=0.05, volatility=0.25, q=0)
+euro.call.val.bs <- optionValue(euro.call, method="Black-Scholes")
+}
 \author{
 Ross Bennett
 }

@@ -16,6 +16,9 @@
 #' currencies
 #' @return an object of class "option" with the parameters that specify the option
 #' @author Ross Bennett
+#' @examples
+#' am.call <- optionSpec(style="american", type="call")
+#' euro.call <- optionSpec(style="european", type="call", S0=30, K=30, maturity=1, r=0.05, volatility=0.25, q=0)
 #' @export
 optionSpec <- function(style=c("european", "american"), 
                        type=c("call", "put"), 
@@ -58,6 +61,11 @@ is.option <- function(x){
 #' @param \dots any other passthrough parameters
 #' @return the estimated value of the option
 #' @author Ross Bennett
+#' @examples
+#' am.call <- optionSpec(style="american", type="call")
+#' am.call.val <- optionValue(am.call, N=4)
+#' euro.call <- optionSpec(style="european", type="call", S0=30, K=30, maturity=1, r=0.05, volatility=0.25, q=0)
+#' euro.call.val.bs <- optionValue(euro.call, method="Black-Scholes")
 #' @export
 optionValue <- function(option, method=c("Binomial", "Black-Scholes"), N=20, ...){
   if(!is.option(option)) stop("option must be of class 'option'")
@@ -296,6 +304,18 @@ putEuropeanBS <- function(S0, K, r, q, vol, ttm){
 #' @param plot TRUE/FALSE to plot the greek value as the underlying price and/ time to maturity vary
 #' @param \dots passthrough parameters to \code{\link{plot}}
 #' @author Ross Bennett
+#' @examples
+#' euro.call <- optionSpec(style="european", type="call", S0=30, K=30, maturity=1, r=0.05, volatility=0.25, q=0)
+#' # European call greeks
+#' computeGreeks(euro.call, greek = "delta")
+#' computeGreeks(euro.call, greek = "gamma")
+#' computeGreeks(euro.call, greek = "theta")
+#' computeGreeks(euro.call, greek = "vega")
+#' computeGreeks(euro.call, greek = "rho")
+#' 
+#' # Plotting
+#' computeGreeks(euro.call, "delta", prices = seq(20, 40, 1), plot = TRUE)
+#' computeGreeks(euro.call, "delta", maturities = seq(0.5, 0.01, -0.01), plot = TRUE)
 #' @export
 computeGreeks <- function(option, 
                           greek=c("delta", "theta", "gamma", "rho", "vega"), 
@@ -332,9 +352,7 @@ computeGreeks <- function(option,
     if(plot){
       par(mfrow=c(2,1))
       plot(x = prices, y = out[[1]], type="l", ylab=greek, xlab="price", ...=...)
-      plot(x = maturities, y = out[[2]], type="l", xaxt="n", ylab=greek, xlab="time to maturity", ...=...)
-      axis(side = 1, at=maturities, labels = as.character(rev(maturities)))
-      layout(matrix(1,1,1), widths = 1, heights = 1)
+      plot(x = maturities, y = out[[2]], type="l", ylab=greek, xlab="time to maturity", ...=...)
       par(mfrow=c(1,1))
     }
     # return the list
@@ -364,14 +382,11 @@ computeGreeks <- function(option,
              type = option$type)
   if(plot){
     if(!is.null(maturities)){
-      xlabels <- as.character(rev(xs))
       xlab <- "time to maturity"
     } else {
-      xlabels <- xs
       xlab <- "price"
     }
-    plot(x = xs, y = out, type="l", ylab=greek, xaxt="n", xlab=xlab, ...=...)
-    axis(side = 1, at=xs, labels = xlabels)
+    plot(x = xs, y = out, type="l", ylab=greek, xlab=xlab, ...=...)
   }
   return(out)
 }

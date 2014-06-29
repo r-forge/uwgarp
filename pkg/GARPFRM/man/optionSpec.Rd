@@ -32,6 +32,10 @@ an object of class "option" with the parameters that specify the option
 \description{
 Specify parameters of an option
 }
+\examples{
+am.call <- optionSpec(style="american", type="call")
+euro.call <- optionSpec(style="european", type="call", S0=30, K=30, maturity=1, r=0.05, volatility=0.25, q=0)
+}
 \author{
 Ross Bennett
 }

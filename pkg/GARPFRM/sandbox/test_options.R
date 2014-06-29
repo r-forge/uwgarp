@@ -19,7 +19,7 @@ euro.put <- optionSpec(style="european", type="put")
 euro.put.val.bs <- optionValue(euro.put, method="Black-Scholes") 
 euro.put.val.bin <- optionValue(euro.put, method="Binomial") 
 
-
+# European call greeks
 computeGreeks(euro.call, greek = "delta")
 computeGreeks(euro.call, greek = "gamma")
 computeGreeks(euro.call, greek = "theta")
@@ -27,8 +27,8 @@ computeGreeks(euro.call, greek = "vega")
 computeGreeks(euro.call, greek = "rho")
 
 # delta
-computeGreeks(euro.call, prices = seq(20, 40, 1), plot = TRUE)
-computeGreeks(euro.call, maturities = seq(0.5, 0.01, -0.01), plot = TRUE)
+computeGreeks(euro.call, "delta", prices = seq(20, 40, 1), plot = TRUE)
+computeGreeks(euro.call, "delta", maturities = seq(0.5, 0.01, -0.01), plot = TRUE)
 computeGreeks(euro.call, prices = seq(20, 40, 1), maturities = seq(0.5, 0.01, -0.01), plot = TRUE)
 
 # theta
@@ -46,9 +46,6 @@ computeGreeks(euro.call, "vega", maturities = seq(0.5, 0.01, -0.01), plot = TRUE
 # rho
 computeGreeks(euro.call, "rho", prices = seq(20, 40, 1), plot = TRUE)
 computeGreeks(euro.call, "rho", maturities = seq(0.5, 0.01, -0.01), plot = TRUE)
-
-deltaBS(S0 = 109, K = 100, r = 0.05, q = 0, vol = 0.2, ttm = 1, type = "call")
-deltaBS(S0 = 100:110, K = 100, r = 0.05, q = 0, vol = 0.2, ttm = 1, type = "call")
 
 
 

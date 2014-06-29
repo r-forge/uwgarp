@@ -3,8 +3,8 @@
 \alias{computeGreeks}
 \title{Option Greeks}
 \usage{
-computeGreeks(option, greek = "delta", prices = NULL, maturities = NULL,
-  plot = FALSE, ...)
+computeGreeks(option, greek = c("delta", "theta", "gamma", "rho", "vega"),
+  prices = NULL, maturities = NULL, plot = FALSE, ...)
 }
 \arguments{
 \item{option}{an \code{option} object created with \code{\link{optionSpec}}}
@@ -23,6 +23,19 @@ to maturity varies}
 }
 \description{
 Compute the greeks of an option using the Black-Scholes-Merton framework
+}
+\examples{
+euro.call <- optionSpec(style="european", type="call", S0=30, K=30, maturity=1, r=0.05, volatility=0.25, q=0)
+# European call greeks
+computeGreeks(euro.call, greek = "delta")
+computeGreeks(euro.call, greek = "gamma")
+computeGreeks(euro.call, greek = "theta")
+computeGreeks(euro.call, greek = "vega")
+computeGreeks(euro.call, greek = "rho")
+
+# Plotting
+computeGreeks(euro.call, "delta", prices = seq(20, 40, 1), plot = TRUE)
+computeGreeks(euro.call, "delta", maturities = seq(0.5, 0.01, -0.01), plot = TRUE)
 }
 \author{
 Ross Bennett
