@@ -19,4 +19,7 @@ pca object loadings
 This function estimates the delta for hedging a particular bond
 given bond data
 }
+\author{
+Thomas Fillebeen
+}
 

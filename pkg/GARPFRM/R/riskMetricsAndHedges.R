@@ -9,6 +9,11 @@
 #' @param discountCurve vector of discount rates
 #' @param percentChangeYield optional elasticity measure 
 #' @return duration of the bond
+#' @examples
+#' time = seq(from=0.5, to=2, by=0.5)
+#' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+#' mDuration = bondDuration(bond,DF)
+#' @author Thomas Fillebeen
 #' @export
 bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
   # Get data from the bond and discount curve
@@ -40,6 +45,11 @@ bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
 #' @param bond a \code{bond} object in discountFactorArbitrage
 #' @param discountCurve vector of discount rates
 #' @return convexity of the bond
+#' @examples
+#' time = seq(from=0.5, to=2, by=0.5)
+#' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+#' convexity = bondConvexity(bond,DF)
+#' @author Thomas Fillebeen
 #' @export
 bondConvexity <- function(bond, discountCurve){
   # Get data from the bond and discount curve
@@ -67,6 +77,11 @@ bondConvexity <- function(bond, discountCurve){
 #' @param bond a \code{bond} object
 #' @param discountCurve vector of discount rates
 #' @return yield to maturity of the bond
+#' @examples
+#' time = seq(from=0.5, to=2, by=0.5)
+#' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+#' bondYTM(bond,DF)
+#' @author Thomas Fillebeen
 #' @export
 bondYTM <- function(bond, discountCurve){
   # First step is to calculate the price based on the discount curve
@@ -96,6 +111,7 @@ bondYTM <- function(bond, discountCurve){
 #' @param face is the face value
 #' @param targetPrice is the price of the bond
 #' @return Absolute value of difference between the price and the present value
+#' @author Thomas Fillebeen
 #' @export
 ytmSolve <- function(ytm, couponRate, m, nPayments, face, targetPrice){
   C <- face * couponRate / m
@@ -118,6 +134,7 @@ ytmSolve <- function(ytm, couponRate, m, nPayments, face, targetPrice){
 #' @param regressand a \code{bond} object in discountFactorArbitrage
 #' @param regressor the right hand side
 #' @return delta of the hedge
+#' @author Thomas Fillebeen
 #' @export
 linearHedge <- function(regressand, regressor){
     deltas = matrix(0,nrow=1,ncol= ncol(regressor))
@@ -135,6 +152,7 @@ linearHedge <- function(regressand, regressor){
 #' @param nfactors number of components to extract
 #' @param rotate "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution.
 #' @return pca object loadings
+#' @author Thomas Fillebeen
 #' @export
 PCA <- function(data, nfactors, rotate = "none"){
   pca = principal(data, nfactors, rotate="none")
@@ -145,7 +163,7 @@ PCA <- function(data, nfactors, rotate = "none"){
 #' Retrieve PCA loadings
 #' 
 #' @param object is a pca object
-#' @author TF
+#' @author Thomas Fillebeen
 #' @export 
 getLoadings <- function(object){
 loadings = object$loadings
@@ -155,7 +173,7 @@ loadings = object$loadings
 #' Retrieve PCA weights
 #' 
 #' @param object is a pca object
-#' @author TF
+#' @author Thomas Fillebeen
 #' @export 
 getWeights <- function(object){
   weights = object$weight
@@ -171,7 +189,7 @@ getWeights <- function(object){
 #' @param number specify the nunber of loadings
 #' @param \dots passthrough parameters to \code{\link{plot}}.
 #' @param main a main title for the plot
-#' @author TF
+#' @author Thomas Fillebeen
 #' @method plot PCA
 #' @S3method plot PCA
 plot.PCA <- function(x, y, ..., main="Beta from PCA regression"){

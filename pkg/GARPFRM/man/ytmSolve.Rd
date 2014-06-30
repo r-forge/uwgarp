@@ -25,4 +25,7 @@ Absolute value of difference between the price and the present value
 This function solves for the yield to maturity of a fixed rate coupon bond
 given the discount curve and bond data.
 }
+\author{
+Thomas Fillebeen
+}
 

@@ -17,7 +17,10 @@ cashFlow of a bond
 This function calculates the discountFactor (DF) given price
 and cashFlows.
 }
+\examples{
+solve(cashFlow) \%*\% price
+}
 \author{
-TF
+Thomas Fillebeen
 }
 

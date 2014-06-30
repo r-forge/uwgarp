@@ -17,7 +17,12 @@ price of the bond
 This function calculates the price of a fixed rate coupon bond given the
 discount curve and bond data. First it converts the discountCurve into CF
 }
+\examples{
+time = seq(from=0.5, to=2, by=0.5)
+bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+price = bondPrice(bond,DF)
+}
 \author{
-TF
+Thomas Fillebeen
 }
 

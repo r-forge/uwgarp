@@ -22,6 +22,6 @@ This function calculates the continuously compounding rate given an initial data
 with specific format, date of reference coumpounding frequency, and face value
 }
 \author{
-TF
+Thomas Fillebeen
 }
 

@@ -17,4 +17,12 @@ convexity of the bond
 This function estimates the convexity of a fixed rate coupon bond
 given the discount curve and bond data.
 }
+\examples{
+time = seq(from=0.5, to=2, by=0.5)
+bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+convexity = bondConvexity(bond,DF)
+}
+\author{
+Thomas Fillebeen
+}
 

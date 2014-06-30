@@ -14,7 +14,10 @@
 #' @param m compounding frequency
 #' @param couponRate rate the coupon pays
 #' @return a \code{bond} object with the bond data used for pricing
-#' @author TF
+#' @examples
+#' time = seq(from=0.5, to=2, by=0.5)
+#' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+#' @author Thomas Fillebeen
 #' @export
 bondSpec = function(time=seq(from=0.5,to=2,by=0.5), face=100, m=2, couponRate=0.01){
   if(!all(diff(time) == (1/m))) stop("misspecification of sequence of time and compounding frequency")
@@ -43,7 +46,11 @@ is.bond = function(object){
 #' @param bond a \code{discountFactorArbitrage} object
 #' @param discountCurve vector of discount rates
 #' @return price of the bond
-#' @author TF
+#' @examples
+#' time = seq(from=0.5, to=2, by=0.5)
+#' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+#' price = bondPrice(bond,DF)
+#' @author Thomas Fillebeen
 #' @export
 bondPrice = function(bond, discountCurve){
   if(!is.bond(bond)) stop("bond must be an object of class 'bond'")
@@ -68,7 +75,9 @@ bondPrice = function(bond, discountCurve){
 #' @param bond a \code{discountFactorArbitrage} object
 #' @param price  of a bond
 #' @return cashFlow of a bond
-#' @author TF
+#' @examples
+#' solve(cashFlow) %*% price
+#' @author Thomas Fillebeen
 #' @export
 discountFactor = function(price, cashFlow){
   DF = solve(cashFlow) %*% price
@@ -104,7 +113,7 @@ discountFactor = function(price, cashFlow){
 #' bondFullPrice(bond, y1, 8, t0, t1, tn)$dirty
 #' bondFullPrice(bond, y1, 8, t0, t1, tn)$accruedInterest
 #' @return price of the bond: clean, dirty and accrued interest
-#' @author TF
+#' @author Thomas Fillebeen
 #' @export
 bondFullPrice = function(bond, yield, cashFlowPd, t0, t1, currentDate){
   compoundPd = bond$m
@@ -137,7 +146,7 @@ bondFullPrice = function(bond, yield, cashFlowPd, t0, t1, currentDate){
 #' @param m compounding frequency
 #' @param face face value
 #' @return continuously compounding rates
-#' @author TF
+#' @author Thomas Fillebeen
 #' @export
 compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
   # Convert the dates to a date class
@@ -202,7 +211,12 @@ compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
 #' and time increments
 #' @param time increments of time when discount factors are estimated
 #' @param DF discount factor for during time increments
-#' @author TF
+#' @examples 
+#' spotRates = matrix(0,length(time),1)
+#' for(i in 1:(length(time))){
+#'  spotRates[i] = (2-2*DF[i]^(1/(2*time[i]))) / DF[i]^(1/(2*time[i]))
+#' }
+#' @author Thomas Fillebeen
 #' @export
 spotForwardRates = function(time, DF){
   if(length(time) != length(DF)) stop("both time and DF parameter need to be of the same length")
@@ -232,7 +246,7 @@ return(rates)
 #' @param theta long-term reversion yield
 #' @param sigma randomness parameter. Modelled after Brownan Motion
 #' @return t length of time modelled for
-#' @author TF
+#' @author Thomas Fillebeen
 #' @export
 vasicekPrice = function(r, k, theta, sigma, maturity){
     mean = (1/k)*(1 - exp(-maturity*k)) 
@@ -249,7 +263,7 @@ vasicekPrice = function(r, k, theta, sigma, maturity){
 #' @param theta long-term reversion yield
 #' @param sigma randomness parameter. Modelled after Brownan Motion
 #' @return t length of time modelled for
-#' @author TF
+#' @author Thomas Fillebeen
 #' @export
 yieldCurveVasicek = function(r, k, theta, sigma, maturity){
   n = length(r)

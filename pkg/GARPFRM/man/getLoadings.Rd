@@ -12,6 +12,6 @@ getLoadings(object)
 Retrieve PCA loadings
 }
 \author{
-TF
+Thomas Fillebeen
 }
 

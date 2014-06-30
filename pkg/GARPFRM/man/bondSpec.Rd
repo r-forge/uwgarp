@@ -21,7 +21,11 @@ a \code{bond} object with the bond data used for pricing
 \description{
 Created a bond object \code{bond.spec} with data for bond specification.
 }
+\examples{
+time = seq(from=0.5, to=2, by=0.5)
+bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+}
 \author{
-TF
+Thomas Fillebeen
 }
 

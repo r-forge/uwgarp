@@ -20,4 +20,12 @@ The function estimates modified duration of a fixed rate coupon bond
 given the discount curve and bond data. The modified duration is calculated
 using the continuously compounded yield
 }
+\examples{
+time = seq(from=0.5, to=2, by=0.5)
+bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+mDuration = bondDuration(bond,DF)
+}
+\author{
+Thomas Fillebeen
+}
 

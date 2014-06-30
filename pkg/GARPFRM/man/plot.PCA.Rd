@@ -20,6 +20,6 @@
 Plot a fitted PCA object
 }
 \author{
-TF
+Thomas Fillebeen
 }
 

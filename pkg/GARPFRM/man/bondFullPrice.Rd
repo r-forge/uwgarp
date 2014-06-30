@@ -46,6 +46,6 @@ bondFullPrice(bond, y1, 8, t0, t1, tn)$dirty
 bondFullPrice(bond, y1, 8, t0, t1, tn)$accruedInterest
 }
 \author{
-TF
+Thomas Fillebeen
 }
 

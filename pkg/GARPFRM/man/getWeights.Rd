@@ -12,6 +12,6 @@ getWeights(object)
 Retrieve PCA weights
 }
 \author{
-TF
+Thomas Fillebeen
 }
 

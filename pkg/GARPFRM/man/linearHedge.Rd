@@ -17,4 +17,7 @@ delta of the hedge
 This function estimates the delta for hedging a particular bond
 given bond data
 }
+\author{
+Thomas Fillebeen
+}
 
