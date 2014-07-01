@@ -17,6 +17,18 @@ delta of the hedge
 This function estimates the delta for hedging a particular bond
 given bond data
 }
+\examples{
+Load Data for historcal analysis tools
+data(crsp.short)
+data = largecap.ts[,2:6]
+head(data)
+# Empirical application: Linear hedge estimation
+# OLS Level-on-Level regression
+deltas = linearHedge(data[,1],data[,2:5])
+# Insert the normalized hedged contract versus hedgeable contract value
+deltas = c(1,deltas)
+# In sample illustration: random, mean reverting spreads
+}
 \author{
 Thomas Fillebeen
 }

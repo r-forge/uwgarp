@@ -43,7 +43,7 @@ is.bond = function(object){
 #' 
 #' This function calculates the price of a fixed rate coupon bond given the 
 #' discount curve and bond data. First it converts the discountCurve into CF
-#' @param bond a \code{discountFactorArbitrage} object
+#' @param bond a \code{bondSpec} object
 #' @param discountCurve vector of discount rates
 #' @return price of the bond
 #' @examples
@@ -72,11 +72,14 @@ bondPrice = function(bond, discountCurve){
 #' 
 #' This function calculates the discountFactor (DF) given price 
 #' and cashFlows.
-#' @param bond a \code{discountFactorArbitrage} object
-#' @param price  of a bond
-#' @return cashFlow of a bond
+#' @param price of a bond
+#' @param cashFlow of a bond
+#' @return discount factors
 #' @examples
-#' solve(cashFlow) %*% price
+#' cashFlow = rbind(c(100+(1+1/4)/2,0,0),c((4 +7/8)/2,100+(4+7/8)/2,0),c((4+1/2)/2,(4+1/2)/2,100+(4+1/2)/2))
+#' # Created Price of the bond
+#' price = matrix(c(100.550, 104.513, 105.856), ncol=1)
+#' DF = discountFactor(price, cashFlow)
 #' @author Thomas Fillebeen
 #' @export
 discountFactor = function(price, cashFlow){
@@ -92,11 +95,12 @@ discountFactor = function(price, cashFlow){
 #' pays to purchase those cash flows. The flat price is p, accrued 
 #' interest is AI, the present value of the cash flows by PV, and the 
 #' full price by P: 
+#' 
 #' P=p+AI=PV
 #' 
 #' This function calculates the price of a fixed rate coupon bond given coupon rate, yield, 
 #' compoundPd, cashFlowPd, face value, previous coupon date, next coupon date.
-#' @param bond is a bondSpec object
+#' @param bond is a bondSpec object created by \code{\link{bondSpec}}
 #' @param yield is the yield on the bond
 #' @param cashFlowPd cash flow period
 #' @param t0 previous coupon date

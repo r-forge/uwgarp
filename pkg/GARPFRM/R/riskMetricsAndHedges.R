@@ -134,6 +134,18 @@ ytmSolve <- function(ytm, couponRate, m, nPayments, face, targetPrice){
 #' @param regressand a \code{bond} object in discountFactorArbitrage
 #' @param regressor the right hand side
 #' @return delta of the hedge
+#' @examples
+#' Load Data for historcal analysis tools
+#' data(crsp.short)
+#' data = largecap.ts[,2:6]
+#' head(data)
+#' # Empirical application: Linear hedge estimation 
+#' # OLS Level-on-Level regression 
+#' deltas = linearHedge(data[,1],data[,2:5])
+#' # Insert the normalized hedged contract versus hedgeable contract value
+#' deltas = c(1,deltas)
+#' # In sample illustration: random, mean reverting spreads
+# ' hedgedInstruments = data%*%deltas
 #' @author Thomas Fillebeen
 #' @export
 linearHedge <- function(regressand, regressor){
@@ -151,6 +163,15 @@ linearHedge <- function(regressand, regressor){
 #' @param data time series data
 #' @param nfactors number of components to extract
 #' @param rotate "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution.
+#'@examples
+#' data(crsp.short)
+#' data = largecap.ts[,2:6]
+#' pca = PCA(data, nfactors = 3, rotate="none")
+#' summary(pca)
+#' # Retrieve Loadings and if loading is insignificant then omit
+#' getLoadings(pca)
+#' # Retrieve Weights
+#' getWeights(pca)
 #' @return pca object loadings
 #' @author Thomas Fillebeen
 #' @export
@@ -162,7 +183,7 @@ PCA <- function(data, nfactors, rotate = "none"){
 
 #' Retrieve PCA loadings
 #' 
-#' @param object is a pca object
+#' @param object is a pca object created by \code{\link{PCA}}
 #' @author Thomas Fillebeen
 #' @export 
 getLoadings <- function(object){
@@ -172,7 +193,7 @@ loadings = object$loadings
 
 #' Retrieve PCA weights
 #' 
-#' @param object is a pca object
+#' @param object is a pca object created by \code{\link{PCA}}
 #' @author Thomas Fillebeen
 #' @export 
 getWeights <- function(object){
@@ -184,7 +205,7 @@ getWeights <- function(object){
 #' 
 #' Plot a fitted PCA object
 #' 
-#' @param x a PCA object created.
+#' @param x a PCA object created by \code{\link{PCA}}
 #' @param y not used
 #' @param number specify the nunber of loadings
 #' @param \dots passthrough parameters to \code{\link{plot}}.

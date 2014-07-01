@@ -19,6 +19,16 @@ pca object loadings
 This function estimates the delta for hedging a particular bond
 given bond data
 }
+\examples{
+data(crsp.short)
+data = largecap.ts[,2:6]
+pca = PCA(data, nfactors = 3, rotate="none")
+summary(pca)
+# Retrieve Loadings and if loading is insignificant then omit
+getLoadings(pca)
+# Retrieve Weights
+getWeights(pca)
+}
 \author{
 Thomas Fillebeen
 }

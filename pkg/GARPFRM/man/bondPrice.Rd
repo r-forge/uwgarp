@@ -6,7 +6,7 @@
 bondPrice(bond, discountCurve)
 }
 \arguments{
-\item{bond}{a \code{discountFactorArbitrage} object}
+\item{bond}{a \code{bondSpec} object}
 
 \item{discountCurve}{vector of discount rates}
 }

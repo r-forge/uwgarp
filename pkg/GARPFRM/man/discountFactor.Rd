@@ -6,19 +6,22 @@
 discountFactor(price, cashFlow)
 }
 \arguments{
-\item{bond}{a \code{discountFactorArbitrage} object}
-
 \item{price}{of a bond}
+
+\item{cashFlow}{of a bond}
 }
 \value{
-cashFlow of a bond
+discount factors
 }
 \description{
 This function calculates the discountFactor (DF) given price
 and cashFlows.
 }
 \examples{
-solve(cashFlow) \%*\% price
+cashFlow = rbind(c(100+(1+1/4)/2,0,0),c((4 +7/8)/2,100+(4+7/8)/2,0),c((4+1/2)/2,(4+1/2)/2,100+(4+1/2)/2))
+# Created Price of the bond
+price = matrix(c(100.550, 104.513, 105.856), ncol=1)
+DF = discountFactor(price, cashFlow)
 }
 \author{
 Thomas Fillebeen

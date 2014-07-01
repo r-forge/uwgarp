@@ -6,7 +6,7 @@
 \method{plot}{PCA}(x, y, ..., main = "Beta from PCA regression")
 }
 \arguments{
-\item{x}{a PCA object created.}
+\item{x}{a PCA object created by \code{\link{PCA}}}
 
 \item{y}{not used}
 

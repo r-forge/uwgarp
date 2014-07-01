@@ -6,7 +6,7 @@
 getWeights(object)
 }
 \arguments{
-\item{object}{is a pca object}
+\item{object}{is a pca object created by \code{\link{PCA}}}
 }
 \description{
 Retrieve PCA weights
