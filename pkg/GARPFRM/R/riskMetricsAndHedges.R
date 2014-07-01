@@ -210,23 +210,34 @@ getWeights <- function(object){
 #' @param number specify the nunber of loadings
 #' @param \dots passthrough parameters to \code{\link{plot}}.
 #' @param main a main title for the plot
+#' @param separate if TRUE plot of same, and if FALSE plot separately
 #' @author Thomas Fillebeen
 #' @method plot PCA
 #' @S3method plot PCA
-plot.PCA <- function(x, y, ..., main="Beta from PCA regression"){
+plot.PCA <- function(x, y, ..., main="Beta from PCA regression",separate=TRUE){
  if(ncol(x$loading)> 3) warning("Only first 3 loadings will be graphically displayed")
   # Plot the first three factors
  if (ncol(x$loading) >= 3){
+   if(separate){
    plot(x$loading[,1], type="l", main = main, 
         xlab="Maturity/Items", ylab="Loadings")
    lines(x$loading[,2], col="blue",lty=2)
    lines(x$loading[,3], col="red",lty=2)
    legend("topleft",legend=c("PCA1","PCA2","PCA3"),bty="n",lty=c(1,2,2),col=c("black","blue","red"), cex=0.8)
+   }else{
+     plot.zoo(pca$loading[,1:3], type="l", main = main, 
+          xlab="Maturity/Items")
+   }
  }else if(ncol(x$loading) == 2){
+   if(separate){
    plot(x$loading[,1], type="l", main = main, 
         xlab="Maturity/Items", ylab="Loadings")
    lines(x$loading[,2], col="blue",lty=2)
    legend("topleft",legend=c("PCA1","PCA2"),bty="n",lty=c(1,2),col=c("black","blue"), cex=0.8)
+   }else{
+     plot.zoo(pca$loading[,1:2], type="l", main = main, 
+              xlab="Maturity/Items")
+   }
  }else{
    plot(x$loading[,1], type="l", main = main, 
         xlab="Maturity/Items", ylab="Loadings")

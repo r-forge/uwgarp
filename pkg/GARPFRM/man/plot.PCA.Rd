@@ -3,7 +3,8 @@
 \alias{plot.PCA}
 \title{Plotting method for PCA}
 \usage{
-\method{plot}{PCA}(x, y, ..., main = "Beta from PCA regression")
+\method{plot}{PCA}(x, y, ..., main = "Beta from PCA regression",
+  separate = TRUE)
 }
 \arguments{
 \item{x}{a PCA object created by \code{\link{PCA}}}
@@ -15,6 +16,8 @@
 \item{\dots}{passthrough parameters to \code{\link{plot}}.}
 
 \item{main}{a main title for the plot}
+
+\item{separate}{if TRUE plot of same, and if FALSE plot separately}
 }
 \description{
 Plot a fitted PCA object
