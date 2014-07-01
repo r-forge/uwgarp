@@ -24,15 +24,15 @@ mDuration_2 = bondDuration(bond_2,DF_2)
 hedgeRatio = - mDuration_2/mDuration_1
 
 
-# Load Data for historcal analysis tools
-data(crsp.short)
-data = largecap.ts[,2:6]
+# Load Data for historcal analysis tools: load the 2, 5,10. and 30 year
+data(treasuryts)
+data = treasuryts
 head(data)
 
 
 # Empirical application: Linear hedge estimation 
 # OLS Level-on-Level regression 
-deltas = linearHedge(data[,1],data[,2:5])
+deltas = linearHedge(data[,1],data[,2:4])
 # Insert the normalized hedged contract versus hedgeable contract value
 deltas = c(1,deltas)
 
@@ -41,7 +41,7 @@ hedgedInstruments = data%*%deltas
 plot(hedgedInstruments, type="l", main = "Hedged Price Difference: Level", xlab="Time",ylab="Difference")
 
 # OLS Change-on-Change regression 
-deltas = linearHedge(diff(data[,1]),diff(data[,2:5]))
+deltas = linearHedge(diff(data[,1]),diff(data[,2:4]))
 # Insert the normalized hedged contract versus hedgeable contract value
 deltas = c(1,deltas)
 

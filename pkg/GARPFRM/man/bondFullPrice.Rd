@@ -28,10 +28,9 @@ compared with its full price, with the amount a pruchaser actually
 pays to purchase those cash flows. The flat price is p, accrued
 interest is AI, the present value of the cash flows by PV, and the
 full price by P:
+P=p+AI=PV
 }
 \details{
-P=p+AI=PV
-
 This function calculates the price of a fixed rate coupon bond given coupon rate, yield,
 compoundPd, cashFlowPd, face value, previous coupon date, next coupon date.
 }

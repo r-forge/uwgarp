@@ -6,3 +6,5 @@ returns[],1]
 returns[,1]
 returns[,"SPY"]
 load("/Users/tfillebeen/devel/R/UWGARP/uwgarp/pkg/GARPFRM/data/consumption.rda")
+load("/Users/tfillebeen/devel/R/UWGARP/uwgarp/pkg/GARPFRM/data/bonds.rda")
+load("/Users/tfillebeen/devel/R/UWGARP/uwgarp/pkg/GARPFRM/data/treasuryts.RData")
