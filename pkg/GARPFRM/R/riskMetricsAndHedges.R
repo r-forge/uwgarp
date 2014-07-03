@@ -218,7 +218,7 @@ plot.PCA <- function(x, y, ..., main="Beta from PCA regression",separate=TRUE){
  if(ncol(x$loading)> 3) warning("Only first 3 loadings will be graphically displayed")
   # Plot the first three factors
  if (ncol(x$loading) >= 3){
-   if(separate){
+   if(!separate){
    plot(x$loading[,1], type="l", main = main, 
         xlab="Maturity/Items", ylab="Loadings")
    lines(x$loading[,2], col="blue",lty=2)
@@ -229,7 +229,7 @@ plot.PCA <- function(x, y, ..., main="Beta from PCA regression",separate=TRUE){
           xlab="Maturity/Items")
    }
  }else if(ncol(x$loading) == 2){
-   if(separate){
+   if(!separate){
    plot(x$loading[,1], type="l", main = main, 
         xlab="Maturity/Items", ylab="Loadings")
    lines(x$loading[,2], col="blue",lty=2)
