@@ -67,7 +67,7 @@ is.option <- function(x){
 #' euro.call <- optionSpec(style="european", type="call", S0=30, K=30, maturity=1, r=0.05, volatility=0.25, q=0)
 #' euro.call.val.bs <- optionValue(euro.call, method="Black-Scholes")
 #' @export
-optionValue <- function(option, method=c("Binomial", "Black-Scholes"), N=20, ...){
+optionValue <- function(option, method=c("Binomial", "Black-Scholes"), N=20, verbose=FALSE, ...){
   if(!is.option(option)) stop("option must be of class 'option'")
   
   style <- option$style
@@ -75,7 +75,7 @@ optionValue <- function(option, method=c("Binomial", "Black-Scholes"), N=20, ...
   
   if(style == "american"){
     if(method == "binomial" || method == "lattice"){
-      out <- americanBinomial(option, N)
+      out <- americanBinomial(option, N, verbose)
     } else {
       print(paste(method, " is not supported for an american option"))
       out <- NULL
@@ -85,7 +85,7 @@ optionValue <- function(option, method=c("Binomial", "Black-Scholes"), N=20, ...
   if(style == "european"){
     bs_methods <- c("black-scholes", "black-scholes-merton", "bs", "bsm")
     if(method == "binomial" || method == "lattice"){
-      out <- europeanBinomial(option, N)
+      out <- europeanBinomial(option, N, verbose)
     } else if(method %in% bs_methods){
       out <- europeanBS(option)
     } else {
@@ -99,7 +99,7 @@ optionValue <- function(option, method=c("Binomial", "Black-Scholes"), N=20, ...
 ##### Binomial Tree #####
 
 # Binomial tree to price a european option
-europeanBinomial <- function(option, N){
+europeanBinomial2 <- function(option, N){
   if(!is.option(option)) stop("option must be of class 'option'")
   if(option$style != "european") stop("must be a european option")
   
@@ -148,8 +148,106 @@ europeanBinomial <- function(option, N){
   return(A)
 }
 
+# Binomial tree to price a european option
+europeanBinomial <- function(option, N, verbose=FALSE){
+  if(!is.option(option)) stop("option must be of class 'option'")
+  if(option$style != "european") stop("must be a european option")
+  
+  # N: number of time steps
+  # type: call or put
+  # S0: initial asset value
+  # K: strike price
+  # r: continuously compounded yearly risk-free rate
+  # vol: annualized standard deviation of log return
+  # q: continuous dividend yield
+  # ttm: time to maturity (in years), i.e. the life of the option
+  
+  # Extract the parameters of the option
+  type <- option$type
+  S0 <- option$S0
+  K <- option$K
+  r <- option$r
+  vol <- option$volatility
+  q <- option$q
+  ttm <- option$maturity
+  
+  # 1 for call, -1 for put
+  if(type == "call"){
+    mult <- 1
+  } else if(type == "put") {
+    mult <- -1
+  } else {
+    mult <- 0
+  }
+  
+  # List to store option values
+  # These are used at the end to compute greeks
+  # option_value <- vector("list", 4)
+  
+  # Time step (delta t)
+  dt <- ttm / N
+  
+  # Size of up move
+  u <- exp(vol * sqrt(dt))
+  
+  # Size of down move
+  d <- exp(-vol * sqrt(dt))
+  
+  # Risk neutral probability of an uptick
+  p <- (exp((r - q) * dt) - d)/(u - d)
+  
+  # Discount factor
+  df <- exp(-r * dt)
+  
+  # At the terminal node, there are N+1 asset values
+  V <- pmax(0, mult * (S0 * (u^(0:N)) * (d^(N - (0:N))) - K))
+  # if(N == 4) option_value[[4]] <- V
+  
+  if(verbose){
+    cat("Time step: ", N, "\n", sep="")
+    cat("Prices:\n")
+    print(S0 * (u^(0:N)) * (d^(N - (0:N))))
+    cat("Option Values:\n")
+    print(V)
+  }
+  
+  # Iterate backward, such that there are j+1 asset values, where j is the
+  # Number of time steps
+  j.index <-seq(from=N-1, to=0, by=-1)
+  for (j in j.index) {
+    # S is the vector of prices at each time step and node
+    S <- S0 * (u^(0:j)) * (d^(j - (0:j)))
+    
+    # V.new is the vector of option values at each time step and node
+    V.new <- pmax(df * (p * V[2:(j+2)] + (1 - p) * V[1:(j+1)]), 0)
+    #if((j <= 4) & (j != 0)){
+    #  option_value[[j]] <- V.new
+    #}
+    V[1:(j+1)] <- V.new[1:(j+1)]
+    if(verbose){
+      cat("Time step: ", j, "\n", sep="")
+      cat("Prices:\n")
+      print(S)
+      cat("Option Values:\n")
+      print(V.new[1:(j+1)])
+    }
+  }
+  # calculate the greeks
+  #delta <- (f_02 - f_00) / (u^2 * S0 - d^2 * S0)
+  #delta <- (option_value[[2]][3] - option_value[[2]][1]) / (u^2 * S0 - d^2 * S0)
+  #delta_u <- (option_value[[2]][3] - option_value[[2]][2]) / (u^2 * S0 - S0)
+  #delta_d <- (option_value[[2]][2] - option_value[[2]][1]) / (S0 - d^2 * S0)
+  #gamma <- (delta_u - delta_d) / (0.5 * (u^2 * S0 - d^2 * S0))
+  #theta <- (f_22 - f_01) / (2 * dt)
+  #theta <- (option_value[[4]][3] - option_value[[2]][2]) / (2 * dt)
+  # The final value is the option price
+  f <- V[1]
+  #list(option_price=f, delta=delta, gamma=gamma, theta=theta, tree_values=option_value)
+  return(f)
+}
+
 # Binomial tree to price an american option
-americanBinomial <- function(option, N){
+americanBinomial <- function(option, N, verbose=FALSE){
   if(!is.option(option)) stop("option must be of class 'option'")
   if(option$style != "american") stop("must be an american option")
   
@@ -203,6 +301,14 @@ americanBinomial <- function(option, N){
   V <- pmax(0, mult * (S0 * (u^(0:N)) * (d^(N - (0:N))) - K))
   # if(N == 4) option_value[[4]] <- V
   
+  if(verbose){
+    cat("Time step: ", N, "\n", sep="")
+    cat("Prices:\n")
+    print(S0 * (u^(0:N)) * (d^(N - (0:N))))
+    cat("Option Values:\n")
+    print(V)
+  }
+  
   # Iterate backward, such that there are j+1 asset values, where j is the
   # Number of time steps
   j.index <-seq(from=N-1, to=0, by=-1)
@@ -216,15 +322,21 @@ americanBinomial <- function(option, N){
     #  option_value[[j]] <- V.new
     #}
     V[1:(j+1)] <- V.new[1:(j+1)]
-    #print(V)
+    if(verbose){
+      cat("Time step: ", j, "\n", sep="")
+      cat("Prices:\n")
+      print(S)
+      cat("Option Values:\n")
+      print(V.new[1:(j+1)])
+    }
   }
   # calculate the greeks
-  # delta <- (f_02 - f_00) / (u^2 * S0 - d^2 * S0)
+  #delta <- (f_02 - f_00) / (u^2 * S0 - d^2 * S0)
   #delta <- (option_value[[2]][3] - option_value[[2]][1]) / (u^2 * S0 - d^2 * S0)
   #delta_u <- (option_value[[2]][3] - option_value[[2]][2]) / (u^2 * S0 - S0)
   #delta_d <- (option_value[[2]][2] - option_value[[2]][1]) / (S0 - d^2 * S0)
   #gamma <- (delta_u - delta_d) / (0.5 * (u^2 * S0 - d^2 * S0))
-  # theta <- (f_22 - f_01) / (2 * dt)
+  #theta <- (f_22 - f_01) / (2 * dt)
   #theta <- (option_value[[4]][3] - option_value[[2]][2]) / (2 * dt)
   # The final value is the option price
   f <- V[1]
@@ -354,9 +466,11 @@ computeGreeks <- function(option,
       plot(x = prices, y = out[[1]], type="l", ylab=greek, xlab="price", ...=...)
       plot(x = maturities, y = out[[2]], type="l", ylab=greek, xlab="time to maturity", ...=...)
       par(mfrow=c(1,1))
+      invisible(out)
+    } else {
+      # return the list
+      return(out)
     }
-    # return the list
-    return(out)
   }
   
   if(!is.null(prices)){
@@ -387,8 +501,10 @@ computeGreeks <- function(option,
       xlab <- "price"
     }
     plot(x = xs, y = out, type="l", ylab=greek, xlab=xlab, ...=...)
+    invisible(out)
+  } else {
+    return(out)
   }
-  return(out)
 }
 
 #' @export
@@ -570,13 +686,13 @@ impliedVolBS <- function(vol_range, S0, K, r, q, ttm, P_mkt, type, tol=.Machine$
   # market price
   out <- vol_mid
   
-  out_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = out, ttm = ttm, P_mkt = P_mkt, type = type)^2
+  #out_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = out, ttm = ttm, P_mkt = P_mkt, type = type)^2
   # check the boundary conditions
-  lb_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = vol_lower, ttm = ttm, P_mkt = P_mkt, type = type)^2
-  if(lb_obj <= out_obj) warning("Objective function at lower boundary")
+  #lb_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = vol_lower, ttm = ttm, P_mkt = P_mkt, type = type)^2
+  #if(lb_obj <= out_obj) warning("Objective function at lower boundary")
   
-  ub_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = vol_upper, ttm = ttm, P_mkt = P_mkt, type = type)^2
-  if(ub_obj <= out_obj) warning("Objective function at upper boundary")
+  #ub_obj <- obj_fun(S0 = S0, K = K, r = r, q = q, sigma = vol_upper, ttm = ttm, P_mkt = P_mkt, type = type)^2
+  #if(ub_obj <= out_obj) warning("Objective function at upper boundary")
   
   return(out)
 }
