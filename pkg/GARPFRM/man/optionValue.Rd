@@ -3,7 +3,8 @@
 \alias{optionValue}
 \title{Option Value}
 \usage{
-optionValue(option, method = c("Binomial", "Black-Scholes"), N = 20, ...)
+optionValue(option, method = c("Binomial", "Black-Scholes"), N = 20,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{option}{an \code{option} object created with \code{\link{optionSpec}}}

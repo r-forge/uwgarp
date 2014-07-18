@@ -155,7 +155,7 @@ linearHedge <- function(regressand, regressor){
   return(deltas)
 }
 
-#' Estimate PCA loadings and creat PCA object
+#' Estimate PCA loadings and create a PCA object
 #' 
 #' This function estimates the delta for hedging a particular bond 
 #' given bond data
@@ -164,10 +164,11 @@ linearHedge <- function(regressand, regressor){
 #' @param nfactors number of components to extract
 #' @param rotate "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution.
 #'@examples
+#' library(psych)
+#' library(GPArotation)
 #' data(crsp.short)
 #' data = largecap.ts[,2:6]
 #' pca = PCA(data, nfactors = 3, rotate="none")
-#' summary(pca)
 #' # Retrieve Loadings and if loading is insignificant then omit
 #' getLoadings(pca)
 #' # Retrieve Weights

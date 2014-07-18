@@ -54,7 +54,6 @@ plot(hedgedInstruments, type="l", main = "Hedged Price Difference: Change", xlab
 # assets. Principal Compnents (PCs) provide such an emperical description 
 # Retain components that combined account for x% of the cumulative variance
 pca = PCA(data, nfactors = 3, rotate="none")
-summary(pca)
 
 # Retrieve Loadings and if loading is insignificant then omit
 getLoadings(pca)
