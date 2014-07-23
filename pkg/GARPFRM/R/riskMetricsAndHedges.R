@@ -163,20 +163,12 @@ linearHedge <- function(regressand, regressor){
 #' @param data time series data
 #' @param nfactors number of components to extract
 #' @param rotate "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" are possible rotations/transformations of the solution.
-#'@examples
-#' library(psych)
-#' library(GPArotation)
-#' data(crsp.short)
-#' data = largecap.ts[,2:6]
-#' pca = PCA(data, nfactors = 3, rotate="none")
-#' # Retrieve Loadings and if loading is insignificant then omit
-#' getLoadings(pca)
-#' # Retrieve Weights
-#' getWeights(pca)
 #' @return pca object loadings
 #' @author Thomas Fillebeen
 #' @export
 PCA <- function(data, nfactors, rotate = "none"){
+  stopifnot("package:psych" %in% search() || require("psych", quietly = TRUE))
+  
   pca = principal(data, nfactors, rotate="none")
   class(pca) <- c("PCA","psych", "principal")
   return(pca)

@@ -19,17 +19,6 @@ pca object loadings
 This function estimates the delta for hedging a particular bond
 given bond data
 }
-\examples{
-library(psych)
-library(GPArotation)
-data(crsp.short)
-data = largecap.ts[,2:6]
-pca = PCA(data, nfactors = 3, rotate="none")
-# Retrieve Loadings and if loading is insignificant then omit
-getLoadings(pca)
-# Retrieve Weights
-getWeights(pca)
-}
 \author{
 Thomas Fillebeen
 }
