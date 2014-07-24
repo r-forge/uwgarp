@@ -11,6 +11,7 @@
 #' @return duration of the bond
 #' @examples
 #' time = seq(from=0.5, to=2, by=0.5)
+#' DF = rbind(0.968,0.9407242,0.9031545,0.8739803)
 #' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
 #' mDuration = bondDuration(bond,DF)
 #' @author Thomas Fillebeen
@@ -47,6 +48,7 @@ bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
 #' @return convexity of the bond
 #' @examples
 #' time = seq(from=0.5, to=2, by=0.5)
+#' DF = rbind(0.968,0.9407242,0.9031545,0.8739803)
 #' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
 #' convexity = bondConvexity(bond,DF)
 #' @author Thomas Fillebeen
@@ -79,6 +81,7 @@ bondConvexity <- function(bond, discountCurve){
 #' @return yield to maturity of the bond
 #' @examples
 #' time = seq(from=0.5, to=2, by=0.5)
+#' DF = rbind(0.968,0.9407242,0.9031545,0.8739803)
 #' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
 #' bondYTM(bond,DF)
 #' @author Thomas Fillebeen
