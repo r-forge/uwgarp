@@ -18,7 +18,7 @@ This function estimates the delta for hedging a particular bond
 given bond data
 }
 \examples{
-Load Data for historcal analysis tools
+# Load Data for historcal analysis tools
 data(crsp.short)
 data = largecap.ts[,2:6]
 head(data)
