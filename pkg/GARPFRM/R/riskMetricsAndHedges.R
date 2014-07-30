@@ -138,7 +138,7 @@ ytmSolve <- function(ytm, couponRate, m, nPayments, face, targetPrice){
 #' @param regressor the right hand side
 #' @return delta of the hedge
 #' @examples
-#' Load Data for historcal analysis tools
+#' # Load Data for historcal analysis tools
 #' data(crsp.short)
 #' data = largecap.ts[,2:6]
 #' head(data)
