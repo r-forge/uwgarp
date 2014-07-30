@@ -20,6 +20,7 @@ discount curve and bond data. First it converts the discountCurve into CF
 \examples{
 time = seq(from=0.5, to=2, by=0.5)
 bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+DF = rbind(0.968,0.9407242,0.9031545,0.8739803)
 price = bondPrice(bond,DF)
 }
 \author{

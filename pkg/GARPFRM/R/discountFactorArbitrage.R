@@ -49,6 +49,7 @@ is.bond = function(object){
 #' @examples
 #' time = seq(from=0.5, to=2, by=0.5)
 #' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+#' DF = rbind(0.968,0.9407242,0.9031545,0.8739803)
 #' price = bondPrice(bond,DF)
 #' @author Thomas Fillebeen
 #' @export
@@ -215,10 +216,10 @@ compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
 #' @param time increments of time when discount factors are estimated
 #' @param DF discount factor for during time increments
 #' @examples 
-#' spotRates = matrix(0,length(time),1)
-#' for(i in 1:(length(time))){
-#'  spotRates[i] = (2-2*DF[i]^(1/(2*time[i]))) / DF[i]^(1/(2*time[i]))
-#' }
+#' DF = c(0.996489, 0.991306, 0.984484, 0.975616, 0.964519)
+#' time = seq(from=0.5, to=2.5, by=0.5)
+#' rates = spotForwardRates(time,DF)
+#' rates
 #' @author Thomas Fillebeen
 #' @export
 spotForwardRates = function(time, DF){
