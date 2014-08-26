@@ -95,7 +95,7 @@ eu.call <- optionSpec(style = "european",
 call <- optionValue(option = eu.call, method = "Black-Scholes")
 # S_0 - K * e^{-r T}
 100 - 100 * exp(-0.1 * 1)
-plot(sigma, call, ylab="Call Price", ylab="Volatility", 
+plot(sigma, call, ylab="Call Price", xlab="Volatility", 
      main="Call price as volatility approaches 0", type = "l")
 @
 
