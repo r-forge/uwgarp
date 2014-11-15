@@ -222,13 +222,14 @@ plot.capm_uv <- function(x, y, ..., main="CAPM"){
 #' @S3method plot capm_mlm
 plot.capm_mlm <- function(x, y, ..., main="CAPM"){
   if(ncol(x$y_data) > 4) warning("Only first 4 assets will be graphically displayed")
-  par(mfrow=c(2,round(ncol(coef(x))/2)))
+  par(mfrow=c(2,min(round(ncol(coef(x))/2,2))))
   Rmkt = x$x_data
   nbPlot = min(ncol(coef(x)),4)
   for (i in 1:nbPlot){
     tmp = CAPM(x$y_data[,i], Rmkt)
     plot(tmp, ...=..., main=main)
   }
+  par(mfrow=c(1,1))
 }
 
 #' CAPM SML
