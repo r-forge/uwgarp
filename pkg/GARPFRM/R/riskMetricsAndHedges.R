@@ -1,8 +1,8 @@
 ########## Hedge Section-Convexity and Duration##########
-#' Calculate the modified duration of a bond
+#' Calculate the macaulay duration of a bond
 #' 
-#' The function estimates modified duration of a fixed rate coupon bond 
-#' given the discount curve and bond data. The modified duration is calculated
+#' The function estimates maculay duration of a fixed rate coupon bond 
+#' given the discount curve and bond data. The macaulay duration is calculated
 #' using the continuously compounded yield
 #' 
 #' @param bond a \code{bond} object in discountFactorArbitrage
@@ -36,6 +36,32 @@ bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
   # Calculate the duration
   duration = sum(-time * cashflows * exp(-y_c * time)) / -price
   return(duration)
+}
+
+#' Calculate the modified duration of a bond
+#' 
+#' The function estimates modified duration of a fixed rate coupon bond 
+#' given the discount curve and bond data. The modified duration is calculated
+#' using the continuously compounded yield
+#' 
+#' @param bond a \code{bond} object in discountFactorArbitrage
+#' @param discountCurve vector of discount rates
+#' @param percentChangeYield optional elasticity measure 
+#' @return modified duration of the bond
+#' @examples
+#' time = seq(from=0.5, to=2, by=0.5)
+#' DF = rbind(0.968,0.9407242,0.9031545,0.8739803)
+#' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
+#' mDuration = Modified.bondDuration(bond,DF)
+#' @author Jaiganesh Prabhakaran
+#' @export
+Modified.bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
+  #Get the Duration using bondDuration Function
+  duration = bondDuration(bond, discountCurve, percentChangeYield)  
+  #Calculating yield to maturity using bondYTM Function
+  ytm = bondYTM(bond,df)
+  mduration = duration/(1+ytm/bond$m)
+  return(mduration)
 }
 
 #' Calculate the convexity of a fixed rate coupon bond

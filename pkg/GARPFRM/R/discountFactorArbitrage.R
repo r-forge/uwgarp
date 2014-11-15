@@ -128,8 +128,12 @@ bondFullPrice = function(bond, yield, cashFlowPd, t0, t1, currentDate){
   d2 = as.numeric(t1-t0)
   # Initialize
   tmp = 0 
-  for(k in 1:(cashFlowPd-1)){
-    tmp = tmp + ((couponRate / compoundPd * face) / ((1 + yield/compoundPd)^k))
+  
+  #Will go through the loop only if the number of cashFlow periods are at least 2
+  if (cashFlowPd > 1){
+    for(k in 1:(cashFlowPd-1)){
+      tmp = tmp + ((couponRate / compoundPd * face) / ((1 + yield/compoundPd)^k))
+    }
   }
   # Calculate dirty price based on partial periods formula
   dirtyP = (1 / ((1 + yield / compoundPd)^(d1/d2))) * (couponRate / compoundPd * face + tmp + face / ((1 + yield/compoundPd)^(cashFlowPd-1)))
