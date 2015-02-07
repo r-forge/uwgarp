@@ -1,22 +1,7 @@
 ########## Hedge Section-Convexity and Duration##########
-#' Calculate the macaulay duration of a bond
-#' 
-#' The function estimates maculay duration of a fixed rate coupon bond 
-#' given the discount curve and bond data. The macaulay duration is calculated
-#' using the continuously compounded yield
-#' 
-#' @param bond a \code{bond} object in discountFactorArbitrage
-#' @param discountCurve vector of discount rates
-#' @param percentChangeYield optional elasticity measure 
-#' @return duration of the bond
-#' @examples
-#' time = seq(from=0.5, to=2, by=0.5)
-#' DF = rbind(0.968,0.9407242,0.9031545,0.8739803)
-#' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
-#' mDuration = bondDuration(bond,DF)
-#' @author Thomas Fillebeen
-#' @export
-bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
+
+# macaulay duration
+bondDuration.MC <- function(bond, discountCurve, percentChangeYield = 0){
   # Get data from the bond and discount curve
   nDC = length(discountCurve)
   m = bond$m
@@ -38,30 +23,46 @@ bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
   return(duration)
 }
 
-#' Calculate the modified duration of a bond
+# modified duration
+bondDuration.Mod <- function(bond, discountCurve, percentChangeYield = 0){
+  #Get the macaulay duration using bondDuration.MC function
+  duration = bondDuration.MC(bond, discountCurve, percentChangeYield)  
+  #Calculating yield to maturity using bondYTM function
+  ytm = bondYTM(bond,df)
+  mduration = duration/(1+ytm/bond$m)
+  return(mduration)
+}
+
+#' Calculate the duration of a bond
 #' 
-#' The function estimates modified duration of a fixed rate coupon bond 
-#' given the discount curve and bond data. The modified duration is calculated
+#' Estimate the macaulay or modified duration of a fixed rate coupon bond 
+#' given the discount curve and bond data. The duration is calculated
 #' using the continuously compounded yield
 #' 
-#' @param bond a \code{bond} object in discountFactorArbitrage
+#' @param bond a \code{bond} object created with \code{\link{bondSpec}}
 #' @param discountCurve vector of discount rates
 #' @param percentChangeYield optional elasticity measure 
-#' @return modified duration of the bond
+#' @param type specify modified or macaulay duration
+#' @return duration of the bond
 #' @examples
 #' time = seq(from=0.5, to=2, by=0.5)
 #' DF = rbind(0.968,0.9407242,0.9031545,0.8739803)
 #' bond = bondSpec(time, face=100, m=2, couponRate = 0.0475)
-#' mDuration = Modified.bondDuration(bond,DF)
-#' @author Jaiganesh Prabhakaran
+#' mcDuration = bondDuration(bond,DF, type="macaulay")
+#' modDuration = bondDuration(bond,DF, type="modified")
+#' @author Thomas Fillebeen and Jaiganesh Prabhakaran
 #' @export
-Modified.bondDuration <- function(bond, discountCurve, percentChangeYield = 0){
-  #Get the Duration using bondDuration Function
-  duration = bondDuration(bond, discountCurve, percentChangeYield)  
-  #Calculating yield to maturity using bondYTM Function
-  ytm = bondYTM(bond,df)
-  mduration = duration/(1+ytm/bond$m)
-  return(mduration)
+bondDuration <- function(bond, discountCurve, percentChangeYield = 0, type=c("modified", "macaulay")){
+  type <- match.arg(type)
+  switch(type,
+         modified = {
+           out <- bondDuration.Mod(bond, discountCurve, percentChangeYield)
+         },
+         macaulay = {
+           out <- bondDuration.MC(bond, discountCurve, percentChangeYield)
+         }
+  )
+  return(out)
 }
 
 #' Calculate the convexity of a fixed rate coupon bond
@@ -229,7 +230,6 @@ getWeights <- function(object){
 #' 
 #' @param x a PCA object created by \code{\link{PCA}}
 #' @param y not used
-#' @param number specify the nunber of loadings
 #' @param \dots passthrough parameters to \code{\link{plot}}.
 #' @param main a main title for the plot
 #' @param separate if TRUE plot of same, and if FALSE plot separately
@@ -242,27 +242,27 @@ plot.PCA <- function(x, y, ..., main="Beta from PCA regression",separate=TRUE){
  if (ncol(x$loading) >= 3){
    if(!separate){
    plot(x$loading[,1], type="l", main = main, 
-        xlab="Maturity/Items", ylab="Loadings")
+        xlab="Maturity/Items", ylab="Loadings", ...=...)
    lines(x$loading[,2], col="blue",lty=2)
    lines(x$loading[,3], col="red",lty=2)
    legend("topleft",legend=c("PCA1","PCA2","PCA3"),bty="n",lty=c(1,2,2),col=c("black","blue","red"), cex=0.8)
    }else{
      plot.zoo(pca$loading[,1:3], type="l", main = main, 
-          xlab="Maturity/Items")
+          xlab="Maturity/Items", ...=...)
    }
  }else if(ncol(x$loading) == 2){
    if(!separate){
    plot(x$loading[,1], type="l", main = main, 
-        xlab="Maturity/Items", ylab="Loadings")
+        xlab="Maturity/Items", ylab="Loadings", ...=...)
    lines(x$loading[,2], col="blue",lty=2)
    legend("topleft",legend=c("PCA1","PCA2"),bty="n",lty=c(1,2),col=c("black","blue"), cex=0.8)
    }else{
      plot.zoo(pca$loading[,1:2], type="l", main = main, 
-              xlab="Maturity/Items")
+              xlab="Maturity/Items", ...=...)
    }
  }else{
    plot(x$loading[,1], type="l", main = main, 
-        xlab="Maturity/Items", ylab="Loadings")
+        xlab="Maturity/Items", ylab="Loadings", ...=...)
    legend("topleft",legend=c("PCA1"),bty="n",lty=c(1),col=c("black"), cex=0.8)
  }
 }
