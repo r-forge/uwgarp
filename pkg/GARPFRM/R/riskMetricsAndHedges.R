@@ -28,7 +28,7 @@ bondDuration.Mod <- function(bond, discountCurve, percentChangeYield = 0){
   #Get the macaulay duration using bondDuration.MC function
   duration = bondDuration.MC(bond, discountCurve, percentChangeYield)  
   #Calculating yield to maturity using bondYTM function
-  ytm = bondYTM(bond,df)
+  ytm = bondYTM(bond,discountCurve)
   mduration = duration/(1+ytm/bond$m)
   return(mduration)
 }
