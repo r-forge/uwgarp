@@ -7,7 +7,7 @@
 
 #' Constructor for bond specification
 #' 
-#' Created a bond object \code{bond.spec} with data for bond specification.
+#' Create a bond specification.
 #' 
 #' @param time vector of sequence of coupon payments in years
 #' @param face face value of bond
@@ -32,8 +32,8 @@ bondSpec = function(time=seq(from=0.5,to=2,by=0.5), face=100, m=2, couponRate=0.
 
 #' To determine if user is specifying bond parameters correctly
 #' 
-#' @param object a capm object created by \code{\link{bond.spec}}
-#' @author TF
+#' @param object a bond specification object created by \code{\link{bondSpec}}
+#' @author Thomas Fillebeen
 #' @export
 is.bond = function(object){
   inherits(object, "bond.spec")
@@ -65,6 +65,7 @@ bondPrice = function(bond, discountCurve){
   couponAmount <- face * couponRate / m
   cashflows <- rep(couponAmount, nDC)
   cashflows[nDC] <- couponAmount + face
+
   price <- sum(cashflows * discountCurve)
   return(price)
 }
@@ -92,8 +93,8 @@ discountFactor = function(price, cashFlow){
 #' 
 #' Estimate price of bond w/ acrrued interest
 #' The present value of a bond's cash flows should be equated or 
-#' compared with its full price, with the amount a pruchaser actually 
-#' pays to purchase those cash flows. The flat price is p, accrued 
+#' compared with its full price, with the amount a purchaser actually 
+#' pays to purchase those cash flows. The flat price is denoted by p, accrued 
 #' interest is AI, the present value of the cash flows by PV, and the 
 #' full price by P: 
 #' P=p+AI=PV
@@ -150,7 +151,7 @@ bondFullPrice = function(bond, yield, cashFlowPd, t0, t1, currentDate){
 #' This function calculates the continuously compounding rate given an initial dataset 
 #' with specific format, date of reference coumpounding frequency, and face value
 #' @param dat is a dataset with cusip, issueDate, MaturityDate, Name, Coupon, Bid/Ask
-#' @param intialDate is the date when the estimation should be conducted: date of reference
+#' @param initialDate is the date when the estimation should be conducted: date of reference
 #' @param m compounding frequency
 #' @param face face value
 #' @return continuously compounding rates
@@ -228,23 +229,24 @@ compoundingRate = function(dat, initialDate=as.Date("1995-05-15"), m, face=100){
 #' @export
 spotForwardRates = function(time, DF){
   if(length(time) != length(DF)) stop("both time and DF parameter need to be of the same length")
-spotRates = matrix(0,length(time),1)
-for(i in 1:(length(time))){
-  spotRates[i] = (2-2*DF[i]^(1/(2*time[i]))) / DF[i]^(1/(2*time[i]))
-}
-
-forwardRates = matrix(0,length(time),1)
-forwardRates[1] = spotRates[1]
-for(j in 1:(length(time)-1)){
-  forwardRates[j+1] = (DF[j]/DF[j+1] - 1) *2
-}
-rates = cbind(spotRates, forwardRates)
-colnames(rates)= cbind("Spot","Forward")
-return(rates)
+  spotRates = matrix(0,length(time),1)
+  for(i in 1:(length(time))){
+    spotRates[i] = (2-2*DF[i]^(1/(2*time[i]))) / DF[i]^(1/(2*time[i]))
+  }
+  
+  forwardRates = matrix(0,length(time),1)
+  forwardRates[1] = spotRates[1]
+  for(j in 1:(length(time)-1)){
+    forwardRates[j+1] = (DF[j]/DF[j+1] - 1) *2
+  }
+  rates = cbind(spotRates, forwardRates)
+  colnames(rates)= cbind("Spot","Forward")
+  return(rates)
 }
 
 ### Modelling a Zero-Coupon Bond (ZCB)
 #' There are three main types of yield curve shapes: normal, inverted and flat (or humped)
+#' 
 #' Estimate Vasicek zero-coupon bond to be used in term structure
 #' 
 #' This function calculates the Vasicek Price given an initial data calibration 
@@ -253,7 +255,8 @@ return(rates)
 #' @param k speed of reversion parameter
 #' @param theta long-term reversion yield
 #' @param sigma randomness parameter. Modelled after Brownan Motion
-#' @return t length of time modelled for
+#' @param maturity maturity of the bond
+#' @return zero coupon bond price estimated from Vasicek model
 #' @author Thomas Fillebeen
 #' @export
 vasicekPrice = function(r, k, theta, sigma, maturity){
@@ -265,12 +268,14 @@ vasicekPrice = function(r, k, theta, sigma, maturity){
 
 #' Estimate Vasicek zero-coupon yield
 #' 
-#' This function calculates the Vasicek yield given an initial data calibration 
+#' This function calculates the Vasicek yield given an initial data calibration
+#' 
 #' @param r initial short rate
 #' @param k speed of reversion parameter
 #' @param theta long-term reversion yield
-#' @param sigma randomness parameter. Modelled after Brownan Motion
-#' @return t length of time modelled for
+#' @param sigma randomness parameter. Modelled after Brownian Motion
+#' @param maturity maturity of the bond
+#' @return yield curve estimate from Vasicek model
 #' @author Thomas Fillebeen
 #' @export
 yieldCurveVasicek = function(r, k, theta, sigma, maturity){

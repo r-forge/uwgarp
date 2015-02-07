@@ -1,4 +1,4 @@
-# 'Load the GARPFRM package and CRSP dataset for CAPM analysis.
+# Load the GARPFRM package and CRSP dataset for CAPM analysis.
 # Standard Capital Asset Pricing Model (CAPM) fitting and testing using CRSP data. 
 # Where CAPM describes the relationship between risk and expected return.
 suppressMessages(library(GARPFRM))
@@ -38,7 +38,7 @@ getStatistics(mlm)
 plot(mlm)
 
 # For uv example
-# Estimate CAPM with α = 0 & β = 1 for asset
+# Estimate CAPM with alpha = 0 & beta = 1 for asset
 getBetas(uv)
 getAlphas(uv)
 hypTest(uv, significanceLevel=0.05)

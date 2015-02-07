@@ -58,6 +58,8 @@ is.option <- function(x){
 #' @param option an \code{option} object created with \code{\link{optionSpec}}
 #' @param method the method used to value the option
 #' @param N number of steps in binomial tree
+#' @param verbose TRUE/FALSE default FALSE. TRUE prints the node information 
+#' of the binomial tree
 #' @param \dots any other passthrough parameters
 #' @return the estimated value of the option
 #' @author Ross Bennett
@@ -415,6 +417,15 @@ putEuropeanBS <- function(S0, K, r, q, vol, ttm){
 #' to maturity varies
 #' @param plot TRUE/FALSE to plot the greek value as the underlying price and/ time to maturity vary
 #' @param \dots passthrough parameters to \code{\link{plot}}
+#' @param S0 underlying asset price
+#' @param K strike price
+#' @param r risk free rate
+#' @param q continuous dividend yield rate for options on stocks or stock 
+#' indices paying a dividend. Also the foreign risk free rate for options on 
+#' currencies
+#' @param vol volatility of the underlying asset price
+#' @param ttm tmie to maturity, the life of the option, measured in years
+#' @param type type of the option; "call" or "put"
 #' @author Ross Bennett
 #' @examples
 #' euro.call <- optionSpec(style="european", type="call", S0=30, K=30, maturity=1, r=0.05, volatility=0.25, q=0)
@@ -428,6 +439,7 @@ putEuropeanBS <- function(S0, K, r, q, vol, ttm){
 #' # Plotting
 #' computeGreeks(euro.call, "delta", prices = seq(20, 40, 1), plot = TRUE)
 #' computeGreeks(euro.call, "delta", maturities = seq(0.5, 0.01, -0.01), plot = TRUE)
+#' @aliases deltaBS, thetaBS, gammaBS, vegaBS, rhoBS
 #' @export
 computeGreeks <- function(option, 
                           greek=c("delta", "theta", "gamma", "rho", "vega"), 
@@ -507,6 +519,7 @@ computeGreeks <- function(option,
   }
 }
 
+#' @name computeGreeks
 #' @export
 deltaBS <- function(S0, K, r, q, vol, ttm, type){
   d1 <- (log(S0 / K) + (r - q + (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
@@ -533,6 +546,7 @@ deltaBS <- function(S0, K, r, q, vol, ttm, type){
 #   return(delta)
 # }
 
+#' @name computeGreeks
 #' @export
 thetaBS <- function(S0, K, r, q, vol, ttm, type){
   d1 <- (log(S0 / K) + (r - q + (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
@@ -562,6 +576,7 @@ thetaBS <- function(S0, K, r, q, vol, ttm, type){
 #   return(theta)
 # }
 
+#' @name computeGreeks
 #' @export
 gammaBS <- function(S0, K, r, q, vol, ttm, type){
   d1 <- (log(S0 / K) + (r - q + (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
@@ -577,6 +592,7 @@ gammaBS <- function(S0, K, r, q, vol, ttm, type){
 # 
 # gamma.put <- gamma.call
 
+#' @name computeGreeks
 #' @export
 vegaBS <- function(S0, K, r, q, vol, ttm, type){
   d1 <- (log(S0 / K) + (r - q + (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
@@ -592,6 +608,7 @@ vegaBS <- function(S0, K, r, q, vol, ttm, type){
 # 
 # vega.put <- vega.call
 
+#' @name computeGreeks
 #' @export
 rhoBS <- function(S0, K, r, q, vol, ttm, type){
   d2 <- (log(S0 / K) + (r - q - (vol^2 / 2)) * ttm) / (vol * sqrt(ttm))
@@ -660,6 +677,31 @@ impliedVolatility <- function(option, price, lower=0, upper=0.5, ...){
   }
 }
 
+#' Implied Volatility Bisection Method
+#' 
+#' Bisection method to compute the implied volatility of a european option 
+#' using the Black-Scholes-Merton model.
+#' 
+#' @details A bisection algorithm is used to compute the implied volatility
+#' of a European option priced with the Black-Scholes-Merton model
+#' 
+#' @param vol_range c(lower, upper) the lower and upper bounds of the implied 
+#' volatility range to search
+#' @param S0 underlying asset price
+#' @param K strike price
+#' @param r risk free rate
+#' @param q continuous dividend yield rate for options on stocks or stock 
+#' indices paying a dividend. Also the foreign risk free rate for options on 
+#' currencies
+#' @param ttm time to maturity, the life of the option, measured in years
+#' @param P_mkt market price
+#' @param type type of the option; "call" or "put"
+#' @param tol tolerance used for stopping criteria
+#' @param max_it maximum number of iterations
+#' 
+#' @return implied volatility estimate
+#' @author Ross Bennett
+#' @export
 impliedVolBS <- function(vol_range, S0, K, r, q, ttm, P_mkt, type, tol=.Machine$double.eps, max_it=200){
   # use bisection to compute the implied volatility
   # http://en.wikipedia.org/wiki/Bisection_method

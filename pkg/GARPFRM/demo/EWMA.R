@@ -7,7 +7,7 @@ data(crsp_weekly)
 R <- largecap_weekly[, 1:5]
 
 # The Exponentially Weighted Moving Average (EWMA) Model is a special case of a weighted 
-# moving average where the weights αi decrease exponentially as we move backwards through 
+# moving average where the weights decrease exponentially as we move backwards through 
 # time. Greater weights are given to more recent observations.
 # Estimate volatility via EWMA
 volEst <- EWMA(R[,1], lambda=NULL, initialWindow=52, n=26, type="volatility")

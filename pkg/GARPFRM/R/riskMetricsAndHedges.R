@@ -247,7 +247,7 @@ plot.PCA <- function(x, y, ..., main="Beta from PCA regression",separate=TRUE){
    lines(x$loading[,3], col="red",lty=2)
    legend("topleft",legend=c("PCA1","PCA2","PCA3"),bty="n",lty=c(1,2,2),col=c("black","blue","red"), cex=0.8)
    }else{
-     plot.zoo(pca$loading[,1:3], type="l", main = main, 
+     plot.zoo(x$loading[,1:3], type="l", main = main, 
           xlab="Maturity/Items", ...=...)
    }
  }else if(ncol(x$loading) == 2){
@@ -257,7 +257,7 @@ plot.PCA <- function(x, y, ..., main="Beta from PCA regression",separate=TRUE){
    lines(x$loading[,2], col="blue",lty=2)
    legend("topleft",legend=c("PCA1","PCA2"),bty="n",lty=c(1,2),col=c("black","blue"), cex=0.8)
    }else{
-     plot.zoo(pca$loading[,1:2], type="l", main = main, 
+     plot.zoo(x$loading[,1:2], type="l", main = main, 
               xlab="Maturity/Items", ...=...)
    }
  }else{

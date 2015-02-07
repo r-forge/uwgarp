@@ -1,7 +1,4 @@
-library(knitr)
-opts_chunk$set(tidy=FALSE, warning=FALSE, fig.width=5, fig.height=5)
-
-suppressPackageStartupMessages(library(GARPFRM))
+library(GARPFRM)
 
 # Colonel Motors expected return
 R_C <- 0.14
@@ -21,10 +18,10 @@ rho <- 1
 # Create a vector of portfolio weights
 X_C <- seq(from=0, to=1, by=0.2)
 
-# Calculate the portfolio expected return (ρ = −1)
+# Calculate the portfolio expected return (rho = -1)
 R_P <- portReturnTwoAsset(R_C, R_S, X_C)
 
-# Calculate the portfolio standard deviation (ρ = 0)
+# Calculate the portfolio standard deviation (rho = 0)
 sigma_P <- portSDTwoAsset(R_C, R_S, X_C, sigma_C, sigma_S, rho)
 
 # Combine the portfolio returns and standard deviations in a data.frame object.
@@ -99,7 +96,7 @@ minRisk <- function(R_A, R_B, sigma_A, sigma_B, rho){
 
 minRisk(R_C, R_S, sigma_C, sigma_S, rho)
 
-# Correlation coefficient (ρ = 0.5)
+# Correlation coefficient (rho = 0.5)
 rho <- 0.5
 
 # Calculate the portfolio expected return
@@ -184,18 +181,12 @@ sigma_B <- 0.048
 # Estimated correlation between equity and bonds
 rho <- 0.45
 
-
-
 # Calculate the allocation and values for the minimum variance portfolio
 minRisk(R_SP, R_B, sigma_SP, sigma_B, rho)
-
-
 
 ef <- efficientFrontierTwoAsset(R_SP, R_B, sigma_SP, sigma_B, rho,
                                 rf=0.05, allowShorting=TRUE)
 plot(ef)
-
-
 
 # Estimated inputs for domestic portfolio
 R_SP <- 0.125
@@ -207,8 +198,6 @@ sigma_int <- 0.14
 
 # Estimated correlation between domestic and international portfolio
 rho <- 0.33
-
-
 
 # Calculate the allocation and values for the minimum variance portfolio
 minRisk(R_SP, R_int, sigma_SP, sigma_int, rho)
@@ -232,8 +221,6 @@ plot(ef_large, main="Large Cap Efficient Frontier", cexAssets=0.6)
 ef_large_box <- efficientFrontier(R_large, minBox=0.15, maxBox=0.55)
 plot(ef_large_box, main="Large Cap Efficient Frontier\nwith Box Constraints",
      cexAssets=0.6)
-
-
 
 # Combine the large cap, mid cap, and small cap stocks
 R <- cbind(R_large, R_mid, R_small)
